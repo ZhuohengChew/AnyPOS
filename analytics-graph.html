@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Food Truck Sales Analytics - MSME Digital Financial Platform">
+    <meta name="theme-color" content="#2563eb">
+    <title>Food Truck Sales Analytics - MSME Digital Finance Platform</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/mobile.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    
+    <style>
+        body {
+            background: #f9fafb;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .analytics-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .header-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            padding: 24px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #2563eb;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            margin-right: 16px;
+        }
+
+        .back-btn:hover {
+            background: #eff6ff;
+        }
+
+        .header-section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .header-section p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 24px;
+            background: white;
+            padding: 4px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .nav-tab {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border: none;
+            background: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #6b7280;
+        }
+
+        .nav-tab.active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: #f3f4f6;
+        }
+
+        .nav-icon {
+            font-size: 16px;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        /* Stat Cards */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .stat-blue { color: #2563eb; }
+        .stat-green { color: #10b981; }
+        .stat-purple { color: #8b5cf6; }
+        .stat-orange { color: #f59e0b; }
+
+        /* Microloans Section Styles */
+        .scalability-score {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            padding: 24px 0;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .score-value {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .score-details {
+            flex: 1;
+        }
+
+        .score-details p {
+            margin-bottom: 16px;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .score-factors {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .factor {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .factor-icon {
+            font-size: 1rem;
+        }
+
+        .microloans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .microloan-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .microloan-card:hover {
+            border-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+        }
+
+        .microloan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .microloan-type {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .microloan-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .microloan-details {
+            margin-bottom: 20px;
+        }
+
+        .microloan-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+        }
+
+        .microloan-detail .label {
+            color: #6b7280;
+        }
+
+        .microloan-detail .value {
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .microloan-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-apply {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex: 1;
+        }
+
+        .btn-apply:hover {
+            background: #059669;
+        }
+
+        .btn-learn {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-learn:hover {
+            background: #e5e7eb;
+        }
+
+        .growth-projections {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .projection-chart {
+            height: 300px;
+        }
+
+        .projection-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .projection-stat {
+            text-align: center;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 12px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #1f2937;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 4px;
+        }
+
+        .modal-close:hover {
+            color: #374151;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            padding: 24px;
+            border-top: 1px solid #e5e7eb;
+            justify-content: flex-end;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .card-subtitle {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        /* Mobile Responsiveness for Microloans */
+        @media (max-width: 768px) {
+            .scalability-score {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .score-circle {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .score-value {
+                font-size: 1.5rem;
+            }
+            
+            .microloans-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .microloan-card {
+                padding: 16px;
+            }
+            
+            .microloan-actions {
+                flex-direction: column;
+            }
+            
+            .growth-projections {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .projection-chart {
+                height: 250px;
+            }
+            
+            .projection-stats {
+                flex-direction: row;
+                gap: 12px;
+            }
+            
+            .projection-stat {
+                flex: 1;
+                padding: 12px;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 20px;
+            }
+            
+            .modal-body {
+                padding: 16px;
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+            }
+        }
+
+        /* Tables */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .table tr:hover {
+            background: #f9fafb;
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+
+        .chart-container-large {
+            height: 400px;
+        }
+
+        /* Time Range Visual */
+        .time-visual {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            height: 200px;
+            padding: 16px;
+            margin: 16px 0;
+            background: #f9fafb;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .time-bar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 2px;
+            position: relative;
+            cursor: pointer;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .time-bar-fill {
+            width: 16px;
+            background: #e5e7eb;
+            border-radius: 2px 2px 0 0;
+            transition: all 0.3s;
+            min-height: 4px;
+            position: relative;
+        }
+
+        .time-bar-fill.has-data {
+            background: #6b7280;
+        }
+
+        .time-bar-fill.peak {
+            background: #dc2626;
+        }
+
+        .time-bar:hover .time-bar-fill {
+            opacity: 0.8;
+        }
+
+        .time-label {
+            font-size: 10px;
+            color: #6b7280;
+            margin-top: 4px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            position: absolute;
+            bottom: -24px;
+        }
+
+        .time-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 10;
+        }
+
+        .time-bar:hover .time-tooltip {
+            opacity: 1;
+        }
+
+        /* Time Range Stats */
+        .time-range-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .time-range-item {
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            text-align: center;
+            background: white;
+        }
+
+        .time-range-item.peak {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .time-range-name {
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .time-range-customers {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2563eb;
+            margin-bottom: 4px;
+        }
+
+        .time-range-revenue {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        /* Insight Cards */
+        .insight-card {
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            margin-bottom: 12px;
+        }
+
+        .insight-card.success {
+            background: #f0fdf4;
+            border-left-color: #22c55e;
+        }
+
+        .insight-card.warning {
+            background: #fffbeb;
+            border-left-color: #f59e0b;
+        }
+
+        .insight-card.info {
+            background: #eff6ff;
+            border-left-color: #3b82f6;
+        }
+
+        .insight-title {
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-bottom: 4px;
+        }
+
+        .insight-text {
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        .insight-card.success .insight-title { color: #166534; }
+        .insight-card.warning .insight-title { color: #92400e; }
+        .insight-card.info .insight-title { color: #1e40af; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .analytics-container {
+                padding: 16px;
+            }
+
+            .grid-2,
+            .grid-3,
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .nav-tab {
+                justify-content: flex-start;
+            }
+            
+            .time-range-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-section h1 {
+                font-size: 1.5rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="analytics-container">
+    <!-- Header -->
+        <div class="header-section">
+            <button class="back-btn" onclick="window.location.href='index.html'" aria-label="Back to dashboard">←</button>
+            <h1>Food Truck Sales System</h1>
+            <p>Complete POS and Analytics Solution</p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('daily')">
+                <span class="nav-icon">📅</span>
+                <span>Daily Report</span>
+            </button>
+            <button class="nav-tab" onclick="showTab('products')">
+                <span class="nav-icon">📈</span>
+                <span>Product Analysis</span>
+            </button>
+            <button class="nav-tab" onclick="showTab('time')">
+                <span class="nav-icon">🕐</span>
+                <span>Time Analysis</span>
+            </button>
+            <button class="nav-tab" onclick="showTab('microloans')">
+                <span class="nav-icon">💰</span>
+                <span>Microloans</span>
+            </button>
+        </div>
+
+        <!-- Daily Report Tab -->
+        <div id="daily-section" class="content-section active">
+            <!-- Daily Summary Cards -->
+            <div class="grid-4">
+                <div class="stat-card">
+                    <div class="stat-value stat-blue" id="todaySales">0</div>
+                    <div class="stat-label">Today's Sales</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value stat-green" id="todayRevenue">RM 0.00</div>
+                    <div class="stat-label">Today's Revenue</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value stat-purple" id="avgSale">RM 0.00</div>
+                    <div class="stat-label">Average Sale</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value stat-orange" id="weekRevenue">RM 0.00</div>
+                    <div class="stat-label">This Week</div>
+                </div>
+            </div>
+
+            <!-- Weekly Trends -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Last 7 Days Performance</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="weeklyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Analysis Tab -->
+        <div id="products-section" class="content-section">
+            <div class="grid-2">
+                <!-- Product Revenue Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Product Revenue</h2>
+            </div>
+            <div class="chart-container">
+                        <canvas id="productRevenueChart"></canvas>
+            </div>
+                </div>
+
+                <!-- Product Quantity Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Quantity Sold</h2>
+            </div>
+            <div class="chart-container">
+                        <canvas id="productQuantityChart"></canvas>
+            </div>
+                </div>
+            </div>
+
+            <!-- Product Statistics Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Product Statistics</h2>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity Sold</th>
+                            <th>Revenue</th>
+                            <th>Avg Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productStatsTable">
+                        <!-- Product stats will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Time Analysis Tab -->
+        <div id="time-section" class="content-section">
+            <!-- Peak Time Insights Cards -->
+            <div class="grid-4">
+                <div class="stat-card" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">
+                    <div class="stat-value" id="peakHour">--</div>
+                    <div class="stat-label" style="color: rgba(255,255,255,0.9);">Peak Hour</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
+                    <div class="stat-value" id="busiestPeriod">--</div>
+                    <div class="stat-label" style="color: rgba(255,255,255,0.9);">Busiest Period</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;">
+                    <div class="stat-value" id="totalCustomers">0</div>
+                    <div class="stat-label" style="color: rgba(255,255,255,0.9);">Total Customers</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
+                    <div class="stat-value" id="rushHours">0</div>
+                    <div class="stat-label" style="color: rgba(255,255,255,0.9);">Rush Hours</div>
+                </div>
+            </div>
+
+            <!-- Popular Times Visual -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Popular Times</h2>
+                </div>
+                <div class="time-visual" id="timeVisual">
+                    <!-- Time bars will be populated here -->
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.875rem; color: #6b7280; padding: 0 16px;">
+                    <span>6 AM</span>
+                    <span>10 PM</span>
+                </div>
+            </div>
+
+            <!-- Time Range Analysis -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Customer Traffic by Time Periods</h2>
+                </div>
+                <div class="time-range-grid" id="timeRangeGrid">
+                    <!-- Time range items will be populated here -->
+                </div>
+            </div>
+
+            <!-- Recent Sales Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Recent Sales</h2>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentSalesTable">
+                        <!-- Recent sales will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Business Insights -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">AI Business Insights & Recommendations</h2>
+                </div>
+                <div id="businessInsights">
+                    <!-- Insights will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Microloans Recommendations Tab -->
+        <div id="microloans-section" class="content-section">
+            <!-- Merchant Scalability Analysis -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Your Business Scalability Score</h2>
+                </div>
+                <div class="scalability-score">
+                    <div class="score-circle">
+                        <div class="score-value" id="scalabilityScore">85</div>
+                        <div class="score-label">High Potential</div>
+                    </div>
+                    <div class="score-details">
+                        <p>Based on your sales performance, growth trends, and business metrics, your business shows <strong>high scalability potential</strong>.</p>
+                        <div class="score-factors">
+                            <div class="factor">
+                                <span class="factor-icon">📈</span>
+                                <span>Consistent Revenue Growth</span>
+                            </div>
+                            <div class="factor">
+                                <span class="factor-icon">🕐</span>
+                                <span>Peak Hour Optimization</span>
+                            </div>
+                            <div class="factor">
+                                <span class="factor-icon">📊</span>
+                                <span>Strong Product Mix</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommended Microloans -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Recommended Microloans</h2>
+                    <p class="card-subtitle">Tailored to your business growth potential</p>
+                </div>
+                <div class="microloans-grid" id="microloansGrid">
+                    <!-- Microloan cards will be populated here -->
+                </div>
+            </div>
+
+            <!-- Business Growth Projections -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Growth Projections with Microloan</h2>
+                </div>
+                <div class="growth-projections">
+                    <div class="projection-chart">
+                        <canvas id="growthProjectionChart"></canvas>
+                    </div>
+                    <div class="projection-stats">
+                        <div class="projection-stat">
+                            <div class="stat-number">+45%</div>
+                            <div class="stat-label">Revenue Increase</div>
+                        </div>
+                        <div class="projection-stat">
+                            <div class="stat-number">+3</div>
+                            <div class="stat-label">New Locations</div>
+                        </div>
+                        <div class="projection-stat">
+                            <div class="stat-number">+12</div>
+                            <div class="stat-label">New Employees</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Microloan Details Modal -->
+    <div id="microloanModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Microloan Details</h3>
+                <button class="modal-close" onclick="closeMicroloanModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeMicroloanModal()">Close</button>
+                <button class="btn-primary" onclick="applyForMicroloan()">Apply Now</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Menu items with prices (in RM) - for analytics only
+        const menuItems = [
+            { id: 1, name: 'Ayam Gunting', price: 8.50 },
+            { id: 2, name: 'Ayam Goreng', price: 9.00 },
+            { id: 3, name: 'Kaya Ball', price: 3.50 },
+            { id: 4, name: 'Loteng', price: 6.00 },
+            { id: 5, name: 'Nasi Lemak', price: 5.50 },
+            { id: 6, name: 'Mee Goreng', price: 7.00 },
+            { id: 7, name: 'Roti Canai', price: 2.50 },
+            { id: 8, name: 'Teh Tarik', price: 2.00 },
+            { id: 9, name: 'Kopi O', price: 1.80 },
+            { id: 10, name: 'Air Sirap', price: 2.20 }
+        ];
+
+        // Global state
+        let sales = [];
+        let activeTab = 'daily';
+        let selectedMicroloan = null;
+
+        // Microloans data
+        const microloans = [
+            {
+                id: 1,
+                type: 'Business Expansion Loan',
+                amount: 'RM 50,000',
+                interestRate: '8.5%',
+                term: '24 months',
+                monthlyPayment: 'RM 2,250',
+                description: 'Perfect for expanding your food truck business to new locations or adding more vehicles to your fleet.',
+                requirements: ['Minimum 1 year in business', 'Monthly revenue > RM 10,000', 'Good credit history'],
+                benefits: ['No collateral required', 'Quick approval process', 'Flexible repayment terms'],
+                details: 'This microloan is specifically designed for food truck businesses looking to scale their operations. With competitive interest rates and flexible terms, you can expand your business without the burden of traditional bank loans.'
+            },
+            {
+                id: 2,
+                type: 'Equipment Financing',
+                amount: 'RM 25,000',
+                interestRate: '7.2%',
+                term: '18 months',
+                monthlyPayment: 'RM 1,450',
+                description: 'Finance new cooking equipment, POS systems, or food preparation tools to improve efficiency.',
+                requirements: ['Equipment quote required', 'Business registration', '6 months operation history'],
+                benefits: ['Equipment serves as collateral', 'Lower interest rates', 'Tax benefits'],
+                details: 'Equipment financing allows you to acquire the latest cooking equipment and technology without depleting your working capital. The equipment itself serves as collateral, making this one of the most accessible financing options.'
+            },
+            {
+                id: 3,
+                type: 'Working Capital Loan',
+                amount: 'RM 15,000',
+                interestRate: '9.0%',
+                term: '12 months',
+                monthlyPayment: 'RM 1,350',
+                description: 'Cover daily operational costs, inventory purchases, and cash flow gaps during slow periods.',
+                requirements: ['Active business account', 'Consistent sales history', 'No outstanding loans'],
+                benefits: ['Fast disbursement', 'No usage restrictions', 'Build credit history'],
+                details: 'Working capital loans provide the flexibility to manage day-to-day operations smoothly. Whether you need to stock up on ingredients, pay staff, or cover unexpected expenses, this loan gives you the financial cushion you need.'
+            },
+            {
+                id: 4,
+                type: 'Technology Upgrade Loan',
+                amount: 'RM 20,000',
+                interestRate: '8.0%',
+                term: '15 months',
+                monthlyPayment: 'RM 1,600',
+                description: 'Invest in digital ordering systems, mobile apps, and online marketing to boost sales.',
+                requirements: ['Technology implementation plan', 'Digital literacy', 'Growth potential'],
+                benefits: ['Future-proof your business', 'Increase online presence', 'Improve customer experience'],
+                details: 'Stay competitive in the digital age with our technology upgrade loan. From mobile ordering apps to advanced POS systems, this loan helps you embrace technology that can significantly boost your sales and customer satisfaction.'
+            }
+        ];
+
+        // Generate comprehensive random sales data
+        function generateRandomSalesData() {
+            const sampleSales = [];
+            const today = new Date();
+            
+            // Generate data for the past 30 days
+            for (let dayOffset = 29; dayOffset >= 0; dayOffset--) {
+                const currentDate = new Date(today);
+                currentDate.setDate(today.getDate() - dayOffset);
+                const dateString = currentDate.toISOString().split('T')[0];
+                const dayOfWeek = currentDate.getDay();
+                
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                const isMonday = dayOfWeek === 1;
+                const isFriday = dayOfWeek === 5;
+                
+                // Random daily sales volume
+                let baseSales = isWeekend ? 15 : isMonday ? 8 : isFriday ? 18 : 12;
+                baseSales += Math.floor(Math.random() * 8) - 4; // Add more variation
+                baseSales = Math.max(5, baseSales); // Minimum 5 sales per day
+                
+                for (let saleIndex = 0; saleIndex < baseSales; saleIndex++) {
+                    // Create realistic time distribution with peaks at 12-2 PM and 6-8 PM
+                    let hour;
+                    const timeRand = Math.random();
+                    
+                    if (timeRand < 0.05) hour = 7 + Math.floor(Math.random() * 2); // 7-8 AM (5%)
+                    else if (timeRand < 0.15) hour = 9 + Math.floor(Math.random() * 3); // 9-11 AM (10%)
+                    else if (timeRand < 0.45) hour = 12 + Math.floor(Math.random() * 3); // 12-2 PM (30%) - LUNCH PEAK
+                    else if (timeRand < 0.65) hour = 15 + Math.floor(Math.random() * 3); // 3-5 PM (20%)
+                    else if (timeRand < 0.85) hour = 18 + Math.floor(Math.random() * 3); // 6-8 PM (20%) - DINNER PEAK
+                    else hour = 21 + Math.floor(Math.random() * 2); // 9-10 PM (15%)
+                    
+                    const minute = Math.floor(Math.random() * 60);
+                    const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                    
+                    // Random number of items per sale
+                    const numItems = Math.random() < 0.6 ? 1 : Math.random() < 0.85 ? 2 : Math.random() < 0.95 ? 3 : 4;
+                    const saleItems = [];
+                    const usedItems = new Set();
+                    
+                    for (let i = 0; i < numItems; i++) {
+                        let randomItem;
+                        let attempts = 0;
+                        do {
+                            randomItem = menuItems[Math.floor(Math.random() * menuItems.length)];
+                            attempts++;
+                        } while (usedItems.has(randomItem.id) && attempts < 10);
+                        
+                        if (!usedItems.has(randomItem.id)) {
+                            usedItems.add(randomItem.id);
+                            const quantity = Math.random() < 0.7 ? 1 : Math.random() < 0.9 ? 2 : 3;
+                            
+                            saleItems.push({
+                                name: randomItem.name,
+                                quantity: quantity,
+                                price: randomItem.price
+                            });
+                        }
+                    }
+                    
+                    const total = saleItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                    
+                    sampleSales.push({
+                        id: sampleSales.length + 1,
+                        date: dateString,
+                        time: timeString,
+                        items: saleItems,
+                        total: total,
+                        dayOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek]
+                    });
+                }
+            }
+            
+            return sampleSales.sort((a, b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time));
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Generate fresh random data each time
+            sales = generateRandomSalesData();
+            updateDashboard();
+            renderWeeklyChart();
+            updateProductAnalysis();
+            updateTimeAnalysis();
+        });
+
+        // Tab navigation
+        function showTab(tabName) {
+            // Update active tab
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.closest('.nav-tab').classList.add('active');
+
+            // Show content section
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(tabName + '-section').classList.add('active');
+
+            activeTab = tabName;
+
+            // Update specific sections
+            if (tabName === 'daily') {
+                updateDashboard();
+                renderWeeklyChart();
+            } else if (tabName === 'products') {
+                updateProductAnalysis();
+            } else if (tabName === 'time') {
+                updateTimeAnalysis();
+            } else if (tabName === 'microloans') {
+                updateMicroloansSection();
+            }
+        }
+
+        // Analytics Functions
+        function getDailySales(selectedDate = null) {
+            const today = new Date();
+            const dateString = selectedDate || today.toISOString().split('T')[0];
+            return sales.filter(sale => sale.date === dateString);
+        }
+
+        function getWeeklySales() {
+            const today = new Date();
+            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            return sales.filter(sale => new Date(sale.date) >= weekAgo);
+        }
+
+        function getTotalSales(period = 'today') {
+            let filteredSales = sales;
+            
+            if (period === 'today') {
+                const today = new Date().toISOString().split('T')[0];
+                filteredSales = sales.filter(sale => sale.date === today);
+            } else if (period === 'week') {
+                filteredSales = getWeeklySales();
+            }
+            
+            return filteredSales.reduce((total, sale) => total + sale.total, 0);
+        }
+
+        function getLast7DaysAnalysis() {
+            const last7Days = [];
+            const today = new Date();
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(today.getDate() - i);
+                const dateString = date.toISOString().split('T')[0];
+                const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+                
+                const daySales = sales.filter(sale => sale.date === dateString);
+                const revenue = daySales.reduce((sum, sale) => sum + sale.total, 0);
+                
+                last7Days.push({
+                    date: dateString,
+                    day: dayName,
+                    sales: daySales.length,
+                    revenue: revenue
+                });
+            }
+            
+            return last7Days;
+        }
+
+        function getProductAnalysis() {
+            const productStats = {};
+            
+            sales.forEach(sale => {
+                sale.items.forEach(item => {
+                    if (!productStats[item.name]) {
+                        productStats[item.name] = { quantity: 0, revenue: 0 };
+                    }
+                    productStats[item.name].quantity += item.quantity;
+                    productStats[item.name].revenue += item.quantity * item.price;
+                });
+            });
+
+            return Object.entries(productStats).map(([name, stats]) => ({
+                name,
+                quantity: stats.quantity,
+                revenue: stats.revenue
+            })).sort((a, b) => b.revenue - a.revenue);
+        }
+
+        function getHourlyAnalysis() {
+            const hourlyStats = {};
+            
+            sales.forEach(sale => {
+                const hour = parseInt(sale.time.split(':')[0]);
+                if (!hourlyStats[hour]) {
+                    hourlyStats[hour] = { sales: 0, revenue: 0, customers: 0 };
+                }
+                hourlyStats[hour].sales += 1;
+                hourlyStats[hour].revenue += sale.total;
+                hourlyStats[hour].customers += 1;
+            });
+
+            return Object.entries(hourlyStats).map(([hour, stats]) => ({
+                hour: parseInt(hour),
+                sales: stats.sales,
+                revenue: stats.revenue,
+                customers: stats.customers
+            })).sort((a, b) => a.hour - b.hour);
+        }
+
+        function getTimeRangeAnalysis() {
+            const timeRanges = {
+                'Early Morning (6-9 AM)': { start: 6, end: 9, sales: 0, revenue: 0, customers: 0 },
+                'Morning (9-12 PM)': { start: 9, end: 12, sales: 0, revenue: 0, customers: 0 },
+                'Lunch (12-3 PM)': { start: 12, end: 15, sales: 0, revenue: 0, customers: 0 },
+                'Afternoon (3-6 PM)': { start: 15, end: 18, sales: 0, revenue: 0, customers: 0 },
+                'Evening (6-9 PM)': { start: 18, end: 21, sales: 0, revenue: 0, customers: 0 },
+                'Night (9-12 AM)': { start: 21, end: 24, sales: 0, revenue: 0, customers: 0 }
+            };
+
+            sales.forEach(sale => {
+                const hour = parseInt(sale.time.split(':')[0]);
+                
+                Object.entries(timeRanges).forEach(([rangeName, range]) => {
+                    if (hour >= range.start && hour < range.end) {
+                        timeRanges[rangeName].sales += 1;
+                        timeRanges[rangeName].revenue += sale.total;
+                        timeRanges[rangeName].customers += 1;
+                    }
+                });
+            });
+
+            return Object.entries(timeRanges).map(([name, stats]) => ({
+                timeRange: name,
+                sales: stats.sales,
+                revenue: stats.revenue,
+                customers: stats.customers,
+                avgSaleValue: stats.sales > 0 ? stats.revenue / stats.sales : 0
+            })).sort((a, b) => b.customers - a.customers);
+        }
+
+        function getDailyAnalysis() {
+            const dailyStats = {};
+            
+            sales.forEach(sale => {
+                const date = sale.date;
+                if (!dailyStats[date]) {
+                    dailyStats[date] = { sales: 0, revenue: 0, customers: 0 };
+                }
+                dailyStats[date].sales += 1;
+                dailyStats[date].revenue += sale.total;
+                dailyStats[date].customers += 1;
+            });
+
+            return Object.entries(dailyStats).map(([date, stats]) => ({
+                date: date,
+                dayNumber: new Date(date).getDate(),
+                sales: stats.sales,
+                revenue: stats.revenue,
+                customers: stats.customers
+            })).sort((a, b) => new Date(a.date) - new Date(b.date));
+        }
+
+        function getDailyRangeAnalysis() {
+            const dailyRanges = {
+                'Week 1 (Days 1-7)': { start: 1, end: 7, sales: 0, revenue: 0, customers: 0 },
+                'Week 2 (Days 8-14)': { start: 8, end: 14, sales: 0, revenue: 0, customers: 0 },
+                'Week 3 (Days 15-21)': { start: 15, end: 21, sales: 0, revenue: 0, customers: 0 },
+                'Week 4 (Days 22-30)': { start: 22, end: 30, sales: 0, revenue: 0, customers: 0 }
+            };
+
+            const dailyData = getDailyAnalysis();
+            dailyData.forEach(day => {
+                Object.entries(dailyRanges).forEach(([rangeName, range]) => {
+                    if (day.dayNumber >= range.start && day.dayNumber <= range.end) {
+                        dailyRanges[rangeName].sales += day.sales;
+                        dailyRanges[rangeName].revenue += day.revenue;
+                        dailyRanges[rangeName].customers += day.customers;
+                    }
+                });
+            });
+
+            return Object.entries(dailyRanges).map(([name, stats]) => ({
+                dayRange: name,
+                sales: stats.sales,
+                revenue: stats.revenue,
+                customers: stats.customers,
+                avgSaleValue: stats.sales > 0 ? stats.revenue / stats.sales : 0
+            })).sort((a, b) => b.customers - a.customers);
+        }
+
+        // Dashboard Updates
+        function updateDashboard() {
+            // Use total database data instead of just today
+            const totalSales = sales.length;
+            const totalRevenue = sales.reduce((sum, sale) => sum + sale.total, 0);
+            const avgSale = totalSales > 0 ? totalRevenue / totalSales : 0;
+            const weekRevenue = getTotalSales('week');
+
+            document.getElementById('todaySales').textContent = totalSales;
+            document.getElementById('todayRevenue').textContent = `RM ${totalRevenue.toFixed(2)}`;
+            document.getElementById('avgSale').textContent = `RM ${avgSale.toFixed(2)}`;
+            document.getElementById('weekRevenue').textContent = `RM ${weekRevenue.toFixed(2)}`;
+        }
+
+        function updateDailyReport() {
+            updateDashboard();
+            
+            // Weekly chart will be rendered separately
+            renderWeeklyChart();
+        }
+
+        function updateProductAnalysis() {
+            const productData = getProductAnalysis();
+            
+            // Update product stats table
+            const tableBody = document.getElementById('productStatsTable');
+            tableBody.innerHTML = productData.map(product => `
+                <tr>
+                    <td>${product.name}</td>
+                    <td>${product.quantity}</td>
+                    <td>RM ${product.revenue.toFixed(2)}</td>
+                    <td>RM ${(product.revenue / product.quantity).toFixed(2)}</td>
+                </tr>
+            `).join('');
+
+            renderProductCharts();
+        }
+
+        function updateTimeAnalysis() {
+            const hourlyData = getHourlyAnalysis();
+            const timeRangeData = getTimeRangeAnalysis();
+            
+            // Find peak insights
+            const peakHour = hourlyData.reduce((max, current) => 
+                current.customers > max.customers ? current : max, 
+                { hour: 0, customers: 0 }
+            );
+            
+            const peakDayRange = timeRangeData.reduce((max, current) => 
+                current.customers > max.customers ? current : max,
+                { timeRange: 'None', customers: 0 }
+            );
+            
+            // Count rush hours (hours with 10+ customers)
+            const rushHours = hourlyData.filter(h => h.customers >= 10).length;
+            document.getElementById('rushHours').textContent = rushHours;
+            
+            // Update recent sales table
+            const recentSales = sales.slice(-10).reverse(); // Last 10 sales
+            const tableBody = document.getElementById('recentSalesTable');
+            tableBody.innerHTML = recentSales.map(sale => `
+                <tr>
+                    <td>${sale.date} ${sale.time}</td>
+                    <td>${sale.items.map(item => `${item.name} (${item.quantity})`).join(', ')}</td>
+                    <td>RM ${sale.total.toFixed(2)}</td>
+                </tr>
+            `).join('');
+            
+            // Main visualization will update peak hour and other data
+            renderTimeVisual();
+            renderBusinessInsights();
+        }
+
+        function renderTimeVisual() {
+            const hourlyData = getHourlyAnalysis();
+            const container = document.getElementById('timeVisual');
+            
+            container.innerHTML = '';
+            
+            // Use actual hourly data from sales database
+            const actualMaxCustomers = Math.max(...hourlyData.map(h => h.customers), 1);
+            
+            // Create bars for each hour (6-22)
+            for (let hour = 6; hour <= 22; hour++) {
+                const data = hourlyData.find(h => h.hour === hour);
+                const customers = data ? data.customers : 0;
+                const revenue = data ? data.revenue : 0;
+                
+                // Calculate height based on 1 millimeter per customer (4 pixels per mm)
+                // Each customer = 4 pixels (1 millimeter on screen)
+                // Base height of 4px for visual minimum, then add 4px per customer
+                const heightInPixels = 4 + (customers * 4);
+                const isPeak = customers === actualMaxCustomers && customers > 0;
+                
+                // Format hour label properly
+                const hourLabel = hour <= 12 ? `${hour} AM` : `${hour - 12} PM`;
+                
+                const barDiv = document.createElement('div');
+                barDiv.className = 'time-bar';
+                barDiv.innerHTML = `
+                    <div class="time-bar-fill ${customers > 0 ? 'has-data' : ''} ${isPeak ? 'peak' : ''}" 
+                         style="height: ${heightInPixels}px"></div>
+                    <div class="time-label">${hour}</div>
+                    <div class="time-tooltip">
+                        <div>${hourLabel} ${isPeak ? '(Peak)' : ''}</div>
+                        <div>${customers} customers</div>
+                        <div>RM ${revenue.toFixed(2)}</div>
+                    </div>
+                `;
+                
+                container.appendChild(barDiv);
+            }
+            
+            // Update the peak hour display based on actual data
+            const peakData = hourlyData.reduce((max, current) => 
+                current.customers > max.customers ? current : max, 
+                { hour: 0, customers: 0 }
+            );
+            
+            const peakHourLabel = peakData.hour <= 12 ? `${peakData.hour} AM` : `${peakData.hour - 12} PM`;
+            document.getElementById('peakHour').textContent = peakData.hour ? peakHourLabel : '--';
+            document.getElementById('totalCustomers').textContent = hourlyData.reduce((sum, h) => sum + h.customers, 0);
+            
+            // Update time range data to match actual sales
+            updateTimeRangeWithActualData();
+        }
+
+        function updateTimeRangeWithActualData() {
+            const timeRangeData = getTimeRangeAnalysis();
+            const container = document.getElementById('timeRangeGrid');
+            const maxCustomers = Math.max(...timeRangeData.map(r => r.customers), 1);
+            
+            container.innerHTML = timeRangeData.map(range => `
+                <div class="time-range-item ${range.customers === maxCustomers && range.customers > 0 ? 'peak' : ''}">
+                    <div class="time-range-name">${range.timeRange}</div>
+                    <div class="time-range-customers">${range.customers}</div>
+                    <div class="time-range-revenue">RM ${range.revenue.toFixed(2)}</div>
+                </div>
+            `).join('');
+
+            // Update business insights with actual data
+            const peakRange = timeRangeData.reduce((max, current) => 
+                current.customers > max.customers ? current : max,
+                { timeRange: 'None', customers: 0 }
+            );
+            
+            document.getElementById('busiestPeriod').textContent = peakRange.timeRange.split(' ')[0];
+        }
+
+        function renderBusinessInsights() {
+            const hourlyData = getHourlyAnalysis();
+            const timeRangeData = getTimeRangeAnalysis();
+            const productData = getProductAnalysis();
+            const container = document.getElementById('businessInsights');
+            
+            const peakHour = hourlyData.reduce((max, current) => 
+                current.customers > max.customers ? current : max, 
+                { hour: 0, customers: 0 }
+            );
+            
+            const peakTimeRange = timeRangeData.reduce((max, current) => 
+                current.customers > max.customers ? current : max,
+                { timeRange: 'None', customers: 0 }
+            );
+
+            const topProduct = productData[0] || { name: 'None', quantity: 0 };
+            const totalSalesCount = sales.length;
+            const totalRevenue = sales.reduce((sum, sale) => sum + sale.total, 0);
+            
+            const peakHourLabel = peakHour.hour <= 12 ? `${peakHour.hour} AM` : `${peakHour.hour - 12} PM`;
+            
+            container.innerHTML = `
+                <div class="insight-card success">
+                    <div class="insight-title">🎯 Peak Performance</div>
+                    <div class="insight-text">Busiest hour: ${peakHour.hour ? peakHourLabel : 'None'} with ${peakHour.customers} customers generating RM ${peakHour.revenue ? peakHour.revenue.toFixed(2) : '0.00'}</div>
+                </div>
+                
+                <div class="insight-card warning">
+                    <div class="insight-title">📈 Staffing Recommendation</div>
+                    <div class="insight-text">Ensure full staff during ${peakTimeRange.timeRange.toLowerCase()} - your peak period with ${peakTimeRange.customers} customers</div>
+                </div>
+                
+                <div class="insight-card info">
+                    <div class="insight-title">🍽️ Inventory Planning</div>
+                    <div class="insight-text">Stock up on "${topProduct.name}" - your best seller with ${topProduct.quantity} units sold (RM ${topProduct.revenue ? topProduct.revenue.toFixed(2) : '0.00'} revenue)</div>
+                </div>
+
+                <div class="insight-card success">
+                    <div class="insight-title">💰 Overall Performance</div>
+                    <div class="insight-text">Total: ${totalSalesCount} sales generating RM ${totalRevenue.toFixed(2)} across all time periods</div>
+                </div>
+            `;
+        }
+
+        // Chart Rendering Functions
+        function renderWeeklyChart() {
+            const ctx = document.getElementById('weeklyChart').getContext('2d');
+            const data = getLast7DaysAnalysis();
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d.day),
+                    datasets: [{
+                        label: 'Sales',
+                        data: data.map(d => d.sales),
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Revenue',
+                        data: data.map(d => d.revenue),
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderProductCharts() {
+            const productData = getProductAnalysis();
+            
+            // Revenue Chart
+            const revenueCtx = document.getElementById('productRevenueChart').getContext('2d');
+            new Chart(revenueCtx, {
+                type: 'bar',
+                data: {
+                    labels: productData.map(p => p.name),
+                    datasets: [{
+                        label: 'Revenue (RM)',
+                        data: productData.map(p => p.revenue),
+                        backgroundColor: '#2563eb'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                maxRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Quantity Chart
+            const quantityCtx = document.getElementById('productQuantityChart').getContext('2d');
+            new Chart(quantityCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: productData.map(p => p.name),
+                    datasets: [{
+                        data: productData.map(p => p.quantity),
+                        backgroundColor: [
+                            '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8',
+                            '#82ca9d', '#ffc658', '#ff7300', '#8dd1e1', '#d084d0'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Microloans Functions
+        function updateMicroloansSection() {
+            calculateScalabilityScore();
+            renderMicroloansGrid();
+            renderGrowthProjectionChart();
+        }
+
+        function calculateScalabilityScore() {
+            // Calculate score based on sales performance
+            const weeklySales = getWeeklySales();
+            const totalRevenue = weeklySales.reduce((sum, sale) => sum + sale.total, 0);
+            const avgDailySales = weeklySales.length / 7;
+            
+            let score = 50; // Base score
+            
+            // Revenue growth factor
+            if (totalRevenue > 2000) score += 20;
+            else if (totalRevenue > 1000) score += 15;
+            else if (totalRevenue > 500) score += 10;
+            
+            // Sales consistency factor
+            if (avgDailySales > 15) score += 15;
+            else if (avgDailySales > 10) score += 10;
+            else if (avgDailySales > 5) score += 5;
+            
+            // Product diversity factor
+            const productData = getProductAnalysis();
+            if (productData.length > 8) score += 10;
+            else if (productData.length > 5) score += 5;
+            
+            score = Math.min(score, 95); // Cap at 95
+            
+            document.getElementById('scalabilityScore').textContent = score;
+            
+            // Update score label
+            const scoreLabel = document.querySelector('.score-label');
+            if (score >= 80) {
+                scoreLabel.textContent = 'High Potential';
+                document.querySelector('.score-circle').style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            } else if (score >= 60) {
+                scoreLabel.textContent = 'Good Potential';
+                document.querySelector('.score-circle').style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+            } else {
+                scoreLabel.textContent = 'Moderate Potential';
+                document.querySelector('.score-circle').style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+            }
+        }
+
+        function renderMicroloansGrid() {
+            const grid = document.getElementById('microloansGrid');
+            grid.innerHTML = '';
+            
+            microloans.forEach(loan => {
+                const card = document.createElement('div');
+                card.className = 'microloan-card';
+                card.innerHTML = `
+                    <div class="microloan-header">
+                        <div class="microloan-type">${loan.type}</div>
+                        <div class="microloan-amount">${loan.amount}</div>
+                    </div>
+                    <div class="microloan-details">
+                        <div class="microloan-detail">
+                            <span class="label">Interest Rate:</span>
+                            <span class="value">${loan.interestRate}</span>
+                        </div>
+                        <div class="microloan-detail">
+                            <span class="label">Term:</span>
+                            <span class="value">${loan.term}</span>
+                        </div>
+                        <div class="microloan-detail">
+                            <span class="label">Monthly Payment:</span>
+                            <span class="value">${loan.monthlyPayment}</span>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 20px; color: #6b7280; font-size: 0.875rem;">${loan.description}</p>
+                    <div class="microloan-actions">
+                        <button class="btn-apply" onclick="applyForMicroloan(${loan.id})">Apply Now</button>
+                        <button class="btn-learn" onclick="showMicroloanDetails(${loan.id})">Learn More</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderGrowthProjectionChart() {
+            const ctx = document.getElementById('growthProjectionChart').getContext('2d');
+            
+            // Generate projection data
+            const months = ['Current', 'Month 3', 'Month 6', 'Month 9', 'Month 12'];
+            const currentRevenue = getTotalSales('week') * 4; // Monthly estimate
+            const projectedRevenue = [
+                currentRevenue,
+                currentRevenue * 1.15,
+                currentRevenue * 1.30,
+                currentRevenue * 1.45,
+                currentRevenue * 1.60
+            ];
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Projected Revenue (RM)',
+                        data: projectedRevenue,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'RM ' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function showMicroloanDetails(loanId) {
+            const loan = microloans.find(l => l.id === loanId);
+            if (!loan) return;
+            
+            selectedMicroloan = loan;
+            
+            document.getElementById('modalTitle').textContent = loan.type;
+            document.getElementById('modalBody').innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #1f2937; margin-bottom: 10px;">Loan Details</h4>
+                    <div style="background: #f9fafb; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div><strong>Amount:</strong> ${loan.amount}</div>
+                            <div><strong>Interest Rate:</strong> ${loan.interestRate}</div>
+                            <div><strong>Term:</strong> ${loan.term}</div>
+                            <div><strong>Monthly Payment:</strong> ${loan.monthlyPayment}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #1f2937; margin-bottom: 10px;">Description</h4>
+                    <p style="color: #6b7280; line-height: 1.6;">${loan.details}</p>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #1f2937; margin-bottom: 10px;">Requirements</h4>
+                    <ul style="color: #6b7280; padding-left: 20px;">
+                        ${loan.requirements.map(req => `<li>${req}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 style="color: #1f2937; margin-bottom: 10px;">Benefits</h4>
+                    <ul style="color: #6b7280; padding-left: 20px;">
+                        ${loan.benefits.map(benefit => `<li>${benefit}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('microloanModal').style.display = 'flex';
+        }
+
+        function closeMicroloanModal() {
+            document.getElementById('microloanModal').style.display = 'none';
+            selectedMicroloan = null;
+        }
+
+        function applyForMicroloan(loanId = null) {
+            const loan = loanId ? microloans.find(l => l.id === loanId) : selectedMicroloan;
+            if (loan) {
+                // Store selected loan data for the application form
+                localStorage.setItem('selectedMicroloan', JSON.stringify(loan));
+                window.location.href = 'microloan-application.html';
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('microloanModal');
+            if (event.target === modal) {
+                closeMicroloanModal();
+            }
+        });
+    </script>
+</body>
+</html> 

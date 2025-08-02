@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Donation Success - MSME Digital Financial Platform">
+    <meta name="theme-color" content="#2563eb">
+    <title>Donation Success - MSME Digital Finance Platform</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="donate/main.css">
+    <link rel="stylesheet" href="donate/mobile.css">
+    <link rel="stylesheet" href="donate/accessibility.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="donation-success">
+    <div class="container">
+        <div class="confirmation-content">
+            <div class="success-animation">
+                <div class="success-icon">❤️</div>
+            </div>
+            <h2>Donation Successful!</h2>
+            
+            <div class="donation-message">
+                <p class="thank-you">💝 Thank You, <span id="donor-name">Friend</span>!</p>
+                <p class="subtitle">Your generosity is changing lives.</p>
+                
+                <div class="donation-details">
+                    <p class="amount">🎁 RM <span id="confirm-amount">50.00</span> donated to <span id="confirm-ngo">SPCA Malaysia</span></p>
+                    <p class="date">📅 <span id="confirm-date">7/18/2025, 4:20:48 PM</span></p>
+                </div>
+                
+                <p class="receipt-note">✨ Your tax receipt has been saved.</p>
+            </div>
+
+            <div class="confirmation-actions">
+                <div class="button-container">
+                    <button class="btn-primary" onclick="goToDashboard()">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="data/mock-data.js"></script>
+    <script src="donate/accessibility.js"></script>
+    <script src="donate/donation-success.js"></script>
+</body>
+</html> 

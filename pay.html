@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Payment Flow - MSME Digital Financial Platform">
+    <meta name="theme-color" content="#2563eb">
+    <title>Payment - MSME Digital Finance Platform</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="pay/main.css">
+    <link rel="stylesheet" href="pay/mobile.css">
+    <link rel="stylesheet" href="pay/accessibility.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Screen 1: Frequent Recipients -->
+    <div id="recipients-screen" class="screen active">
+        <div class="screen-header">
+            <button class="back-btn" onclick="history.back()" aria-label="Go back">
+                <span class="icon">←</span>
+            </button>
+            <h1>Pay</h1>
+            <button class="help-btn" aria-label="Get help">
+                <span class="icon">?</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="recipient-search" placeholder="Search recipients..." aria-label="Search recipients">
+            </div>
+
+            <!-- Frequent Recipients Grid -->
+            <div class="recipients-grid">
+                <!-- Add New Recipient Card -->
+                <button class="recipient-card add-new" onclick="showAddRecipientModal()">
+                    <div class="recipient-icon">+</div>
+                    <h3>Add New Recipient</h3>
+                    <p>Create new payment</p>
+                </button>
+                <!-- Recipients will be populated by JavaScript -->
+            </div>
+
+            <!-- Search Results -->
+            <div class="search-results" style="display: none;">
+                <h3>Search Results</h3>
+                <div class="search-results-list">
+                    <!-- Search results will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New Recipient Modal -->
+    <div id="add-recipient-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Recipient</h2>
+                <button class="close-btn" onclick="closeAddRecipientModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="add-recipient-form" onsubmit="handleAddRecipient(event)">
+                    <div class="form-group">
+                        <label for="recipient-type">Recipient Type</label>
+                        <select id="recipient-type" required onchange="toggleBusinessFields()">
+                            <option value="individual">Individual</option>
+                            <option value="business">Business</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipient-name">Name</label>
+                        <input type="text" id="recipient-name" required placeholder="Enter recipient name">
+                    </div>
+
+                    <div class="form-group business-field" style="display: none;">
+                        <label for="business-registration">Business Registration No.</label>
+                        <input type="text" id="business-registration" placeholder="Enter business registration number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bank-name">Bank Name</label>
+                        <select id="bank-name" required>
+                            <option value="">Select Bank</option>
+                            <option value="maybank">Maybank</option>
+                            <option value="cimb">CIMB Bank</option>
+                            <option value="public">Public Bank</option>
+                            <option value="rhb">RHB Bank</option>
+                            <option value="hongleong">Hong Leong Bank</option>
+                            <option value="ambank">AmBank</option>
+                            <option value="uob">UOB Bank</option>
+                            <option value="ocbc">OCBC Bank</option>
+                            <option value="bsn">Bank Simpanan Nasional</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="account-number">Account Number</label>
+                        <input type="text" id="account-number" required placeholder="Enter account number"
+                               pattern="[0-9-]+" title="Please enter numbers only">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reference">Reference (Optional)</label>
+                        <input type="text" id="reference" placeholder="Add a reference note">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeAddRecipientModal()">Cancel</button>
+                        <button type="submit" class="btn-primary">Add & Proceed</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 2: Account Selection -->
+    <div id="account-screen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" onclick="goToScreen('recipients-screen')" aria-label="Go back">
+                <span class="icon">←</span>
+            </button>
+            <h1>Select Account</h1>
+            <button class="help-btn" aria-label="Get help">
+                <span class="icon">?</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <div class="accounts-list">
+                <!-- Accounts will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 3: Amount Customization -->
+    <div id="amount-screen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" onclick="goToScreen('account-screen')" aria-label="Go back">
+                <span class="icon">←</span>
+            </button>
+            <h1>Enter Amount</h1>
+            <button class="help-btn" aria-label="Get help">
+                <span class="icon">?</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <div class="amount-entry">
+                <div class="amount-display">
+                    <span class="currency">RM</span>
+                    <input type="text" id="payment-amount" pattern="[0-9]*\.?[0-9]*" inputmode="decimal" placeholder="0.00">
+                </div>
+                
+                <div class="quick-amounts">
+                    <button class="quick-amount" data-amount="10">RM 10</button>
+                    <button class="quick-amount" data-amount="50">RM 50</button>
+                    <button class="quick-amount" data-amount="100">RM 100</button>
+                    <button class="quick-amount" data-amount="500">RM 500</button>
+                </div>
+
+                <div class="amount-info">
+                    <div class="recipient-preview">
+                        <span>To:</span>
+                        <strong id="amount-recipient-name">Loading...</strong>
+                    </div>
+                    <div class="account-preview">
+                        <span>From:</span>
+                        <strong id="amount-account-name">Loading...</strong>
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="confirm-amount-btn" disabled>Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 4: Security Verification -->
+    <div id="security-verification-screen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" onclick="goToScreen('amount-screen')" aria-label="Go back">
+                <span class="icon">←</span>
+            </button>
+            <h1>Security Verification</h1>
+            <button class="help-btn" aria-label="Get help">
+                <span class="icon">?</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <!-- Content will be dynamically populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Screen 5: QR Scanner -->
+    <div id="qr-screen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" onclick="goToScreen('security-verification-screen')" aria-label="Go back">
+                <span class="icon">←</span>
+            </button>
+            <h1>Scan QR Code</h1>
+            <button class="help-btn" aria-label="Get help">
+                <span class="icon">?</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <div class="qr-container">
+                <div class="qr-frame">
+                    <div class="qr-overlay"></div>
+                    <video id="qr-video" playsinline></video>
+                </div>
+                <button class="btn-primary" id="scan-qr">Scan QR Code</button>
+                <button class="btn-secondary" id="manual-entry">Enter Details Manually</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 6: Bank Interface -->
+    <div id="bank-screen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" onclick="goToScreen('qr-screen')" aria-label="Go back">
+                <span class="icon">←</span>
+            </button>
+            <h1>Confirm Payment</h1>
+            <button class="help-btn" aria-label="Get help">
+                <span class="icon">?</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <div class="bank-interface">
+                <div class="payment-details">
+                    <div class="recipient-info">
+                        <h3>Recipient</h3>
+                        <p id="bank-recipient-name">Loading...</p>
+                    </div>
+                    <div class="amount-info">
+                        <h3>Amount</h3>
+                        <p id="bank-payment-amount">Loading...</p>
+                    </div>
+                    <div class="account-info">
+                        <h3>From Account</h3>
+                        <p id="bank-source-account">Loading...</p>
+                    </div>
+                </div>
+
+                <div class="security-section">
+                    <div class="pin-entry">
+                        <h3>Enter PIN</h3>
+                        <div class="pin-dots">
+                            <span class="pin-dot"></span>
+                            <span class="pin-dot"></span>
+                            <span class="pin-dot"></span>
+                            <span class="pin-dot"></span>
+                            <span class="pin-dot"></span>
+                            <span class="pin-dot"></span>
+                        </div>
+                        <div class="pin-pad">
+                            <!-- PIN pad will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    <button class="btn-secondary" id="use-biometric">
+                        <span class="icon">👆</span>
+                        Use Fingerprint
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 7: Confirmation -->
+    <div id="confirmation-screen" class="screen">
+        <div class="container">
+            <div class="confirmation-content">
+                <div class="success-animation">
+                    <div class="success-icon">✓</div>
+                </div>
+                <h2>Payment Successful!</h2>
+                <div class="transaction-details">
+                    <div class="detail-row">
+                        <span>Amount</span>
+                        <strong id="confirm-amount">Loading...</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>To</span>
+                        <strong id="confirm-recipient">Loading...</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Reference</span>
+                        <strong id="confirm-reference">Loading...</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Date</span>
+                        <strong id="confirm-date">Loading...</strong>
+                    </div>
+                </div>
+
+                <div class="category-tagging">
+                    <h3>Tag Transaction</h3>
+                    <div class="category-buttons">
+                        <!-- Categories will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="confirmation-actions">
+                    <button class="btn-primary" onclick="saveReceipt()">Save Receipt</button>
+                    <button class="btn-secondary" onclick="goToDashboard()">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Merchant Modal -->
+    <div id="report-merchant-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Report Suspicious Merchant</h2>
+                <button class="close-btn" onclick="closeReportModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="report-merchant-form" onsubmit="submitReportForm(event)">
+                    <div class="form-group">
+                        <label for="report-reason">Reason for Report</label>
+                        <select id="report-reason" required>
+                            <option value="">Select a reason</option>
+                            <option value="suspicious_activity">Suspicious Activity</option>
+                            <option value="scam_attempt">Scam Attempt</option>
+                            <option value="fake_merchant">Fake Merchant</option>
+                            <option value="unauthorized_charges">Unauthorized Charges</option>
+                            <option value="phishing_attempt">Phishing Attempt</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="report-description">Description</label>
+                        <textarea id="report-description" rows="4" required 
+                                  placeholder="Please provide details about why you're reporting this merchant..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="report-evidence">Upload Evidence (Optional)</label>
+                        <div class="file-upload-container">
+                            <input type="file" id="report-evidence" accept="image/*,.pdf" multiple>
+                            <div class="file-upload-info">
+                                <p>Supported formats: Images (JPG, PNG, GIF) and PDF files</p>
+                                <p>Maximum file size: 10MB per file</p>
+                            </div>
+                        </div>
+                        <div id="file-preview" class="file-preview"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="report-contact">Contact Information (Optional)</label>
+                        <input type="email" id="report-contact" placeholder="Your email for follow-up">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeReportModal()">Cancel</button>
+                        <button type="submit" class="btn-primary">Submit Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="data/mock-data.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="pay/payment.js"></script>
+</body>
+</html> 

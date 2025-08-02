@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MSME Digital Financial Platform for Malaysia">
+    <meta name="theme-color" content="#2563eb">
+    <title>MSME Digital Finance Platform</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/mobile.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="screen active">
+        <div class="loading-container">
+            <div class="logo">
+                <h1>MSME Finance</h1>
+                <div class="loading-spinner"></div>
+            </div>
+            <p>Loading your financial platform...</p>
+        </div>
+    </div>
+
+    <!-- Language Selection Screen -->
+    <div id="language-screen" class="screen">
+        <div class="container">
+            <div class="welcome-header">
+                <h1>Welcome to MSME Finance</h1>
+                <p>Choose your preferred language</p>
+            </div>
+            
+            <div class="language-options">
+                <button class="language-btn" data-lang="en">
+                    <span class="lang-flag">🇬🇧</span>
+                    <span>English</span>
+                </button>
+                <button class="language-btn" data-lang="my">
+                    <span class="lang-flag">🇲🇾</span>
+                    <span>Bahasa Malaysia</span>
+                </button>
+                <button class="language-btn" data-lang="zh">
+                    <span class="lang-flag">🇨🇳</span>
+                    <span>中文</span>
+                </button>
+                <button class="language-btn" data-lang="ta">
+                    <span class="lang-flag">🇮🇳</span>
+                    <span>தமிழ்</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Type Selection Screen -->
+    <div id="user-type-screen" class="screen">
+        <div class="container">
+            <div class="header">
+                <h1 data-translate="userTypeTitle">Choose Your Account Type</h1>
+                <p data-translate="userTypeSubtitle">Select the option that best describes you</p>
+            </div>
+            
+            <div class="user-type-options">
+                <button class="user-type-btn" data-type="personal">
+                    <div class="icon">👤</div>
+                    <h3 data-translate="personalUser">Personal User</h3>
+                    <p data-translate="personalUserDesc">Manage your personal finances</p>
+                </button>
+                
+                <button class="user-type-btn" data-type="business">
+                    <div class="icon">🏢</div>
+                    <h3 data-translate="businessUser">Business User</h3>
+                    <p data-translate="businessUserDesc">Manage your MSME business</p>
+                </button>
+            </div>
+            
+            <div class="demo-notice">
+                <p data-translate="demoNotice">🔄 This is a prototype. All data is simulated.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen">
+        <div class="container">
+            <div class="login-header">
+                <h1 data-translate="welcomeBack">Welcome Back</h1>
+                <p data-translate="loginSubtitle">Sign in to your account</p>
+            </div>
+            
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="email" data-translate="email">Email</label>
+                    <input type="email" id="email" name="email" value="demo@msme.my" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" data-translate="password">Password</label>
+                    <input type="password" id="password" name="password" value="demo123" required>
+                    <button type="button" class="password-toggle" aria-label="Toggle password visibility">👁️</button>
+                </div>
+                
+                <button type="submit" class="btn-primary" data-translate="signIn">Sign In</button>
+                
+                <div class="demo-credentials">
+                    <p data-translate="demoCredentials">Demo credentials: demo@msme.my / demo123</p>
+                </div>
+                
+                <button type="button" class="btn-secondary" id="skip-auth" data-translate="skipAuth">Skip Authentication (Demo)</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Onboarding Screens -->
+    <div id="onboarding-screen" class="screen">
+        <div class="container">
+            <!-- Progress Indicator -->
+            <div class="progress-indicator">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="onboarding-progress"></div>
+                </div>
+                <div class="progress-steps">
+                    <span class="step active" data-step="1">1</span>
+                    <span class="step" data-step="2">2</span>
+                    <span class="step" data-step="3">3</span>
+                </div>
+            </div>
+
+            <!-- Step 1: Business Information -->
+            <div id="onboarding-step-1" class="onboarding-step active">
+                <h2 data-translate="businessInfo">Business Information</h2>
+                
+                <form class="onboarding-form">
+                    <div class="form-group">
+                        <label for="business-name" data-translate="businessName">Business Name</label>
+                        <input type="text" id="business-name" name="businessName" placeholder="Ahmad Food Truck Sdn Bhd" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="business-type" data-translate="businessType">Business Type</label>
+                        <select id="business-type" name="businessType" required>
+                            <option value="">Select business type</option>
+                            <option value="retail">Retail</option>
+                            <option value="food">Food & Beverage</option>
+                            <option value="services">Services</option>
+                            <option value="manufacturing">Manufacturing</option>
+                            <option value="trading">Trading</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="registration-number" data-translate="registrationNumber">Registration Number</label>
+                        <input type="text" id="registration-number" name="registrationNumber" placeholder="123456-A">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sst-number" data-translate="sstNumber">SST Number (Optional)</label>
+                        <input type="text" id="sst-number" name="sstNumber" placeholder="A01-1234-56789012">
+                    </div>
+                </form>
+                
+                <button class="btn-primary" onclick="nextOnboardingStep()">Next</button>
+            </div>
+
+            <!-- Step 2: Bank Selection -->
+            <div id="onboarding-step-2" class="onboarding-step">
+                <h2 data-translate="bankSelection">Select Your Banks</h2>
+                <p data-translate="bankSelectionDesc">Choose the banks you want to connect</p>
+                
+                <div class="bank-options">
+                    <div class="bank-option">
+                        <input type="checkbox" id="maybank" name="banks" value="maybank">
+                        <label for="maybank" class="bank-card">
+                            <div class="bank-logo">🏦</div>
+                            <div class="bank-info">
+                                <h3>Maybank</h3>
+                                <p>Malaysia's largest bank</p>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="bank-option">
+                        <input type="checkbox" id="cimb" name="banks" value="cimb">
+                        <label for="cimb" class="bank-card">
+                            <div class="bank-logo">🏦</div>
+                            <div class="bank-info">
+                                <h3>CIMB Bank</h3>
+                                <p>Digital banking solutions</p>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="bank-option">
+                        <input type="checkbox" id="public-bank" name="banks" value="public-bank">
+                        <label for="public-bank" class="bank-card">
+                            <div class="bank-logo">🏦</div>
+                            <div class="bank-info">
+                                <h3>Public Bank</h3>
+                                <p>Trusted for generations</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="onboarding-actions">
+                    <button class="btn-secondary" onclick="prevOnboardingStep()">Back</button>
+                    <button class="btn-primary" onclick="nextOnboardingStep()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Setup Complete -->
+            <div id="onboarding-step-3" class="onboarding-step">
+                <div class="completion-message">
+                    <div class="success-icon">✅</div>
+                    <h2 data-translate="setupComplete">Setup Complete!</h2>
+                    <p data-translate="setupCompleteDesc">Your MSME financial platform is ready to use</p>
+                </div>
+                
+                <div class="setup-summary">
+                    <h3 data-translate="summary">Summary</h3>
+                    <div class="summary-item">
+                        <span data-translate="businessSetup">Business Setup</span>
+                        <span class="status complete">✓</span>
+                    </div>
+                    <div class="summary-item">
+                        <span data-translate="bankConnections">Bank Connections</span>
+                        <span class="status complete">✓</span>
+                    </div>
+                    <div class="summary-item">
+                        <span data-translate="profileReady">Profile Ready</span>
+                        <span class="status complete">✓</span>
+                    </div>
+                </div>
+                
+                <button class="btn-primary" onclick="completeOnboarding()">Get Started</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard-screen" class="screen">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="user-info">
+                    <h1 id="user-greeting" data-translate="goodMorning">Good Morning</h1>
+                    <p id="business-name-display">Ahmad Food Truck Sdn Bhd</p>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="notification-btn" id="notification-btn" aria-label="Notifications">
+                        🔔
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="settings-btn" id="settings-btn" aria-label="Settings">⚙️</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Account Balance Cards -->
+            <section class="balance-section">
+                <div class="section-header">
+                    <h2 data-translate="accounts">Accounts</h2>
+                    <button class="view-all-btn" data-translate="viewAll">View All</button>
+                </div>
+                
+                <div class="balance-cards" id="balance-cards">
+                    <!-- Dynamic content will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <h2 data-translate="quickActions">Quick Actions</h2>
+                <div class="action-grid">
+                    <button class="action-card" onclick="showScreen('invoice-screen')">
+                        <div class="action-icon">📄</div>
+                        <span data-translate="createInvoice">Create Invoice</span>
+                    </button>
+                    
+                    <button class="action-card" onclick="showScreen('analytics-screen')">
+                        <div class="action-icon">📊</div>
+                        <span data-translate="viewReports">View Reports</span>
+                    </button>
+                    
+                    <button class="action-card" onclick="showScreen('customers-screen')">
+                        <div class="action-icon">👥</div>
+                        <span data-translate="customers">Customers</span>
+                    </button>
+                    
+                    <button class="action-card" onclick="showEsgFeatures()">
+                        <div class="action-icon">🌱</div>
+                        <span data-translate="esgFeatures">ESG Features</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Recent Transactions -->
+            <section class="transactions-section">
+                <div class="section-header">
+                    <h2 data-translate="recentTransactions">Recent Transactions</h2>
+                    <button class="view-all-btn" data-translate="viewAll">View All</button>
+                </div>
+                
+                <div class="transaction-list" id="transaction-list">
+                    <!-- Dynamic content will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Cash Flow Summary -->
+            <section class="cashflow-section">
+                <h2 data-translate="cashFlowSummary">Cash Flow Summary</h2>
+                <div class="cashflow-chart" id="cashflow-chart">
+                    <canvas id="cashflow-canvas"></canvas>
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-screen="dashboard-screen">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label" data-translate="home">Home</span>
+            </button>
+            
+            <button class="nav-item" data-screen="invoice-screen">
+                <span class="nav-icon">📄</span>
+                <span class="nav-label" data-translate="invoices">Invoices</span>
+            </button>
+            
+            <button class="nav-item" data-screen="analytics-screen">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label" data-translate="analytics">Analytics</span>
+            </button>
+            
+            <button class="nav-item" data-screen="settings-screen">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-label" data-translate="settings">Settings</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Invoice Screen -->
+    <div id="invoice-screen" class="screen">
+        <header class="screen-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h1 data-translate="createInvoice">Create Invoice</h1>
+            <button class="help-btn">?</button>
+        </header>
+
+        <main class="invoice-main">
+            <form id="invoice-form" class="invoice-form">
+                <!-- Customer Information -->
+                <section class="form-section">
+                    <h3 data-translate="customerInfo">Customer Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="customer-name" data-translate="customerName">Customer Name</label>
+                        <input type="text" id="customer-name" name="customerName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customer-email" data-translate="customerEmail">Customer Email</label>
+                        <input type="email" id="customer-email" name="customerEmail">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customer-address" data-translate="customerAddress">Customer Address</label>
+                        <textarea id="customer-address" name="customerAddress" rows="3"></textarea>
+                    </div>
+                </section>
+
+                <!-- Invoice Details -->
+                <section class="form-section">
+                    <h3 data-translate="invoiceDetails">Invoice Details</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="invoice-number" data-translate="invoiceNumber">Invoice Number</label>
+                            <input type="text" id="invoice-number" name="invoiceNumber" value="INV-2024-001" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="invoice-date" data-translate="invoiceDate">Invoice Date</label>
+                            <input type="date" id="invoice-date" name="invoiceDate" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="due-date" data-translate="dueDate">Due Date</label>
+                        <input type="date" id="due-date" name="dueDate" required>
+                    </div>
+                </section>
+
+                <!-- Line Items -->
+                <section class="form-section">
+                    <div class="section-header">
+                        <h3 data-translate="lineItems">Line Items</h3>
+                        <button type="button" class="btn-secondary" onclick="addLineItem()">+ Add Item</button>
+                    </div>
+                    
+                    <div id="line-items" class="line-items">
+                        <!-- Dynamic line items will be added here -->
+                    </div>
+                </section>
+
+                <!-- Totals -->
+                <section class="form-section">
+                    <div class="invoice-totals">
+                        <div class="total-row">
+                            <span data-translate="subtotal">Subtotal:</span>
+                            <span id="subtotal-amount">RM 0.00</span>
+                        </div>
+                        
+                        <div class="total-row">
+                            <span data-translate="sst">SST (6%):</span>
+                            <span id="sst-amount">RM 0.00</span>
+                        </div>
+                        
+                        <div class="total-row total">
+                            <span data-translate="total">Total:</span>
+                            <span id="total-amount">RM 0.00</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="saveAsDraft()">Save as Draft</button>
+                    <button type="button" class="btn-primary" onclick="previewInvoice()">Preview</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Analytics Screen -->
+    <div id="analytics-screen" class="screen">
+        <header class="screen-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h1 data-translate="analytics">Analytics</h1>
+            <button class="export-btn">📤</button>
+        </header>
+
+        <main class="analytics-main">
+            <!-- Time Period Selector -->
+            <div class="period-selector">
+                <button class="period-btn active" data-period="week">Week</button>
+                <button class="period-btn" data-period="month">Month</button>
+                <button class="period-btn" data-period="quarter">Quarter</button>
+                <button class="period-btn" data-period="year">Year</button>
+            </div>
+
+            <!-- Key Metrics -->
+            <section class="metrics-section">
+                <div class="metric-card">
+                    <div class="metric-icon">💰</div>
+                    <div class="metric-info">
+                        <h3>RM 45,230</h3>
+                        <p>Total Revenue</p>
+                        <span class="metric-change positive">+12.5%</span>
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon">📄</div>
+                    <div class="metric-info">
+                        <h3>127</h3>
+                        <p>Invoices Sent</p>
+                        <span class="metric-change positive">+8.3%</span>
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon">⏱️</div>
+                    <div class="metric-info">
+                        <h3>15 days</h3>
+                        <p>Avg. Payment Time</p>
+                        <span class="metric-change negative">+2 days</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts -->
+            <section class="charts-section">
+                <div class="chart-container">
+                    <h3>Sales Trend</h3>
+                    <canvas id="sales-chart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <h3>Top Products</h3>
+                    <div id="top-products" class="top-products">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- ESG Metrics -->
+            <section class="esg-section">
+                <h3>🌱 Sustainability Metrics</h3>
+                <div class="esg-metrics">
+                    <div class="esg-card">
+                        <div class="esg-icon">🌍</div>
+                        <div class="esg-info">
+                            <h4>Carbon Footprint</h4>
+                            <p>2.3 kg CO₂ saved</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="esg-card">
+                        <div class="esg-icon">💝</div>
+                        <div class="esg-info">
+                            <h4>Donations</h4>
+                            <p>RM 45.60 donated</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settings-screen" class="screen">
+        <header class="screen-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h1 data-translate="settings">Settings</h1>
+        </header>
+
+        <main class="settings-main">
+            <!-- Profile Section -->
+            <section class="settings-section">
+                <h3 data-translate="profile">Profile</h3>
+                <div class="setting-item">
+                    <span data-translate="businessProfile">Business Profile</span>
+                    <button class="setting-action">Edit</button>
+                </div>
+                <div class="setting-item">
+                    <span data-translate="bankAccounts">Bank Accounts</span>
+                    <button class="setting-action">Manage</button>
+                </div>
+            </section>
+
+            <!-- Accessibility Section -->
+            <section class="settings-section">
+                <h3 data-translate="accessibility">Accessibility</h3>
+                
+                <div class="setting-item">
+                    <span data-translate="elderlyMode">Elderly-Friendly Mode</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="elderly-mode-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <span data-translate="highContrast">High Contrast</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="high-contrast-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <span data-translate="voiceFeedback">Voice Feedback</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="voice-feedback-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <span data-translate="fontSize">Font Size</span>
+                    <select id="font-size-select">
+                        <option value="small">Small</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="large">Large</option>
+                        <option value="extra-large">Extra Large</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Language Section -->
+            <section class="settings-section">
+                <h3 data-translate="language">Language</h3>
+                <div class="setting-item">
+                    <span data-translate="currentLanguage">Current Language</span>
+                    <select id="language-select">
+                        <option value="en">English</option>
+                        <option value="my">Bahasa Malaysia</option>
+                        <option value="zh">中文</option>
+                        <option value="ta">தமிழ்</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Notifications Section -->
+            <section class="settings-section">
+                <h3 data-translate="notifications">Notifications</h3>
+                <div class="setting-item">
+                    <span data-translate="invoiceReminders">Invoice Reminders</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="invoice-reminders-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <span data-translate="paymentAlerts">Payment Alerts</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="payment-alerts-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- ESG Section -->
+            <section class="settings-section">
+                <h3 data-translate="esgSettings">🌱 ESG & Sustainability</h3>
+                
+                <div class="setting-item">
+                    <span data-translate="donationRoundup">Donation Round-up</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="donation-roundup-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <span data-translate="carbonTracking">Carbon Footprint Tracking</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="carbon-tracking-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section class="settings-section">
+                <h3 data-translate="about">About</h3>
+                <div class="setting-item">
+                    <span data-translate="version">Version</span>
+                    <span>1.0.0 (Prototype)</span>
+                </div>
+                
+                <div class="setting-item">
+                    <span data-translate="support">Support</span>
+                    <button class="setting-action">Contact</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ESG Features Modal -->
+    <div id="esg-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🌱 ESG & Sustainability Features</h2>
+                <button class="close-btn" onclick="closeModal('esg-modal')">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="esg-feature">
+                    <h3>💝 Donation Round-up</h3>
+                    <p>Round up your payments and donate the spare change to local charities</p>
+                    <div class="esg-stats">
+                        <span>This month: RM 45.60 donated</span>
+                    </div>
+                </div>
+                
+                <div class="esg-feature">
+                    <h3>🌍 Carbon Footprint Tracking</h3>
+                    <p>Track your business's environmental impact and get suggestions for improvement</p>
+                    <div class="esg-stats">
+                        <span>This month: 2.3 kg CO₂ saved</span>
+                    </div>
+                </div>
+                
+                <div class="esg-feature">
+                    <h3>🤝 Community Support</h3>
+                    <p>Connect with local MSMEs and support each other's growth</p>
+                    <div class="esg-stats">
+                        <span>5 local businesses supported</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="data/mock-data.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/invoicing.js"></script>
+    <script src="js/accessibility.js"></script>
+</body>
+</html> 

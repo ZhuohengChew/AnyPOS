@@ -1,0 +1,419 @@
+/* Pay Invoice Specific Styles */
+
+/* Invoice Card Styles */
+.invoice-payment-details {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.invoice-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.invoice-header {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.invoice-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.invoice-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.invoice-status.unpaid {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.invoice-body {
+    padding: 20px;
+}
+
+.invoice-info p {
+    margin: 8px 0;
+    font-size: 1rem;
+}
+
+.invoice-info .amount {
+    font-weight: 600;
+    color: #2563eb;
+    font-size: 1.125rem;
+}
+
+/* Payment Summary Styles */
+.payment-summary {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.payment-summary h3 {
+    margin: 0 0 16px 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item.total {
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: #2563eb;
+    border-top: 2px solid #e5e7eb;
+    border-bottom: none;
+    padding-top: 16px;
+    margin-top: 8px;
+}
+
+/* Account Selection Styles */
+.accounts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+}
+
+.account-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.account-card:hover {
+    border-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+
+.account-card.selected {
+    border-color: #2563eb;
+    background: #f0f9ff;
+}
+
+.account-info h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.account-number {
+    margin: 4px 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.account-balance {
+    margin: 4px 0 0 0;
+    font-weight: 500;
+    color: #059669;
+}
+
+.account-type {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+/* Verification Methods Styles */
+.verification-methods {
+    margin-bottom: 24px;
+}
+
+.verification-methods h3 {
+    margin: 0 0 16px 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.verification-option {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.verification-option:hover {
+    border-color: #2563eb;
+    background: #f0f9ff;
+}
+
+.verification-option.selected {
+    border-color: #2563eb;
+    background: #f0f9ff;
+}
+
+.option-icon {
+    font-size: 1.5rem;
+    margin-right: 16px;
+}
+
+.option-content {
+    flex: 1;
+}
+
+.option-content h4 {
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.option-content p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.option-check {
+    color: #2563eb;
+    font-weight: 600;
+    font-size: 1.25rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.verification-option.selected .option-check {
+    opacity: 1;
+}
+
+/* Success Screen Styles */
+.success-content {
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.success-icon {
+    font-size: 4rem;
+    margin-bottom: 24px;
+}
+
+.success-content h2 {
+    margin: 0 0 16px 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #059669;
+}
+
+.success-content p {
+    margin: 0 0 32px 0;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+.payment-details {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 32px;
+    text-align: left;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item span:first-child {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.detail-item span:last-child {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.detail-item .amount {
+    color: #2563eb;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.action-buttons button {
+    min-width: 160px;
+}
+
+/* Processing Indicator */
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .invoice-payment-details {
+        padding: 16px;
+    }
+    
+    .invoice-header {
+        padding: 16px;
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+    
+    .account-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    
+    .verification-option {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    
+    .option-icon {
+        margin-right: 0;
+        margin-bottom: 8px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .action-buttons button {
+        width: 100%;
+    }
+}
+
+/* Button Styles */
+.btn-primary {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+/* Screen Navigation */
+.screen {
+    display: none;
+    min-height: 100vh;
+    background: #f8fafc;
+}
+
+.screen.active {
+    display: block;
+}
+
+.screen-header {
+    background: white;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.screen-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.back-btn, .help-btn {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.back-btn:hover, .help-btn:hover {
+    background: #f3f4f6;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+} 

@@ -1,0 +1,2162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MSME Digital Financial Platform for Malaysia">
+    <meta name="theme-color" content="#2563eb">
+    <title>MSME Digital Finance Platform</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/mobile.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        .language-toggle {
+            background: none;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-right: 8px;
+        }
+        
+        .language-toggle:hover {
+            background: #f3f4f6;
+            border-color: #2563eb;
+        }
+        
+        .language-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* Bottom Navigation Styles */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-evenly;
+            padding: 6px 2px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            min-width: 50px;
+            color: #6b7280;
+            transition: color 0.2s;
+        }
+
+        .nav-item.active {
+            color: #2563eb;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            text-align: center;
+        }
+
+        /* Tutorial Button Styles */
+        .tutorial-btn {
+            background: none;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-right: 8px;
+            position: relative;
+        }
+        
+        .tutorial-btn:hover {
+            background: #f3f4f6;
+            border-color: #2563eb;
+        }
+        
+        .tutorial-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #10b981;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Tutorial Modal Styles */
+        .tutorial-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .tutorial-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .tutorial-content {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .tutorial-header {
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tutorial-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #1f2937;
+        }
+
+        .close-tutorial {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 4px;
+        }
+
+        .tutorial-body {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Tutorial Navigation */
+        .tutorial-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding: 12px 16px;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            position: relative;
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .tutorial-nav:active {
+            cursor: grabbing;
+        }
+
+        .tutorial-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Scroll indicator line */
+        .tutorial-nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                #2563eb 20%, 
+                #2563eb 80%, 
+                transparent 100%);
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Enhanced scroll indicator for better visibility */
+        .tutorial-nav::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #e5e7eb;
+            z-index: 0;
+        }
+
+        /* Prevent text selection during drag */
+        .tutorial-nav * {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .tutorial-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            min-height: 44px;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-width: 120px;
+            justify-content: center;
+        }
+
+        .tutorial-nav-btn:hover {
+            background: #f3f4f6;
+            color: #374151;
+            transform: translateY(-1px);
+        }
+
+        .tutorial-nav-btn:active {
+            transform: scale(0.98);
+        }
+
+        .tutorial-nav-btn.active {
+            background: #dbeafe;
+            color: #1d4ed8;
+            box-shadow: 0 2px 4px rgba(29, 78, 216, 0.1);
+        }
+
+        .tutorial-nav-btn .icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            font-size: 16px;
+        }
+
+        /* Elderly mode adjustments */
+        .elderly-mode .tutorial-nav-btn {
+            padding: 16px 20px;
+            min-height: 52px;
+            font-size: 16px;
+            gap: 10px;
+            min-width: 140px;
+        }
+
+        .elderly-mode .tutorial-nav-btn .icon {
+            width: 20px;
+            height: 20px;
+            font-size: 18px;
+        }
+
+        body.elderly-mode .action-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 20px !important;
+        }
+
+        body.elderly-mode .action-card {
+        padding: 24px !important;
+        min-height: 120px !important;
+        }
+
+        body.elderly-mode .action-label {
+        font-size: 18px !important;
+        font-weight: 700 !important;
+        }
+
+        body.elderly-mode .action-icon {
+        width: 56px !important;
+        height: 56px !important;
+        }
+
+        body.elderly-mode .bottom-nav {
+        display: none !important;
+        }
+
+        body.elderly-mode .balance-cards {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+        }
+
+        body.elderly-mode .balance-card {
+        padding: 20px !important;
+        font-size: 18px !important;
+        }
+
+        /* Ensure elderly mode badge stays visible */
+        .elderly-mode-badge {
+        position: fixed !important;
+        top: 10px !important;
+        right: 10px !important;
+        z-index: 9999 !important;
+        background: #2563eb !important;
+        color: white !important;
+        padding: 6px 12px !important;
+        border-radius: 16px !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            .tutorial-nav-btn {
+                border: 2px solid #000;
+            }
+            
+            .tutorial-nav-btn.active {
+                background: #000;
+                color: #fff;
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .tutorial-nav-btn {
+                transition: none;
+            }
+            
+            .tutorial-nav-btn:hover {
+                transform: none;
+            }
+        }
+
+        /* Tutorial Tabs */
+        .tutorial-tab {
+            display: none;
+        }
+
+        .tutorial-tab.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .tutorial-section {
+            margin-bottom: 24px;
+        }
+
+        .tutorial-section h4 {
+            color: #2563eb;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .tutorial-section p {
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .tutorial-section ol,
+        .tutorial-section ul {
+            margin-bottom: 16px;
+            padding-left: 20px;
+        }
+
+        .tutorial-section li {
+            margin-bottom: 8px;
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
+        .tutorial-tip {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+        }
+
+        .tutorial-tip strong {
+            color: #0ea5e9;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .tutorial-nav {
+                gap: 6px;
+                padding: 10px 12px;
+            }
+
+            .tutorial-nav-btn {
+                padding: 10px 14px;
+                font-size: 13px;
+                min-width: 100px;
+                min-height: 48px;
+            }
+
+            .tutorial-nav-btn .icon {
+                width: 16px;
+                height: 16px;
+                font-size: 14px;
+            }
+
+            .tutorial-section h4 {
+                font-size: 0.9rem;
+            }
+
+            .tutorial-section li {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tutorial-nav {
+                gap: 4px;
+                padding: 8px 10px;
+            }
+
+            .tutorial-nav-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+                min-width: 90px;
+                min-height: 44px;
+            }
+
+            .tutorial-nav-btn .icon {
+                width: 14px;
+                height: 14px;
+                font-size: 12px;
+            }
+
+            .tutorial-content {
+                max-height: 90vh;
+            }
+
+            .tutorial-section h3 {
+                font-size: 1rem;
+            }
+
+            .tutorial-section h4 {
+                font-size: 0.85rem;
+            }
+
+            .tutorial-section li {
+                font-size: 0.85rem;
+            }
+        }
+
+        .feature-section {
+            margin-bottom: 24px;
+        }
+
+        .feature-section h3 {
+            color: #2563eb;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .feature-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .feature-section li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            color: #4b5563;
+        }
+
+        .feature-section li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+        }
+
+        .tutorial-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: right;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .tutorial-content {
+                max-height: 90vh;
+            }
+
+            .feature-section h3 {
+                font-size: 1rem;
+            }
+
+            .feature-section li {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="screen active">
+        <div class="loading-container">
+            <div class="logo">
+                <h1>MSME Finance</h1>
+                <div class="loading-spinner"></div>
+            </div>
+            <p>Loading your financial platform...</p>
+        </div>
+    </div>
+
+    <!-- Language Selection Screen -->
+    <div id="language-screen" class="screen">
+        <div class="container">
+            <div class="welcome-header">
+                <h1>Welcome to MSME Finance</h1>
+                <p>Choose your preferred language</p>
+            </div>
+            
+            <div class="language-options">
+                <button class="language-btn" data-lang="en">
+                    <span class="lang-flag">🇬🇧</span>
+                    <span>English</span>
+                </button>
+                <button class="language-btn" data-lang="my">
+                    <span class="lang-flag">🇲🇾</span>
+                    <span>Bahasa Malaysia</span>
+                </button>
+                <button class="language-btn" data-lang="zh">
+                    <span class="lang-flag">🇨🇳</span>
+                    <span>中文</span>
+                </button>
+                <button class="language-btn" data-lang="ta">
+                    <span class="lang-flag">🇮🇳</span>
+                    <span>தமிழ்</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Type Selection Screen -->
+    <div id="user-type-screen" class="screen">
+        <div class="container">
+            <div class="header">
+                <h1 data-translate="userTypeTitle">Choose Your Account Type</h1>
+                <p data-translate="userTypeSubtitle">Select the option that best describes you</p>
+            </div>
+            
+            <div class="user-type-options">
+                <button class="user-type-btn" data-type="personal">
+                    <div class="icon">👤</div>
+                    <h3 data-translate="personalUser">Personal User</h3>
+                    <p data-translate="personalUserDesc">Manage your personal finances</p>
+                </button>
+                
+                <button class="user-type-btn" data-type="business">
+                    <div class="icon">🏢</div>
+                    <h3 data-translate="businessUser">Business User</h3>
+                    <p data-translate="businessUserDesc">Manage your MSME business</p>
+                </button>
+            </div>
+            
+            <div class="demo-notice">
+                <p data-translate="demoNotice">🔄 This is a prototype. All data is simulated.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen">
+        <div class="container">
+            <div class="login-header">
+                <h1 data-translate="welcomeBack">Welcome Back</h1>
+                <p data-translate="loginSubtitle">Sign in to your account</p>
+            </div>
+            
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="email" data-translate="email">Email</label>
+                    <input type="email" id="email" name="email" value="demo@msme.my" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" data-translate="password">Password</label>
+                    <input type="password" id="password" name="password" value="demo123" required>
+                    <button type="button" class="password-toggle" aria-label="Toggle password visibility">👁️</button>
+                </div>
+                
+                <button type="submit" class="btn-primary" data-translate="signIn">Sign In</button>
+                
+                <div class="demo-credentials">
+                    <p data-translate="demoCredentials">Demo credentials: demo@msme.my / demo123</p>
+                </div>
+                
+                <button type="button" class="btn-secondary" id="skip-auth" data-translate="skipAuth">Skip Authentication (Demo)</button>
+                
+                <div class="auth-links">
+                    <p>Don't have an account? <a href="register.html">Create Account</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Onboarding Screens -->
+    <div id="onboarding-screen" class="screen">
+        <div class="container">
+            <!-- Progress Indicator -->
+            <div class="progress-indicator">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="onboarding-progress"></div>
+                </div>
+                <div class="progress-steps">
+                    <span class="step active" data-step="1">1</span>
+                    <span class="step" data-step="2">2</span>
+                    <span class="step" data-step="3">3</span>
+                </div>
+            </div>
+
+            <!-- Step 1: Business Information -->
+            <div id="onboarding-step-1" class="onboarding-step active">
+                <h2 data-translate="businessInfo">Business Information</h2>
+                
+                <form class="onboarding-form">
+                    <div class="form-group">
+                        <label for="business-name" data-translate="businessName">Business Name</label>
+                        <input type="text" id="business-name" value="Ahmad Food Truck Sdn Bhd" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="business-type" data-translate="businessType">Business Type</label>
+                        <select id="business-type" required>
+                            <option value="food">Food & Beverage</option>
+                            <option value="retail">Retail</option>
+                            <option value="services">Services</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="business-address" data-translate="businessAddress">Business Address</label>
+                        <textarea id="business-address" rows="3">No. 15, Jalan Usahawan 2, Taman Perindustrian Subang, 47500 Subang Jaya, Selangor</textarea>
+                    </div>
+                </form>
+                
+                <div class="onboarding-actions">
+                    <button class="btn-primary" onclick="nextOnboardingStep()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Bank Setup -->
+            <div id="onboarding-step-2" class="onboarding-step">
+                <h2 data-translate="bankSetup">Bank Setup</h2>
+                <p data-translate="bankSetupDesc">Connect your business bank accounts</p>
+                
+                <div class="bank-options">
+                    <label class="bank-option">
+                        <input type="checkbox" value="maybank" checked>
+                        <div class="bank-card">
+                            <span class="bank-logo">🏦</span>
+                            <div>
+                                <h4>Maybank</h4>
+                                <p>Primary business account</p>
+                            </div>
+                        </div>
+                    </label>
+                    
+                    <label class="bank-option">
+                        <input type="checkbox" value="cimb">
+                        <div class="bank-card">
+                            <span class="bank-logo">🏦</span>
+                            <div>
+                                <h4>CIMB Bank</h4>
+                                <p>Secondary account</p>
+                            </div>
+                        </div>
+                    </label>
+                    
+                    <label class="bank-option">
+                        <input type="checkbox" value="public">
+                        <div class="bank-card">
+                            <span class="bank-logo">🏦</span>
+                            <div>
+                                <h4>Public Bank</h4>
+                                <p>Savings account</p>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                
+                <div class="onboarding-actions">
+                    <button class="btn-secondary" onclick="prevOnboardingStep()">Back</button>
+                    <button class="btn-primary" onclick="nextOnboardingStep()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Setup Complete -->
+            <div id="onboarding-step-3" class="onboarding-step">
+                <div class="completion-message">
+                    <div class="success-icon">✅</div>
+                    <h2 data-translate="setupComplete">Setup Complete!</h2>
+                    <p data-translate="setupCompleteDesc">Your MSME financial platform is ready to use</p>
+                </div>
+                
+                <div class="setup-summary">
+                    <h3 data-translate="summary">Summary</h3>
+                    <div class="summary-item">
+                        <span data-translate="businessSetup">Business Setup</span>
+                        <span class="status complete">✓</span>
+                    </div>
+                    <div class="summary-item">
+                        <span data-translate="bankConnections">Bank Connections</span>
+                        <span class="status complete">✓</span>
+                    </div>
+                    <div class="summary-item">
+                        <span data-translate="profileReady">Profile Ready</span>
+                        <span class="status complete">✓</span>
+                    </div>
+                </div>
+                
+                <button class="btn-primary" onclick="completeOnboarding()">Get Started</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard-screen" class="screen">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="user-info">
+                    <h1 id="user-greeting" data-translate="goodMorning">Good Morning</h1>
+                    <p id="business-name-display">Ahmad Food Truck Sdn Bhd</p>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="tutorial-btn" id="tutorial-btn" aria-label="Tutorial" title="Learn System Features">
+                        📖
+                        <span class="tutorial-badge">?</span>
+                    </button>
+                    <button class="language-toggle" onclick="window.app.toggleLanguage()" title="Switch Language / Tukar Bahasa">🌐</button>
+                    <button class="notification-btn" id="notification-btn" aria-label="Notifications">
+                        🔔
+                        <span class="notification-badge" id="notification-badge">3</span>
+                    </button>
+                    
+                    <!-- Notification Panel -->
+                    <div id="notification-panel" class="notification-panel">
+                        <div class="notification-header">
+                            <h3>Notifications</h3>
+                            <button class="mark-all-read">Mark all as read</button>
+                        </div>
+                        
+                        <div class="notification-list" id="notification-list">
+                            <!-- Dynamic notifications will be inserted here -->
+                        </div>
+                        
+                        <div class="notification-footer">
+                            <!-- <button class="view-all-notifications">View all notifications</button> -->
+                        </div>
+                    </div>
+                    <button class="settings-btn" id="settings-btn" aria-label="Settings">⚙️</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tutorial Modal -->
+        <div id="tutorial-modal" class="tutorial-modal">
+            <div class="tutorial-content">
+                <div class="tutorial-header">
+                    <h2>🌟 MSME Platform Guide</h2>
+                    <button class="close-tutorial">×</button>
+                </div>
+                <div class="tutorial-body">
+                    <!-- Navigation Tabs -->
+                    <div class="tutorial-nav" role="tablist" aria-label="Tutorial sections">
+                        <button class="tutorial-nav-btn active" data-tab="getting-started" role="tab" aria-selected="true" aria-controls="getting-started">
+                            <span class="icon">🚀</span>
+                            <span>Getting Started</span>
+                        </button>
+                        <button class="tutorial-nav-btn" data-tab="payments" role="tab" aria-selected="false" aria-controls="payments">
+                            <span class="icon">💳</span>
+                            <span>Payments</span>
+                        </button>
+                        <button class="tutorial-nav-btn" data-tab="invoices" role="tab" aria-selected="false" aria-controls="invoices">
+                            <span class="icon">🧾</span>
+                            <span>Invoices</span>
+                        </button>
+                        <button class="tutorial-nav-btn" data-tab="analytics" role="tab" aria-selected="false" aria-controls="analytics">
+                            <span class="icon">📊</span>
+                            <span>Analytics</span>
+                        </button>
+                        <button class="tutorial-nav-btn" data-tab="tax" role="tab" aria-selected="false" aria-controls="tax">
+                            <span class="icon">🏛️</span>
+                            <span>Tax</span>
+                        </button>
+                        <button class="tutorial-nav-btn" data-tab="esg" role="tab" aria-selected="false" aria-controls="esg">
+                            <span class="icon">🌱</span>
+                            <span>ESG</span>
+                        </button>
+                        <button class="tutorial-nav-btn" data-tab="accessibility" role="tab" aria-selected="false" aria-controls="accessibility">
+                            <span class="icon">♿</span>
+                            <span>Accessibility</span>
+                        </button>
+                    </div>
+
+                    <!-- Getting Started Tab -->
+                    <div class="tutorial-tab active" id="getting-started">
+                        <h3>🚀 Getting Started</h3>
+                        <div class="tutorial-section">
+                            <h4>Welcome to MSME Finance</h4>
+                            <p>Your comprehensive financial management platform designed specifically for Malaysian SMEs.</p>
+                            
+                            <h4>Quick Start Guide</h4>
+                            <ol>
+                                <li><strong>Language Selection:</strong> Choose your preferred language (EN/MY/ZH/TA)</li>
+                                <li><strong>Account Type:</strong> Select Personal or Business user</li>
+                                <li><strong>Business Setup:</strong> Enter your business details and LHDN registration</li>
+                                <li><strong>Bank Connection:</strong> Link your Malaysian bank accounts</li>
+                                <li><strong>Start Managing:</strong> Access dashboard and begin using features</li>
+                            </ol>
+
+                            <h4>Dashboard Overview</h4>
+                            <ul>
+                                <li><strong>Quick Actions:</strong> Pay, Receive, Invoices, Analytics</li>
+                                <li><strong>Account Balances:</strong> Real-time bank account overview</li>
+                                <li><strong>Recent Transactions:</strong> Latest payment activities</li>
+                                <li><strong>ESG Metrics:</strong> Sustainability tracking</li>
+                            </ul>
+
+                            <div class="tutorial-tip">
+                                <strong>💡 Tip:</strong> Use the tutorial button (📖) anytime to access this guide.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payments Tab -->
+                    <div class="tutorial-tab" id="payments">
+                        <h3>💳 Payment Features</h3>
+                        <div class="tutorial-section">
+                            <h4>Making Payments</h4>
+                            <ol>
+                                <li>Click "Pay" from dashboard</li>
+                                <li>Enter recipient details (supplier/vendor)</li>
+                                <li>Select payment method (bank transfer/QR)</li>
+                                <li>Enter amount and add description</li>
+                                <li>Confirm with PIN/biometric</li>
+                            </ol>
+
+                            <h4>Receiving Payments</h4>
+                            <ol>
+                                <li>Click "Receive" from dashboard</li>
+                                <li>Generate payment QR code</li>
+                                <li>Share with customer</li>
+                                <li>Track payment status</li>
+                                <li>Auto-categorize transactions</li>
+                            </ol>
+
+                            <h4>Security Features</h4>
+                            <ul>
+                                <li>PIN/biometric authentication</li>
+                                <li>Transaction limits</li>
+                                <li>Fraud detection</li>
+                                <li>Secure bank connections</li>
+                            </ul>
+
+                            <div class="tutorial-tip">
+                                <strong>🔒 Security:</strong> All transactions are encrypted and comply with Malaysian banking standards.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invoices Tab -->
+                    <div class="tutorial-tab" id="invoices">
+                        <h3>🧾 Invoice Management</h3>
+                        <div class="tutorial-section">
+                            <h4>Creating LHDN-Compliant Invoices</h4>
+                            <ol>
+                                <li>Click "Invoices" from dashboard</li>
+                                <li>Enter customer information</li>
+                                <li>Add line items with descriptions</li>
+                                <li>Automatic SST (6%) calculation</li>
+                                <li>Preview and send invoice</li>
+                            </ol>
+
+                            <h4>Malaysian Compliance</h4>
+                            <ul>
+                                <li>LHDN-compliant format</li>
+                                <li>Automatic SST calculation</li>
+                                <li>Tax identification numbers</li>
+                                <li>Digital signature support</li>
+                            </ul>
+
+                            <h4>Invoice Features</h4>
+                            <ul>
+                                <li>Save as draft</li>
+                                <li>Email integration</li>
+                                <li>Payment tracking</li>
+                                <li>Template customization</li>
+                            </ul>
+
+                            <div class="tutorial-tip">
+                                <strong>📋 Compliance:</strong> All invoices automatically include required LHDN fields.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Tab -->
+                    <div class="tutorial-tab" id="analytics">
+                        <h3>📊 Analytics & Statistics</h3>
+                        <div class="tutorial-section">
+                            <h4>Business Performance</h4>
+                            <ul>
+                                <li>Revenue trends and cash flow</li>
+                                <li>Top products/services analysis</li>
+                                <li>Customer demographics</li>
+                                <li>Payment patterns</li>
+                            </ul>
+
+                            <h4>Reports Available</h4>
+                            <ul>
+                                <li>Daily/Monthly/Yearly summaries</li>
+                                <li>SST collection reports</li>
+                                <li>Transaction categorization</li>
+                                <li>Export to Excel/PDF</li>
+                            </ul>
+
+                            <h4>Data Insights</h4>
+                            <ul>
+                                <li>Sales performance tracking</li>
+                                <li>Expense analysis</li>
+                                <li>Profit margin calculations</li>
+                                <li>Growth trend indicators</li>
+                            </ul>
+
+                            <div class="tutorial-tip">
+                                <strong>📈 Insight:</strong> Use analytics to identify your best-performing products and peak business hours.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tax Tab -->
+                    <div class="tutorial-tab" id="tax">
+                        <h3>🏛️ Tax Management</h3>
+                        <div class="tutorial-section">
+                            <h4>LHDN Compliance</h4>
+                            <ul>
+                                <li>Automatic SST calculations</li>
+                                <li>Income tax preparation</li>
+                                <li>Business expense tracking</li>
+                                <li>Tax deduction management</li>
+                            </ul>
+
+                            <h4>Tax Features</h4>
+                            <ul>
+                                <li>Real-time SST tracking</li>
+                                <li>Tax filing assistance</li>
+                                <li>Deduction optimization</li>
+                                <li>Compliance reminders</li>
+                            </ul>
+
+                            <h4>Malaysian Tax Support</h4>
+                            <ul>
+                                <li>LHDN integration</li>
+                                <li>Tax period management</li>
+                                <li>Filing deadline alerts</li>
+                                <li>Document preparation</li>
+                            </ul>
+
+                            <div class="tutorial-tip">
+                                <strong>🏛️ Tax Tip:</strong> Keep your business records updated for smooth tax filing.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ESG Tab -->
+                    <div class="tutorial-tab" id="esg">
+                        <h3>🌱 ESG & Sustainability</h3>
+                        <div class="tutorial-section">
+                            <h4>Donation Features</h4>
+                            <ul>
+                                <li>Round-up donations to local charities</li>
+                                <li>Tax-deductible contributions</li>
+                                <li>Charity selection options</li>
+                                <li>Impact tracking</li>
+                            </ul>
+
+                            <h4>Sustainability Tracking</h4>
+                            <ul>
+                                <li>Carbon footprint monitoring</li>
+                                <li>Paper reduction metrics</li>
+                                <li>Digital transformation impact</li>
+                                <li>ESG goal setting</li>
+                            </ul>
+
+                            <h4>Community Support</h4>
+                            <ul>
+                                <li>Local business partnerships</li>
+                                <li>Community development</li>
+                                <li>Social impact reporting</li>
+                                <li>Sustainable practices</li>
+                            </ul>
+
+                            <div class="tutorial-tip">
+                                <strong>🌍 Impact:</strong> Track your business's positive impact on the community and environment.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Accessibility Tab -->
+                    <div class="tutorial-tab" id="accessibility">
+                        <h3>♿ Accessibility Features</h3>
+                        <div class="tutorial-section">
+                            <h4>Elderly-Friendly Mode</h4>
+                            <ul>
+                                <li>Larger fonts and buttons</li>
+                                <li>Simplified interface</li>
+                                <li>High contrast options</li>
+                                <li>Voice feedback</li>
+                            </ul>
+
+                            <h4>Accessibility Options</h4>
+                            <ul>
+                                <li>Screen reader support</li>
+                                <li>Keyboard navigation</li>
+                                <li>Voice commands</li>
+                                <li>Touch optimization</li>
+                            </ul>
+
+                            <h4>Customization</h4>
+                            <ul>
+                                <li>Font size adjustment</li>
+                                <li>Color scheme options</li>
+                                <li>Button size preferences</li>
+                                <li>Motion reduction</li>
+                            </ul>
+
+                            <div class="tutorial-tip">
+                                <strong>♿ Inclusive:</strong> Our platform is designed to be accessible to users of all abilities.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tutorial-footer">
+                    <button class="btn-primary" onclick="document.getElementById('tutorial-modal').classList.remove('show')">Got it!</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <div class="action-grid">
+                    <button class="action-card" onclick="window.location.href='pay.html'">
+                        <div class="action-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                <line x1="2" y1="10" x2="22" y2="10"/>
+                            </svg>
+                        </div>
+                        <span class="action-label" data-translate="pay">Pay</span>
+                    </button>
+                    
+                    <button class="action-card" onclick="window.location.href='receive.html'">
+                        <div class="action-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                            </svg>
+                        </div>
+                        <span class="action-label" data-translate="receive">Receive</span>
+                    </button>
+                    
+                    <button class="action-card" onclick="window.location.href='invoices.html'">
+                        <div class="action-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                                <line x1="10" y1="9" x2="8" y2="9"/>
+                            </svg>
+                        </div>
+                        <span class="action-label" data-translate="invoices">Invoices</span>
+                    </button>
+                    
+                    <button class="action-card" onclick="window.location.href='analytics-graph.html'">
+                        <div class="action-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 3v18h18"/>
+                                <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
+                            </svg>
+                        </div>
+                        <span class="action-label" data-translate="analytics">Analytics</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Account Balance Cards -->
+            <section class="balance-section">
+                <div class="section-header">
+                    <h2 data-translate="accounts">Accounts</h2>
+                    <button class="add-account-btn" id="add-account-btn" aria-label="Add new bank account">
+                        <span class="add-icon">+</span>
+                        <span data-translate="addAccount">Add Account</span>
+                    </button>
+                </div>
+                
+                <div class="balance-cards" id="balance-cards">
+                    <!-- Dynamic content will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Chatbot -->
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav" id="navigation">
+            <button class="nav-item active" data-screen="dashboard-screen">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label" data-translate="home">Home</div>
+            </button>
+            
+            <button class="nav-item" onclick="window.location.href='lhdn-tax.html'">
+                <div class="nav-icon">🏛️</div>
+                <div class="nav-label" data-translate="incomeTax">Income Tax</div>
+            </button>
+            
+            <!-- <button class="nav-item" onclick="window.location.href='analytics-graph.html'">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label" data-translate="analyticsGraph">Analytics</div>
+            </button> -->
+            
+            <button class="nav-item" onclick="window.location.href='donate.html'">
+                <div class="nav-icon">💝</div>
+                <div class="nav-label" data-translate="donation">Donation</div>
+            </button>
+            
+            <button class="nav-item" data-screen="settings-screen">
+                <div class="nav-icon">⚙️</div>
+                <div class="nav-label" data-translate="settings">Settings</div>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Invoice Screen -->
+    <div id="invoice-screen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h1 data-translate="createInvoice">Create Invoice</h1>
+            <button class="help-btn">?</button>
+        </div>
+        
+        <main class="invoice-main">
+            <form id="invoice-form" class="invoice-form">
+                <!-- Customer Information -->
+                <section class="form-section">
+                    <h3 data-translate="customerInfo">Customer Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="customer-name" data-translate="customerName">Customer Name</label>
+                        <input type="text" id="customer-name" name="customerName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customer-email" data-translate="customerEmail">Customer Email</label>
+                        <input type="email" id="customer-email" name="customerEmail">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customer-address" data-translate="customerAddress">Customer Address</label>
+                        <textarea id="customer-address" name="customerAddress" rows="3"></textarea>
+                    </div>
+                </section>
+
+                <!-- Invoice Details -->
+                <section class="form-section">
+                    <h3 data-translate="invoiceDetails">Invoice Details</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="invoice-number" data-translate="invoiceNumber">Invoice Number</label>
+                            <input type="text" id="invoice-number" name="invoiceNumber" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="invoice-date" data-translate="invoiceDate">Invoice Date</label>
+                            <input type="date" id="invoice-date" name="invoiceDate" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="due-date" data-translate="dueDate">Due Date</label>
+                            <input type="date" id="due-date" name="dueDate" required>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Line Items -->
+                <section class="form-section">
+                    <h3 data-translate="lineItems">Line Items</h3>
+                    <div id="line-items" class="line-items">
+                        <!-- Dynamic line items will be added here -->
+                    </div>
+                    <button type="button" class="btn-secondary" onclick="addLineItem()">+ Add Item</button>
+                </section>
+
+                <!-- Invoice Totals -->
+                <div class="invoice-totals">
+                    <div class="total-row">
+                        <span data-translate="subtotal">Subtotal:</span>
+                        <span id="subtotal-amount">RM 0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span data-translate="sst">SST (6%):</span>
+                        <span id="sst-amount">RM 0.00</span>
+                    </div>
+                    <div class="total-row total">
+                        <span data-translate="total">Total:</span>
+                        <span id="total-amount">RM 0.00</span>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="saveAsDraft()" data-translate="saveAsDraft">Save as Draft</button>
+                    <button type="button" class="btn-primary" onclick="previewInvoice()" data-translate="previewAndSend">Preview & Send</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Analytics Screen -->
+    <div id="analytics-screen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h1 data-translate="analytics">Analytics</h1>
+            <button class="export-btn">📤</button>
+        </div>
+        
+        <main class="analytics-main">
+            <!-- Period Selector -->
+            <div class="period-selector">
+                <button class="period-btn active" data-period="week">Week</button>
+                <button class="period-btn" data-period="month">Month</button>
+                <button class="period-btn" data-period="quarter">Quarter</button>
+                <button class="period-btn" data-period="year">Year</button>
+            </div>
+
+            <!-- Key Metrics -->
+            <section class="metrics-section">
+                <div class="metric-card">
+                    <div class="metric-icon">💰</div>
+                    <div class="metric-info">
+                        <h3>RM 26,807.45</h3>
+                        <p>Total Revenue</p>
+                        <span class="metric-change positive">+12.5%</span>
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon">📄</div>
+                    <div class="metric-info">
+                        <h3>47</h3>
+                        <p>Invoices Sent</p>
+                        <span class="metric-change positive">+8</span>
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon">⏱️</div>
+                    <div class="metric-info">
+                        <h3>12 days</h3>
+                        <p>Avg Payment Time</p>
+                        <span class="metric-change negative">+2 days</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts -->
+            <section class="charts-section">
+                <div class="chart-container">
+                    <h3>Sales Trend</h3>
+                    <canvas id="sales-chart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <h3>Top Products</h3>
+                    <div id="top-products" class="top-products">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- ESG Metrics -->
+            <section class="esg-section">
+                <h3>🌱 Sustainability Metrics</h3>
+                <div class="esg-metrics">
+                    <div class="esg-card">
+                        <div class="esg-icon">🌍</div>
+                        <div class="esg-info">
+                            <h4>Carbon Footprint</h4>
+                            <p>2.3 kg CO₂ saved</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="esg-card">
+                        <div class="esg-icon">💝</div>
+                        <div class="esg-info">
+                            <h4>Donations</h4>
+                            <p>RM 45.60 donated</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settings-screen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h1 data-translate="settings">Settings</h1>
+            <div></div>
+        </div>
+        
+        <main class="settings-main">
+            <!-- Profile Section -->
+            <section class="settings-section">
+                <h3>Profile</h3>
+                <div class="setting-item">
+                    <span>Business Name</span>
+                    <span>Ahmad Food Truck Sdn Bhd</span>
+                </div>
+                <div class="setting-item">
+                    <span>Business Type</span>
+                    <span>Food & Beverage</span>
+                </div>
+                <div class="setting-item">
+                    <span>Language</span>
+                    <select id="language-select">
+                        <option value="en">English</option>
+                        <option value="my">Bahasa Malaysia</option>
+                        <option value="zh">中文</option>
+                        <option value="ta">தமிழ்</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Accessibility Section -->
+            <section class="settings-section">
+                <h3>Accessibility</h3>
+                <div class="setting-item">
+                    <span>Elderly-Friendly Mode</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="elderly-mode-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span>High Contrast Mode</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="high-contrast-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span>Voice Feedback</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="voice-feedback-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span>Font Size</span>
+                    <select id="font-size-select">
+                        <option value="small">Small</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="large">Large</option>
+                        <option value="extra-large">Extra Large</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Notifications Section -->
+            <section class="settings-section">
+                <h3>Notifications</h3>
+                <div class="setting-item">
+                    <span>Invoice Reminders</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="invoice-reminders-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span>Payment Alerts</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="payment-alerts-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- ESG Section -->
+            <section class="settings-section">
+                <h3>ESG & Sustainability</h3>
+                <div class="setting-item">
+                    <span>Donation Round-up</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="donation-roundup-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span>Carbon Tracking</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="carbon-tracking-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <style>
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 9998;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Ensure settings content is above chatbot */
+        .settings-section {
+            position: relative;
+        }
+
+        .setting-item {
+            position: relative;
+        }
+
+        .chatbot-toggle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #2563eb;
+            border: none;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0;
+        }
+
+        .chatbot-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+        }
+
+        .chat-icon {
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border: 2px solid white;
+        }
+
+        .chat-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        .chat-window.active {
+            display: flex;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .chat-header {
+            padding: 16px;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+        }
+
+        .chat-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .chat-controls button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 18px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .chat-controls button:hover {
+            opacity: 1;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .quick-actions {
+            padding: 8px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .quick-action-btn {
+            padding: 6px 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background: white;
+            color: #2563eb;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .quick-action-btn:hover {
+            background: #f0f7ff;
+            border-color: #2563eb;
+        }
+
+        .chat-input-container {
+            padding: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 24px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .chat-send-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #2563eb;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .chat-send-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 8px;
+            margin-bottom: 8px;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #2563eb;
+            border-radius: 50%;
+            animation: typing 1s infinite;
+            opacity: 0.4;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .chat-window {
+                width: 300px;
+                height: 400px;
+                bottom: 70px;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .chatbot-container {
+                bottom: 70px;
+            }
+        }
+
+        /* High Contrast Mode */
+        @media (prefers-contrast: high) {
+            .chatbot-toggle {
+                border: 2px solid white;
+            }
+
+            .chat-window {
+                border: 2px solid black;
+            }
+
+            .chat-input {
+                border: 2px solid black;
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            .chat-window, .chatbot-toggle {
+                transition: none;
+            }
+
+            .typing-indicator span {
+                animation: none;
+            }
+        }
+
+        /* Chat Messages Styles */
+        .chat-message {
+            margin-bottom: 12px;
+            max-width: 80%;
+            animation: messageSlideIn 0.3s ease-out;
+        }
+
+        .user-message {
+            margin-left: auto;
+        }
+
+        .bot-message {
+            margin-right: auto;
+        }
+
+        .message-content {
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .user-message .message-content {
+            background: #2563eb;
+            color: white;
+            border-top-right-radius: 4px;
+        }
+
+        .bot-message .message-content {
+            background: #f3f4f6;
+            color: #1f2937;
+            border-top-left-radius: 4px;
+        }
+
+        /* Quick Replies Styles */
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 6px 0;
+            padding: 0 8px;
+            animation: messageSlideIn 0.3s ease-out;
+        }
+
+        .quick-reply-btn {
+            padding: 4px 10px;
+            border: 1px solid #2563eb;
+            border-radius: 12px;
+            background: white;
+            color: #2563eb;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .quick-reply-btn:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* New styles for action-grid and action-card */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            min-width: 100px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-color: #2563eb;
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            background: #4475F2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .action-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke-width: 2;
+        }
+
+        .action-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .action-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .action-card {
+                padding: 16px;
+            }
+
+            .action-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .action-icon svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .action-label {
+                font-size: 13px;
+            }
+        }
+    </style>
+
+    <!-- JavaScript Files -->
+    <script src="data/mock-data.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/invoicing.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/account-manager.js"></script>
+
+    <script>
+        // Tutorial Modal Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tutorialBtn = document.getElementById('tutorial-btn');
+            const tutorialModal = document.getElementById('tutorial-modal');
+            const closeTutorial = document.querySelector('.close-tutorial');
+
+            // Show tutorial modal
+            tutorialBtn.addEventListener('click', function() {
+                tutorialModal.classList.add('show');
+            });
+
+            // Close tutorial modal
+            closeTutorial.addEventListener('click', function() {
+                tutorialModal.classList.remove('show');
+            });
+
+            // Close modal when clicking outside
+            tutorialModal.addEventListener('click', function(e) {
+                if (e.target === tutorialModal) {
+                    tutorialModal.classList.remove('show');
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && tutorialModal.classList.contains('show')) {
+                    tutorialModal.classList.remove('show');
+                }
+            });
+
+            // Tutorial Tab Navigation
+            const tutorialNavBtns = document.querySelectorAll('.tutorial-nav-btn');
+            const tutorialTabs = document.querySelectorAll('.tutorial-tab');
+            const tutorialNav = document.querySelector('.tutorial-nav');
+
+            // Drag scrolling functionality
+            let isDragging = false;
+            let startX = 0;
+            let scrollLeft = 0;
+
+            tutorialNav.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                tutorialNav.style.cursor = 'grabbing';
+                startX = e.pageX - tutorialNav.offsetLeft;
+                scrollLeft = tutorialNav.scrollLeft;
+            });
+
+            tutorialNav.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                const x = e.pageX - tutorialNav.offsetLeft;
+                const walk = (x - startX) * 2; // Scroll speed multiplier
+                tutorialNav.scrollLeft = scrollLeft - walk;
+            });
+
+            tutorialNav.addEventListener('mouseup', function() {
+                isDragging = false;
+                tutorialNav.style.cursor = 'grab';
+            });
+
+            tutorialNav.addEventListener('mouseleave', function() {
+                isDragging = false;
+                tutorialNav.style.cursor = 'grab';
+            });
+
+            // Touch support for mobile devices
+            tutorialNav.addEventListener('touchstart', function(e) {
+                isDragging = true;
+                startX = e.touches[0].pageX - tutorialNav.offsetLeft;
+                scrollLeft = tutorialNav.scrollLeft;
+            });
+
+            tutorialNav.addEventListener('touchmove', function(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                const x = e.touches[0].pageX - tutorialNav.offsetLeft;
+                const walk = (x - startX) * 2;
+                tutorialNav.scrollLeft = scrollLeft - walk;
+            });
+
+            tutorialNav.addEventListener('touchend', function() {
+                isDragging = false;
+            });
+
+            tutorialNavBtns.forEach((btn, index) => {
+                btn.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Update active nav button
+                    tutorialNavBtns.forEach(navBtn => {
+                        navBtn.classList.remove('active');
+                        navBtn.setAttribute('aria-selected', 'false');
+                    });
+                    this.classList.add('active');
+                    this.setAttribute('aria-selected', 'true');
+                    
+                    // Update active tab
+                    tutorialTabs.forEach(tab => {
+                        tab.classList.remove('active');
+                        if (tab.id === targetTab) {
+                            tab.classList.add('active');
+                        }
+                    });
+                });
+
+                // Keyboard navigation
+                btn.addEventListener('keydown', function(e) {
+                    let targetIndex = index;
+                    
+                    switch (e.key) {
+                        case 'ArrowLeft':
+                            targetIndex = index > 0 ? index - 1 : tutorialNavBtns.length - 1;
+                            break;
+                        case 'ArrowRight':
+                            targetIndex = index < tutorialNavBtns.length - 1 ? index + 1 : 0;
+                            break;
+                        case 'Home':
+                            targetIndex = 0;
+                            break;
+                        case 'End':
+                            targetIndex = tutorialNavBtns.length - 1;
+                            break;
+                        default:
+                            return;
+                    }
+                    
+                    e.preventDefault();
+                    tutorialNavBtns[targetIndex].click();
+                    tutorialNavBtns[targetIndex].focus();
+                });
+            });
+        });
+    </script>
+
+    <!-- Chatbot -->
+    <div id="msme-chatbot" class="chatbot-container">
+        <button id="chatbot-toggle" class="chatbot-toggle" aria-label="Open chat assistant">
+            <span class="chat-icon">💬</span>
+            <span class="chat-badge" id="chat-notification-badge">1</span>
+        </button>
+
+        <div id="chat-window" class="chat-window">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <span class="chat-avatar">🤖</span>
+                    <span>MSME Assistant</span>
+                </div>
+                <div class="chat-controls">
+                    <button class="minimize-btn" aria-label="Minimize chat">_</button>
+                    <button class="close-btn" aria-label="Close chat">×</button>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be dynamically added here -->
+            </div>
+
+            <div class="quick-actions" id="quick-actions">
+                <button class="quick-action-btn" data-category="account">Account & Banking</button>
+                <button class="quick-action-btn" data-category="payments">Payments & Transfers</button>
+                <button class="quick-action-btn" data-category="invoices">Invoices</button>
+                <button class="quick-action-btn" data-category="tax">Tax & LHDN</button>
+                <button class="quick-action-btn" data-category="esg">ESG & Donations</button>
+                <button class="quick-action-btn" data-category="support">Technical Support</button>
+            </div>
+
+            <div class="chat-input-container">
+                <div class="typing-indicator" id="typing-indicator">
+                    <span></span><span></span><span></span>
+                </div>
+                <div class="chat-input-wrapper">
+                    <input type="text" id="chat-input" class="chat-input" 
+                           placeholder="Type your question here..." 
+                           aria-label="Chat message input">
+                    <button class="chat-send-btn" aria-label="Send message">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Account Modal -->
+    <div id="add-account-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-translate="addNewAccount">Add New Account</h2>
+                <button class="close-btn" onclick="closeAddAccountModal()" aria-label="Close modal">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-account-form">
+                    <div class="form-group">
+                        <label for="bank-select" data-translate="selectBank">Select Bank</label>
+                        <select id="bank-select" name="bankCode" required>
+                            <option value="" data-translate="chooseBank">Choose a bank...</option>
+                            <option value="MBB">Maybank</option>
+                            <option value="CIMB">CIMB Bank</option>
+                            <option value="PBB">Public Bank</option>
+                            <option value="RHB">RHB Bank</option>
+                            <option value="HLB">Hong Leong Bank</option>
+                            <option value="AMMB">AmBank</option>
+                            <option value="UOB">UOB Malaysia</option>
+                            <option value="OCBC">OCBC Bank</option>
+                            <option value="SCB">Standard Chartered</option>
+                            <option value="BSN">Bank Simpanan Nasional</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="account-number" data-translate="accountNumber">Account Number</label>
+                        <input type="text" id="account-number" name="accountNumber" 
+                               placeholder="Enter account number" required 
+                               pattern="[0-9]{10,16}" 
+                               title="Account number should be 10-16 digits">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="account-type" data-translate="accountType">Account Type</label>
+                        <select id="account-type" name="accountType" required>
+                            <option value="" data-translate="chooseType">Choose account type...</option>
+                            <option value="current">Current Account</option>
+                            <option value="savings">Savings Account</option>
+                            <option value="business">Business Account</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="is-default" name="isDefault">
+                            <span class="checkmark"></span>
+                            <span data-translate="setAsDefault">Set as default account</span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeAddAccountModal()" data-translate="cancel">Cancel</button>
+                        <button type="submit" class="btn-primary" data-translate="addAccount">Add Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

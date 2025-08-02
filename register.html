@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - Fixed Version</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .error {
+            border-color: #ef4444 !important;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .radio-option {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .radio-option:hover {
+            border-color: #3b82f6;
+        }
+
+        .radio-option.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .radio-option input {
+            display: none;
+        }
+
+        .business-fields {
+            display: none;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .business-fields.show {
+            display: block;
+        }
+
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        .btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .success-message {
+            background: #dcfce7;
+            color: #166534;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .demo-section {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .demo-btn {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .demo-btn:hover {
+            background: #d97706;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Create Account</h1>
+            <p>Join MSME Finance Platform</p>
+        </div>
+
+        <div class="form-container">
+            <div class="success-message" id="success-message">
+                ✅ Account created successfully! You can now log in.
+            </div>
+
+            <form id="registration-form">
+                <!-- Account Type -->
+                <div class="form-group">
+                    <label>Account Type *</label>
+                    <div class="radio-group">
+                        <div class="radio-option" onclick="selectAccountType('individual')">
+                            <input type="radio" name="userType" value="individual" required>
+                            <strong>Individual</strong><br>
+                            <small>Personal account for freelancers</small>
+                        </div>
+                        <div class="radio-option" onclick="selectAccountType('business')">
+                            <input type="radio" name="userType" value="business" required>
+                            <strong>Business</strong><br>
+                            <small>Company or business account</small>
+                        </div>
+                    </div>
+                    <div class="error-message" id="userType-error">Please select an account type</div>
+                </div>
+
+                <!-- Personal Information -->
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                    <div class="error-message" id="fullName-error">Please enter your full name</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="icNumber">IC Number *</label>
+                        <input type="text" id="icNumber" name="icNumber" required placeholder="123456-78-9012">
+                        <div class="error-message" id="icNumber-error">Please enter a valid IC number (format: 123456-78-9012)</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number *</label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="+60123456789">
+                        <div class="error-message" id="phoneNumber-error">Please enter a valid phone number (format: +60xxxxxxxxx)</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error-message" id="email-error">Please enter a valid email address</div>
+                </div>
+
+                <!-- Business Fields -->
+                <div class="business-fields" id="business-fields">
+                    <h3>Business Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="businessName">Business Name *</label>
+                        <input type="text" id="businessName" name="businessName">
+                        <div class="error-message" id="businessName-error">Please enter your business name</div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ssmNumber">SSM Number *</label>
+                            <input type="text" id="ssmNumber" name="ssmNumber" placeholder="12345678-X">
+                            <div class="error-message" id="ssmNumber-error">Please enter a valid SSM number (format: 12345678-X)</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="businessType">Business Type *</label>
+                            <select id="businessType" name="businessType">
+                                <option value="">Select Type</option>
+                                <option value="sdn_bhd">Sdn Bhd</option>
+                                <option value="sole_proprietorship">Sole Proprietorship</option>
+                                <option value="partnership">Partnership</option>
+                            </select>
+                            <div class="error-message" id="businessType-error">Please select a business type</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security -->
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="error-message" id="password-error">Password must be at least 8 characters</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password *</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <div class="error-message" id="confirmPassword-error">Passwords do not match</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="securityPin">Security PIN *</label>
+                    <input type="password" id="securityPin" name="securityPin" required maxlength="6" placeholder="6 digits">
+                    <div class="error-message" id="securityPin-error">Please enter a 6-digit PIN</div>
+                </div>
+
+                <!-- Terms -->
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                        I agree to the Terms and Conditions *
+                    </label>
+                    <div class="error-message" id="agreeTerms-error">You must agree to the terms</div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group">
+                    <button type="submit" class="btn" id="submit-btn">Create Account</button>
+                </div>
+            </form>
+
+            <!-- Demo Data Section -->
+            <div class="demo-section">
+                <p><strong>Want to test quickly?</strong></p>
+                <button type="button" class="demo-btn" onclick="fillDemoData()">Fill Demo Data</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedAccountType = null;
+
+        // Account type selection
+        function selectAccountType(type) {
+            selectedAccountType = type;
+            
+            // Update radio buttons
+            document.querySelectorAll('input[name="userType"]').forEach(radio => {
+                radio.checked = radio.value === type;
+            });
+            
+            // Update visual selection
+            document.querySelectorAll('.radio-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            // Show/hide business fields
+            const businessFields = document.getElementById('business-fields');
+            if (type === 'business') {
+                businessFields.classList.add('show');
+                // Make business fields required
+                businessFields.querySelectorAll('input, select').forEach(field => {
+                    field.setAttribute('required', 'required');
+                });
+            } else {
+                businessFields.classList.remove('show');
+                // Remove required from business fields
+                businessFields.querySelectorAll('input, select').forEach(field => {
+                    field.removeAttribute('required');
+                });
+            }
+            
+            clearError('userType');
+        }
+
+        // Validation functions
+        function validateField(field) {
+            const value = field.value.trim();
+            const fieldName = field.name;
+            let isValid = true;
+            let errorMessage = '';
+
+            // Clear previous error
+            clearError(fieldName);
+
+            // Required field validation
+            if (field.hasAttribute('required') && !value) {
+                isValid = false;
+                errorMessage = `${getFieldLabel(fieldName)} is required`;
+            } else if (value) {
+                // Pattern validation
+                switch (fieldName) {
+                    case 'icNumber':
+                        if (!/^\d{6}-\d{2}-\d{4}$/.test(value)) {
+                            isValid = false;
+                            errorMessage = 'IC Number format: 123456-78-9012';
+                        }
+                        break;
+                    case 'phoneNumber':
+                        if (!/^\+60\d{8,10}$/.test(value)) {
+                            isValid = false;
+                            errorMessage = 'Phone format: +60xxxxxxxxx';
+                        }
+                        break;
+                    case 'email':
+                        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                            isValid = false;
+                            errorMessage = 'Please enter a valid email address';
+                        }
+                        break;
+                    case 'ssmNumber':
+                        if (!/^\d{8}-[A-Z]$/.test(value)) {
+                            isValid = false;
+                            errorMessage = 'SSM Number format: 12345678-X';
+                        }
+                        break;
+                    case 'password':
+                        if (value.length < 8) {
+                            isValid = false;
+                            errorMessage = 'Password must be at least 8 characters';
+                        }
+                        break;
+                    case 'securityPin':
+                        if (!/^\d{6}$/.test(value)) {
+                            isValid = false;
+                            errorMessage = 'Please enter a 6-digit PIN';
+                        }
+                        break;
+                }
+            }
+
+            // Password confirmation check
+            if (fieldName === 'confirmPassword') {
+                const password = document.getElementById('password').value;
+                if (value !== password) {
+                    isValid = false;
+                    errorMessage = 'Passwords do not match';
+                }
+            }
+
+            // Account type validation
+            if (fieldName === 'userType') {
+                if (!selectedAccountType) {
+                    isValid = false;
+                    errorMessage = 'Please select an account type';
+                }
+            }
+
+            // Show error if invalid
+            if (!isValid) {
+                showError(fieldName, errorMessage);
+                field.classList.add('error');
+            } else {
+                field.classList.remove('error');
+            }
+
+            return isValid;
+        }
+
+        function showError(fieldName, message) {
+            const errorElement = document.getElementById(`${fieldName}-error`);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+        }
+
+        function clearError(fieldName) {
+            const errorElement = document.getElementById(`${fieldName}-error`);
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
+            const field = document.querySelector(`[name="${fieldName}"]`);
+            if (field) {
+                field.classList.remove('error');
+            }
+        }
+
+        function getFieldLabel(fieldName) {
+            const labels = {
+                'fullName': 'Full Name',
+                'icNumber': 'IC Number',
+                'phoneNumber': 'Phone Number',
+                'email': 'Email Address',
+                'businessName': 'Business Name',
+                'ssmNumber': 'SSM Number',
+                'businessType': 'Business Type',
+                'password': 'Password',
+                'confirmPassword': 'Confirm Password',
+                'securityPin': 'Security PIN',
+                'agreeTerms': 'Terms Agreement',
+                'userType': 'Account Type'
+            };
+            return labels[fieldName] || fieldName;
+        }
+
+        function validateForm() {
+            let isValid = true;
+            
+            // Validate all required fields
+            const requiredFields = document.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (!validateField(field)) {
+                    isValid = false;
+                }
+            });
+
+            // Validate account type selection
+            if (!selectedAccountType) {
+                showError('userType', 'Please select an account type');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Form submission
+        document.getElementById('registration-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateForm()) {
+                // Show loading state
+                const submitBtn = document.getElementById('submit-btn');
+                submitBtn.textContent = 'Creating Account...';
+                submitBtn.disabled = true;
+
+                // Collect form data
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData.entries());
+                data.userType = selectedAccountType;
+
+                // Simulate registration process
+                setTimeout(() => {
+                    // Save to localStorage
+                    try {
+                        localStorage.setItem('msme-registration-data', JSON.stringify(data));
+                        console.log('Registration data saved:', data);
+                    } catch (error) {
+                        console.error('Failed to save registration data:', error);
+                    }
+
+                    // Show success message
+                    document.getElementById('success-message').style.display = 'block';
+                    
+                    // Reset form
+                    this.reset();
+                    selectedAccountType = null;
+                    document.querySelectorAll('.radio-option').forEach(option => {
+                        option.classList.remove('selected');
+                    });
+                    document.getElementById('business-fields').classList.remove('show');
+                    
+                    // Reset button
+                    submitBtn.textContent = 'Create Account';
+                    submitBtn.disabled = false;
+                    
+                    // Scroll to success message
+                    document.getElementById('success-message').scrollIntoView({ behavior: 'smooth' });
+
+                    // Redirect to index.html after a short delay
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500); // 1.5 seconds delay to show success message
+                }, 2000);
+            }
+        });
+
+        // Real-time validation
+        document.querySelectorAll('input, select').forEach(field => {
+            field.addEventListener('blur', () => validateField(field));
+            field.addEventListener('input', () => {
+                if (field.classList.contains('error')) {
+                    validateField(field);
+                }
+            });
+        });
+
+        // Demo data
+        function fillDemoData() {
+            const demoData = {
+                fullName: "Ahmad bin Abdullah",
+                icNumber: "850123-05-1234",
+                phoneNumber: "+60123456789",
+                email: "ahmad@foodtruck.com",
+                businessName: "Ahmad Food Truck Sdn Bhd",
+                ssmNumber: "12345678-X",
+                businessType: "sdn_bhd",
+                password: "SecurePass123!",
+                confirmPassword: "SecurePass123!",
+                securityPin: "123456"
+            };
+
+            // Fill the form
+            Object.keys(demoData).forEach(key => {
+                const field = document.getElementById(key);
+                if (field) {
+                    field.value = demoData[key];
+                    validateField(field);
+                }
+            });
+
+            // Select business account type
+            selectAccountType('business');
+            
+            // Check terms
+            document.getElementById('agreeTerms').checked = true;
+            
+            console.log('Demo data filled');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Registration form loaded');
+        });
+    </script>
+</body>
+</html> 

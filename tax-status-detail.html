@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Status Detail - MSME Finance Platform</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="tax_sales/main.css">
+    <link rel="stylesheet" href="tax_sales/mobile.css">
+    <link rel="stylesheet" href="tax_sales/tax.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="tax-status-detail-screen" class="screen active">
+        <!-- Header -->
+        <header class="screen-header">
+            <button class="back-btn" onclick="window.location.href='tax-status.html'">←</button>
+            <h1>Submission Detail</h1>
+            <button class="help-btn" onclick="showDetailHelp()">?</button>
+        </header>
+
+        <main class="tax-main">
+            <!-- Submission Info -->
+            <section class="submission-info">
+                <div class="submission-header">
+                    <div class="submission-id">
+                        <h2>Submission #<span id="submission-id">TB-2024-001</span></h2>
+                        <div class="submission-date" id="submission-date">Submitted on 15 March 2024</div>
+                    </div>
+                    <div class="status-badge" id="status-badge">
+                        <span class="status-text">Pending Review</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tax Summary -->
+            <section class="tax-summary-detail">
+                <h3>Tax Summary</h3>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <label>Income Tax</label>
+                        <span id="income-tax-amount">RM 12,450.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <label>Business Tax</label>
+                        <span id="business-tax-amount">RM 8,200.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <label>SST</label>
+                        <span id="sst-amount">RM 2,700.00</span>
+                    </div>
+                    <div class="summary-item total">
+                        <label>Total Tax</label>
+                        <span id="total-tax-amount">RM 23,350.00</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Status Timeline -->
+            <section class="status-timeline">
+                <h3>Status Timeline</h3>
+                <div class="timeline" id="status-timeline">
+                    <!-- Timeline will be populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Correction Prompts -->
+            <section class="correction-prompts" id="correction-section" style="display: none;">
+                <h3>Required Corrections</h3>
+                <div class="prompts-list" id="prompts-list">
+                    <!-- Prompts will be populated by JavaScript -->
+                </div>
+                
+                <div class="correction-actions">
+                    <button class="btn-primary" onclick="resubmitTax()">
+                        Resubmit with Corrections
+                    </button>
+                    <button class="btn-secondary" onclick="downloadCorrectionForm()">
+                        Download Correction Form
+                    </button>
+                </div>
+            </section>
+
+            <!-- Documents -->
+            <section class="documents-section">
+                <h3>Documents</h3>
+                <div class="documents-list">
+                    <div class="document-item">
+                        <div class="document-info">
+                            <span class="document-name">Original Tax Form</span>
+                            <span class="document-date">15 March 2024</span>
+                        </div>
+                        <button class="btn-tertiary" onclick="downloadDocument('original')">
+                            Download
+                        </button>
+                    </div>
+                    <div class="document-item">
+                        <div class="document-info">
+                            <span class="document-name">Supporting Documents</span>
+                            <span class="document-date">15 March 2024</span>
+                        </div>
+                        <button class="btn-tertiary" onclick="downloadDocument('supporting')">
+                            Download
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Action Buttons -->
+            <section class="detail-actions">
+                <button class="btn-primary" onclick="contactSupport()">
+                    Contact Support
+                </button>
+                <button class="btn-secondary" onclick="printDetail()">
+                    Print Details
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="tax_sales/mock-data.js"></script>
+    <script src="tax_sales/tax-status-detail.js"></script>
+</body>
+</html> 

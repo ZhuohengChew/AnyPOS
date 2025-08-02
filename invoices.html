@@ -1,0 +1,3249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice Management - MSME Finance Platform</title>
+  
+  <!-- jsPDF Library for PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2563eb">
+  
+  <!-- Accessibility -->
+  <meta name="description" content="Invoice Management - Create, view and manage invoices for Malaysian businesses">
+</head>
+<body>
+  <!-- Skip Links for Accessibility
+  <div class="skip-links">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+  </div> -->
+
+  <!-- ARIA Live Region -->
+  <div id="live-region" class="sr-live-region" aria-live="polite"></div>
+
+  <!-- Invoice Management Screen -->
+  <div id="invoice-screen" class="screen active">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-content">
+        <button class="back-btn" onclick="window.location.href='index.html'" aria-label="Back to dashboard">
+          ←
+        </button>
+        <h1>Invoice Management</h1>
+        <div class="header-actions">
+          <button class="btn-secondary" onclick="downloadAllInvoices()">
+            📥 Download All
+          </button>
+          <button id="excel-upload-btn" class="btn-secondary">
+            📊 Upload Excel
+          </button>
+          <button class="btn-primary" onclick="showCreateInvoice()">
+            + New Invoice
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="invoice-main">
+      <div class="container">
+        <!-- Invoice Summary Cards -->
+        <section class="invoice-summary">
+          <div class="summary-cards">
+            <div class="summary-card">
+              <div class="card-icon">📄</div>
+              <div class="card-info">
+                <h3>Total Transactions</h3>
+                <p class="card-value">8</p>
+                <span class="card-change positive">5 income, 3 expenses</span>
+              </div>
+            </div>
+            
+            <div class="summary-card">
+              <div class="card-icon">💰</div>
+              <div class="card-info">
+                <h3>Net Revenue</h3>
+                <p class="card-value amount-positive">+RM 4,915.50</p>
+                <span class="card-change">Income vs Expenses</span>
+              </div>
+            </div>
+            
+            <div class="summary-card">
+              <div class="card-icon">⏳</div>
+              <div class="card-info">
+                <h3>Pending</h3>
+                <p class="card-value">3</p>
+                <span class="card-change">RM 5,100.00</span>
+              </div>
+            </div>
+            
+            <div class="summary-card">
+              <div class="card-icon">⚠️</div>
+              <div class="card-info">
+                <h3>Overdue</h3>
+                <p class="card-value">1</p>
+                <span class="card-change negative">RM 890.00</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Filters and Search -->
+        <section class="invoice-filters">
+          <div class="filter-row">
+            <div class="search-box">
+              <input type="text" id="invoice-search" placeholder="Search invoices..." aria-label="Search invoices">
+              <button class="search-btn" aria-label="Search">🔍</button>
+            </div>
+            
+            <div class="filter-controls">
+              <!-- Invoice Type Filter -->
+              <select id="type-filter" aria-label="Filter by invoice type">
+                <option value="expense">Expense Invoices</option>
+                <option value="income">Income Invoices</option>
+                <option value="">All Invoices</option>
+              </select>
+              
+              <select id="status-filter" aria-label="Filter by status">
+                <option value="">All Status</option>
+                <option value="draft">Draft</option>
+                <option value="unpaid">Unpaid</option>
+                <option value="paid">Paid</option>
+                <option value="overdue">Overdue</option>
+              </select>
+              
+              <input type="date" id="date-from" aria-label="From date">
+              <input type="date" id="date-to" aria-label="To date">
+              
+              <button class="btn-secondary" onclick="applyFilters()">Filter</button>
+              <button class="btn-tertiary" onclick="clearFilters()">Clear</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Invoice List -->
+        <section class="invoice-list-section">
+          <div class="section-header">
+            <h2 id="invoice-list-title">Expense Invoices</h2>
+            <div class="view-toggle">
+              <button class="view-btn active" data-view="list" onclick="toggleView('list')">📋</button>
+              <button class="view-btn" data-view="grid" onclick="toggleView('grid')">⊞</button>
+            </div>
+          </div>
+          
+          <!-- List View -->
+          <div id="invoice-list" class="invoice-list active">
+            <div class="list-header">
+              <div class="header-cell">Transaction #</div>
+              <div class="header-cell">Customer/Vendor</div>
+              <div class="header-cell">Amount</div>
+              <div class="header-cell">Date</div>
+              <div class="header-cell">Status</div>
+              <div class="header-cell">Category</div>
+              <div class="header-cell">Actions</div>
+            </div>
+            
+            <div id="invoice-items" class="invoice-items">
+              <!-- Dynamic content will be loaded here -->
+            </div>
+          </div>
+          
+          <!-- Grid View -->
+          <div id="invoice-grid" class="invoice-grid">
+            <div id="invoice-cards" class="invoice-cards">
+              <!-- Dynamic content will be loaded here -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <button class="page-btn" onclick="changePage(-1)">← Previous</button>
+          <span class="page-info">Page 1 of 1</span>
+          <button class="page-btn" onclick="changePage(1)">Next →</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create Invoice Modal -->
+  <div id="create-invoice-modal" class="modal">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h2>Create New Invoice</h2>
+        <button class="close-btn" onclick="closeModal('create-invoice-modal')">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <form id="create-invoice-form" class="invoice-form">
+          <!-- Customer Information Section -->
+          <div class="form-section customer-section">
+            <div class="section-header">
+              <h3>👤 Customer Information</h3>
+              <span class="section-step">Step 1 of 4</span>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="customer-name">Customer Name *</label>
+                <input type="text" id="customer-name" name="customerName" required placeholder="Enter customer name">
+              </div>
+              
+              <div class="form-group">
+                <label for="customer-email">Email Address</label>
+                <input type="email" id="customer-email" name="customerEmail" placeholder="customer@email.com">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="customer-address">Billing Address</label>
+              <textarea id="customer-address" name="customerAddress" rows="3" placeholder="Enter customer's billing address"></textarea>
+            </div>
+          </div>
+
+          <!-- Invoice Details Section -->
+          <div class="form-section invoice-details-section">
+            <div class="section-header">
+              <h3>📋 Invoice Details</h3>
+              <span class="section-step">Step 2 of 4</span>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="invoice-number">Invoice Number</label>
+                <input type="text" id="invoice-number" name="invoiceNumber" value="INV-2024-009" readonly>
+                <small class="field-help">Auto-generated invoice number</small>
+              </div>
+              
+              <div class="form-group">
+                <label for="transaction-type">Transaction Type *</label>
+                <select id="transaction-type" name="transactionType" required onchange="updateInvoiceNumberFormat()">
+                  <option value="income">Income (+)</option>
+                  <option value="expense">Expense (-)</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="invoice-date">Invoice Date *</label>
+                <input type="date" id="invoice-date" name="invoiceDate" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="due-date">Due Date *</label>
+                <input type="date" id="due-date" name="dueDate" required>
+                <small class="field-help">Payment due date</small>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="transaction-category">Category *</label>
+                <select id="transaction-category" name="transactionCategory" required>
+                  <option value="">Select Category</option>
+                  <option value="food-meals">🍽️ Food & Meals</option>
+                  <option value="transport">🚗 Transport</option>
+                  <option value="business-expenses">🏢 Business Expenses</option>
+                  <option value="office-rent">🏠 Office/Rent</option>
+                  <option value="technology">📱 Technology</option>
+                  <option value="education">📚 Education</option>
+                  <option value="medical">🏥 Medical</option>
+                  <option value="professional-services">💼 Professional Services</option>
+                  <option value="marketing">🎯 Marketing</option>
+                  <option value="utilities">⚡ Utilities</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Line Items Section -->
+          <div class="form-section line-items-section">
+            <div class="section-header">
+              <h3>📦 Items & Services</h3>
+              <span class="section-step">Step 3 of 4</span>
+            </div>
+            
+            <div class="items-container">
+              <div class="items-header">
+                <div class="header-cell description-header">Description</div>
+                <div class="header-cell qty-header">Qty</div>
+                <div class="header-cell price-header">Unit Price (RM)</div>
+                <div class="header-cell total-header">Total (RM)</div>
+                <div class="header-cell action-header"></div>
+              </div>
+              
+              <div id="line-items" class="line-items">
+                <!-- Dynamic line items will be added here -->
+              </div>
+              
+              <div class="add-item-container">
+                <button type="button" class="btn-add-item" onclick="addLineItem()">
+                  <span class="add-icon">+</span>
+                  Add Item
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Invoice Totals Section -->
+          <div class="form-section totals-section">
+            <div class="section-header">
+              <h3>💰 Invoice Summary</h3>
+              <span class="section-step">Step 4 of 4</span>
+            </div>
+            
+            <div class="totals-container">
+              <div class="totals-breakdown">
+                <div class="breakdown-row">
+                  <span class="breakdown-label">Subtotal:</span>
+                  <span id="subtotal-amount" class="breakdown-amount">RM 0.00</span>
+                </div>
+                <div class="breakdown-row">
+                  <span class="breakdown-label">SST (6%):</span>
+                  <span id="sst-amount" class="breakdown-amount">RM 0.00</span>
+                </div>
+                <div class="breakdown-row total-row">
+                  <span class="breakdown-label"><strong>Total Amount:</strong></span>
+                  <span id="total-amount" class="breakdown-amount total-amount"><strong>RM 0.00</strong></span>
+                </div>
+              </div>
+              
+              <div class="payment-terms">
+                <small class="terms-text">
+                  <strong>Payment Terms:</strong> Payment is due within 30 days of invoice date. 
+                  Late payments may incur additional charges.
+                </small>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-tertiary" onclick="closeModal('create-invoice-modal')">Cancel</button>
+        <button class="btn-secondary" onclick="saveAsDraft()">Save as Draft</button>
+        <button class="btn-primary" onclick="createInvoice()">Create & Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Invoice Detail Modal -->
+  <div id="invoice-detail-modal" class="modal">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h2 id="invoice-detail-title">Invoice #INV-2024-001</h2>
+        <div class="header-actions">
+          <button id="pay-invoice-btn" class="btn-primary" onclick="payInvoice(getCurrentInvoiceId())" style="display: none;">💳 Pay Invoice</button>
+          <button class="btn-secondary" onclick="downloadInvoice(getCurrentInvoiceId())">📥 Download</button>
+          <button class="close-btn" onclick="closeModal('invoice-detail-modal')">&times;</button>
+        </div>
+      </div>
+      
+      <div class="modal-body">
+        <div id="invoice-preview" class="invoice-preview">
+          <!-- Invoice preview content will be generated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Clear any existing localStorage data to start fresh
+    localStorage.removeItem('msme_invoices');
+    
+    // Use a unique variable name to avoid conflicts
+    const invoiceData = [
+      {
+        id: 'INV-2024-001',
+        customerName: 'Ahmad Restaurant Sdn Bhd',
+        customerEmail: 'accounts@ahmadrestaurant.com',
+        amount: 2450.00,
+        date: '2024-01-15',
+        dueDate: '2024-02-14',
+        status: 'paid',
+        type: 'income',
+        category: 'food-meals',
+        items: [
+          { description: 'Catering Service - Wedding Event', quantity: 1, price: 2200.00 },
+          { description: 'Additional Decorations', quantity: 1, price: 250.00 }
+        ]
+      },
+      {
+        id: 'INV-2024-002',
+        customerName: 'Tech Solutions Malaysia',
+        customerEmail: 'billing@techsolutions.my',
+        amount: 3200.00,
+        date: '2024-01-18',
+        dueDate: '2024-02-17',
+        status: 'unpaid',
+        type: 'income',
+        category: 'professional-services',
+        items: [
+          { description: 'Web Development Services', quantity: 40, price: 80.00 }
+        ]
+      },
+      {
+        id: 'EXP-2024-001',
+        customerName: 'Office Rent Payment',
+        customerEmail: 'landlord@properties.my',
+        amount: 2500.00,
+        date: '2024-01-20',
+        dueDate: '2024-01-25',
+        status: 'paid',
+        type: 'expense',
+        category: 'office-rent',
+        items: [
+          { description: 'Monthly Office Rent - January 2024', quantity: 1, price: 2500.00 }
+        ]
+      },
+      {
+        id: 'INV-2024-003',
+        customerName: 'Green Valley Farm',
+        customerEmail: 'admin@greenvalley.my',
+        amount: 890.00,
+        date: '2024-01-20',
+        dueDate: '2024-01-25',
+        status: 'overdue',
+        type: 'income',
+        category: 'food-meals',
+        items: [
+          { description: 'Organic Vegetables Supply', quantity: 50, price: 17.80 }
+        ]
+      },
+      {
+        id: 'EXP-2024-002',
+        customerName: 'Internet Service Provider',
+        customerEmail: 'billing@timefiber.my',
+        amount: 150.00,
+        date: '2024-01-22',
+        dueDate: '2024-02-21',
+        status: 'paid',
+        type: 'expense',
+        category: 'utilities',
+        items: [
+          { description: 'Business Internet Plan - January 2024', quantity: 1, price: 150.00 }
+        ]
+      },
+      {
+        id: 'INV-2024-004',
+        customerName: 'Sunrise Bakery',
+        customerEmail: 'orders@sunrisebakery.com',
+        amount: 1250.00,
+        date: '2024-01-22',
+        dueDate: '2024-02-21',
+        status: 'unpaid',
+        type: 'income',
+        category: 'food-meals',
+        items: [
+          { description: 'Birthday Cake - Custom Design', quantity: 1, price: 450.00 },
+          { description: 'Cupcakes Assorted', quantity: 100, price: 8.00 }
+        ]
+      },
+      {
+        id: 'EXP-2024-003',
+        customerName: 'Marketing Agency Sdn Bhd',
+        customerEmail: 'accounts@marketingpro.my',
+        amount: 850.00,
+        date: '2024-01-23',
+        dueDate: '2024-02-22',
+        status: 'unpaid',
+        type: 'expense',
+        category: 'marketing',
+        items: [
+          { description: 'Social Media Management - January 2024', quantity: 1, price: 850.00 }
+        ]
+      },
+      {
+        id: 'INV-2024-005',
+        customerName: 'Local Hardware Store',
+        customerEmail: 'purchasing@localhardware.my',
+        amount: 675.50,
+        date: '2024-01-25',
+        dueDate: '2024-02-24',
+        status: 'draft',
+        type: 'income',
+        category: 'business-expenses',
+        items: [
+          { description: 'Construction Tools Rental', quantity: 5, price: 135.10 }
+        ]
+      }
+    ];
+    // Mock data with fixed category mappings
+    const mockInvoices = [
+      {
+        id: 'INV-2024-001',
+        customerName: 'Ahmad Restaurant Sdn Bhd',
+        customerEmail: 'accounts@ahmadrestaurant.com',
+        amount: 2450.00,
+        date: '2024-01-15',
+        dueDate: '2024-02-14',
+        status: 'paid',
+        type: 'income',
+        category: 'food-meals',
+        items: [
+          { description: 'Catering Service - Wedding Event', quantity: 1, price: 2200.00 },
+          { description: 'Additional Decorations', quantity: 1, price: 250.00 }
+        ]
+      },
+      {
+        id: 'INV-2024-002',
+        customerName: 'Tech Solutions Malaysia',
+        customerEmail: 'billing@techsolutions.my',
+        amount: 3200.00,
+        date: '2024-01-18',
+        dueDate: '2024-02-17',
+        status: 'unpaid',
+        type: 'income',
+        category: 'professional-services',
+        items: [
+          { description: 'Web Development Services', quantity: 40, price: 80.00 }
+        ]
+      },
+      {
+        id: 'EXP-2024-001',
+        customerName: 'Office Rent Payment',
+        customerEmail: 'landlord@properties.my',
+        amount: 2500.00,
+        date: '2024-01-20',
+        dueDate: '2024-01-25',
+        status: 'paid',
+        type: 'expense',
+        category: 'office-rent',
+        items: [
+          { description: 'Monthly Office Rent - January 2024', quantity: 1, price: 2500.00 }
+        ]
+      },
+      {
+        id: 'INV-2024-003',
+        customerName: 'Green Valley Farm',
+        customerEmail: 'admin@greenvalley.my',
+        amount: 890.00,
+        date: '2024-01-20',
+        dueDate: '2024-01-25',
+        status: 'overdue',
+        type: 'income',
+        category: 'food-meals',
+        items: [
+          { description: 'Organic Vegetables Supply', quantity: 50, price: 17.80 }
+        ]
+      },
+      {
+        id: 'EXP-2024-002',
+        customerName: 'Internet Service Provider',
+        customerEmail: 'billing@timefiber.my',
+        amount: 150.00,
+        date: '2024-01-22',
+        dueDate: '2024-02-21',
+        status: 'paid',
+        type: 'expense',
+        category: 'utilities',
+        items: [
+          { description: 'Business Internet Plan - January 2024', quantity: 1, price: 150.00 }
+        ]
+      },
+      {
+        id: 'INV-2024-004',
+        customerName: 'Sunrise Bakery',
+        customerEmail: 'orders@sunrisebakery.com',
+        amount: 1250.00,
+        date: '2024-01-22',
+        dueDate: '2024-02-21',
+        status: 'unpaid',
+        type: 'income',
+        category: 'food-meals',
+        items: [
+          { description: 'Birthday Cake - Custom Design', quantity: 1, price: 450.00 },
+          { description: 'Cupcakes Assorted', quantity: 100, price: 8.00 }
+        ]
+      },
+      {
+        id: 'EXP-2024-003',
+        customerName: 'Marketing Agency Sdn Bhd',
+        customerEmail: 'accounts@marketingpro.my',
+        amount: 850.00,
+        date: '2024-01-23',
+        dueDate: '2024-02-22',
+        status: 'unpaid',
+        type: 'expense',
+        category: 'marketing',
+        items: [
+          { description: 'Social Media Management - January 2024', quantity: 1, price: 850.00 }
+        ]
+      },
+      {
+        id: 'INV-2024-005',
+        customerName: 'Local Hardware Store',
+        customerEmail: 'purchasing@localhardware.my',
+        amount: 675.50,
+        date: '2024-01-25',
+        dueDate: '2024-02-24',
+        status: 'draft',
+        type: 'income',
+        category: 'business-expenses',
+        items: [
+          { description: 'Construction Tools Rental', quantity: 5, price: 135.10 }
+        ]
+      }
+    ];
+
+    // Invoice Management Controller
+    class InvoiceController {
+      constructor() {
+        this.invoices = [];
+        this.filteredInvoices = [];
+        this.currentPage = 1;
+        this.itemsPerPage = 10;
+        this.currentView = 'list';
+        this.lineItemCounter = 0;
+        
+        this.init();
+      }
+
+      init() {
+        this.loadMockData();
+        this.setupEventListeners();
+        this.setDefaultDates();
+        this.setDefaultFilters();
+        this.renderInvoices();
+        this.updateSummaryCards();
+        
+        // Check if returning from payment completion
+        if (localStorage.getItem('payment_completed') === 'true') {
+          const paidInvoiceId = localStorage.getItem('paid_invoice_id');
+          localStorage.removeItem('payment_completed');
+          localStorage.removeItem('paid_invoice_id');
+          
+          if (paidInvoiceId) {
+            // Update the invoice status in memory and re-render
+            this.updateInvoiceStatusById(paidInvoiceId, 'paid');
+          }
+          
+          // Refresh the invoice list to show updated status
+          this.renderInvoices();
+          this.updateSummaryCards();
+          console.log('Refreshed invoice list after payment completion');
+        }
+      }
+
+      loadMockData() {
+        // Force use of the embedded invoice data and clear any existing localStorage
+        console.log('Loading fresh mock data...');
+        
+        // Always use the embedded invoice data to ensure categories are correct
+        this.invoices = [...invoiceData];
+        
+        // Save to localStorage for persistence
+        this.saveToStorage();
+        
+        // Debug: Log the categories to verify
+        console.log('Loaded invoices with categories:', this.invoices.map(inv => ({
+          id: inv.id,
+          category: inv.category,
+          type: inv.type
+        })));
+        
+        // Initialize filteredInvoices with all invoices
+        this.filteredInvoices = [...this.invoices];
+      }
+
+      saveToStorage() {
+        localStorage.setItem('msme_invoices', JSON.stringify(this.invoices));
+      }
+
+      setupEventListeners() {
+        // Search functionality
+        document.getElementById('invoice-search').addEventListener('input', (e) => {
+          this.searchInvoices(e.target.value);
+        });
+
+        // Filter changes
+        document.getElementById('status-filter').addEventListener('change', () => {
+          this.applyFilters();
+        });
+
+        // Type filter
+        document.getElementById('type-filter').addEventListener('change', () => {
+          this.applyFilters();
+        });
+
+        // Date filters
+        document.getElementById('date-from').addEventListener('change', () => {
+          this.applyFilters();
+        });
+
+        document.getElementById('date-to').addEventListener('change', () => {
+          this.applyFilters();
+        });
+      }
+
+      setDefaultDates() {
+        const today = new Date();
+        // Set a broader date range to include the mock data (2024-01-15 to 2024-01-25)
+        const startDate = new Date('2024-01-01');
+        const endDate = new Date('2024-12-31');
+        
+        document.getElementById('date-from').value = startDate.toISOString().split('T')[0];
+        document.getElementById('date-to').value = endDate.toISOString().split('T')[0];
+        document.getElementById('invoice-date').value = today.toISOString().split('T')[0];
+        
+        // Set due date to 30 days from today
+        const dueDate = new Date(today);
+        dueDate.setDate(today.getDate() + 30);
+        document.getElementById('due-date').value = dueDate.toISOString().split('T')[0];
+      }
+
+      setDefaultFilters() {
+        // Set default filter to expense invoices
+        document.getElementById('type-filter').value = 'expense';
+        // Apply the filter immediately
+        this.applyFilters();
+      }
+
+      updateSectionTitle(type) {
+        const titleElement = document.getElementById('invoice-list-title');
+        if (titleElement) {
+          switch (type) {
+            case 'expense':
+              titleElement.textContent = 'Expense Invoices';
+              break;
+            case 'income':
+              titleElement.textContent = 'Income Invoices';
+              break;
+            default:
+              titleElement.textContent = 'All Invoices';
+              break;
+          }
+        }
+      }
+
+      formatAmountWithType(amount, type) {
+        const formattedAmount = `RM ${amount.toFixed(2)}`;
+        
+        // FIXED: Correct color coding based on transaction type
+        if (type === 'income') {
+          return `<span class="amount-positive">+${formattedAmount}</span>`;
+        } else {
+          return `<span class="amount-negative">-${formattedAmount}</span>`;
+        }
+      }
+
+      getCategoryInfo(categoryId) {
+        // Debug log to see what category ID we're getting
+        console.log('Getting category info for:', categoryId);
+        
+        // FIXED: Updated category mapping to match mock data exactly
+        const categories = {
+          'food-meals': { name: 'Food & Meals', icon: '🍽️', color: '#FF6B35' },
+          'transport': { name: 'Transport', icon: '🚗', color: '#4A90E2' },
+          'business-expenses': { name: 'Business Expenses', icon: '🏢', color: '#9B59B6' },
+          'office-rent': { name: 'Office/Rent', icon: '🏠', color: '#27AE60' },
+          'technology': { name: 'Technology', icon: '📱', color: '#1ABC9C' },
+          'education': { name: 'Education', icon: '📚', color: '#F39C12' },
+          'medical': { name: 'Medical', icon: '🏥', color: '#E74C3C' },
+          'professional-services': { name: 'Professional Services', icon: '💼', color: '#2C3E50' },
+          'marketing': { name: 'Marketing', icon: '🎯', color: '#E91E63' },
+          'utilities': { name: 'Utilities', icon: '⚡', color: '#3498DB' }
+        };
+        
+        // Check if the category exists, if not, log and return default
+        if (categories[categoryId]) {
+          console.log('Found category:', categories[categoryId].name);
+          return categories[categoryId];
+        } else {
+          console.log('Category not found, using default. Available categories:', Object.keys(categories));
+          return { name: 'Other', icon: '📋', color: '#95A5A6' };
+        }
+      }
+
+      searchInvoices(query) {
+        if (!query.trim()) {
+          this.filteredInvoices = [...this.invoices];
+        } else {
+          this.filteredInvoices = this.invoices.filter(invoice => 
+            invoice.id.toLowerCase().includes(query.toLowerCase()) ||
+            invoice.customerName.toLowerCase().includes(query.toLowerCase()) ||
+            invoice.customerEmail.toLowerCase().includes(query.toLowerCase())
+          );
+        }
+        this.currentPage = 1;
+        this.renderInvoices();
+      }
+
+      applyFilters() {
+        const status = document.getElementById('status-filter').value;
+        const type = document.getElementById('type-filter').value;
+        const dateFrom = document.getElementById('date-from').value;
+        const dateTo = document.getElementById('date-to').value;
+        const searchQuery = document.getElementById('invoice-search').value;
+
+        console.log('Applying filters:', { status, type, dateFrom, dateTo, searchQuery });
+        console.log('Total invoices before filter:', this.invoices.length);
+
+        this.filteredInvoices = this.invoices.filter(invoice => {
+          const matchesStatus = !status || invoice.status === status;
+          const matchesType = !type || invoice.type === type;
+          const matchesDateRange = this.isDateInRange(invoice.date, dateFrom, dateTo);
+          const matchesSearch = !searchQuery || 
+            invoice.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            invoice.customerName.toLowerCase().includes(searchQuery.toLowerCase());
+          
+          const matches = matchesStatus && matchesType && matchesDateRange && matchesSearch;
+          
+          if (!matches) {
+            console.log(`Invoice ${invoice.id} filtered out:`, {
+              status: invoice.status, matchesStatus,
+              type: invoice.type, matchesType,
+              date: invoice.date, matchesDateRange,
+              searchQuery, matchesSearch
+            });
+          }
+          
+          return matches;
+        });
+
+        console.log('Filtered invoices count:', this.filteredInvoices.length);
+
+        // Update section title based on filter
+        this.updateSectionTitle(type);
+
+        this.currentPage = 1;
+        this.renderInvoices();
+      }
+
+      isDateInRange(invoiceDate, fromDate, toDate) {
+        if (!fromDate && !toDate) return true;
+        
+        const date = new Date(invoiceDate);
+        const from = fromDate ? new Date(fromDate) : new Date('1900-01-01');
+        const to = toDate ? new Date(toDate) : new Date('2099-12-31');
+        
+        return date >= from && date <= to;
+      }
+
+      clearFilters() {
+        document.getElementById('status-filter').value = '';
+        document.getElementById('type-filter').value = ''; // Reset to show all invoices
+        document.getElementById('invoice-search').value = '';
+        
+        // Reset to broader date range to include mock data
+        const startDate = new Date('2024-01-01');
+        const endDate = new Date('2024-12-31');
+        document.getElementById('date-from').value = startDate.toISOString().split('T')[0];
+        document.getElementById('date-to').value = endDate.toISOString().split('T')[0];
+        
+        this.filteredInvoices = [...this.invoices];
+        this.updateSectionTitle(''); // Update title to "All Invoices"
+        this.currentPage = 1;
+        this.renderInvoices();
+      }
+
+      toggleView(view) {
+        this.currentView = view;
+        
+        // Update view buttons
+        document.querySelectorAll('.view-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        document.querySelector(`[data-view="${view}"]`).classList.add('active');
+        
+        // Toggle view containers
+        document.getElementById('invoice-list').classList.toggle('active', view === 'list');
+        document.getElementById('invoice-grid').classList.toggle('active', view === 'grid');
+        
+        this.renderInvoices();
+      }
+
+      renderInvoices() {
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        const pageInvoices = this.filteredInvoices.slice(startIndex, endIndex);
+
+        if (this.currentView === 'list') {
+          this.renderListView(pageInvoices);
+        } else {
+          this.renderGridView(pageInvoices);
+        }
+
+        this.updatePagination();
+      }
+
+      formatStatus(status) {
+        const statusMap = {
+          'draft': 'Draft',
+          'unpaid': 'Unpaid',
+          'paid': 'Paid',
+          'overdue': 'Overdue'
+        };
+        return statusMap[status] || status;
+      }
+
+      renderListView(invoices) {
+        const container = document.getElementById('invoice-items');
+        container.innerHTML = invoices.map(invoice => {
+          const categoryInfo = this.getCategoryInfo(invoice.category);
+          return `
+            <div class="invoice-item" onclick="viewInvoice('${invoice.id}')">
+              <div class="item-cell" data-label="Invoice #:">${invoice.id}</div>
+              <div class="item-cell" data-label="Customer:">${invoice.customerName}</div>
+              <div class="item-cell" data-label="Amount:">${this.formatAmountWithType(invoice.amount, invoice.type)}</div>
+              <div class="item-cell" data-label="Date:">${this.formatDate(invoice.date)}</div>
+              <div class="item-cell" data-label="Status:">
+                <span class="status-badge ${invoice.status}">${this.formatStatus(invoice.status)}</span>
+              </div>
+              <div class="item-cell" data-label="Category:">
+                <div class="category-tag" style="background-color: ${categoryInfo.color}; color: white;">
+                  <span class="category-icon">${categoryInfo.icon}</span>
+                  <span class="category-name">${categoryInfo.name}</span>
+                </div>
+              </div>
+              <div class="item-cell" data-label="Actions:">
+                <div class="action-buttons">
+                  <button class="action-btn" onclick="event.stopPropagation(); viewInvoice('${invoice.id}')" title="View">👁️</button>
+                  <button class="action-btn" onclick="event.stopPropagation(); editInvoice('${invoice.id}')" title="Edit">✏️</button>
+                  <button class="action-btn" onclick="event.stopPropagation(); downloadInvoice('${invoice.id}')" title="Download">📥</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      renderGridView(invoices) {
+        const container = document.getElementById('invoice-cards');
+        container.innerHTML = invoices.map(invoice => {
+          const categoryInfo = this.getCategoryInfo(invoice.category);
+          return `
+            <div class="invoice-card" onclick="viewInvoice('${invoice.id}')">
+              <div class="card-header">
+                <span class="invoice-number">${invoice.id}</span>
+                <span class="status-badge ${invoice.status}">${this.formatStatus(invoice.status)}</span>
+              </div>
+              <div class="card-body">
+                <h4>${invoice.customerName}</h4>
+                <p class="amount">${this.formatAmountWithType(invoice.amount, invoice.type)}</p>
+                <p class="date">${this.formatDate(invoice.date)}</p>
+                <p class="due-date">Due: ${this.formatDate(invoice.dueDate)}</p>
+                <div class="category-tag" style="background-color: ${categoryInfo.color}; color: white;">
+                  <span class="category-icon">${categoryInfo.icon}</span>
+                  <span class="category-name">${categoryInfo.name}</span>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="action-btn" onclick="event.stopPropagation(); viewInvoice('${invoice.id}')" title="View">👁️</button>
+                <button class="action-btn" onclick="event.stopPropagation(); editInvoice('${invoice.id}')" title="Edit">✏️</button>
+                <button class="action-btn" onclick="event.stopPropagation(); downloadInvoice('${invoice.id}')" title="Download">📥</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      updatePagination() {
+        const totalPages = Math.ceil(this.filteredInvoices.length / this.itemsPerPage);
+        document.querySelector('.page-info').textContent = `Page ${this.currentPage} of ${totalPages}`;
+        
+        document.querySelector('.page-btn[onclick="changePage(-1)"]').disabled = this.currentPage === 1;
+        document.querySelector('.page-btn[onclick="changePage(1)"]').disabled = this.currentPage === totalPages;
+      }
+
+      changePage(direction) {
+        const totalPages = Math.ceil(this.filteredInvoices.length / this.itemsPerPage);
+        const newPage = this.currentPage + direction;
+        
+        if (newPage >= 1 && newPage <= totalPages) {
+          this.currentPage = newPage;
+          this.renderInvoices();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+
+      formatDate(dateString) {
+        return new Date(dateString).toLocaleDateString('en-MY', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        });
+      }
+
+      updateSummaryCards() {
+        const totalInvoices = this.invoices.length;
+        const incomeInvoices = this.invoices.filter(inv => inv.type === 'income');
+        const expenseInvoices = this.invoices.filter(inv => inv.type === 'expense');
+        
+        const totalIncome = incomeInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+        const totalExpenses = expenseInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+        const netRevenue = totalIncome - totalExpenses;
+        
+        const pendingInvoices = this.invoices.filter(inv => inv.status === 'unpaid').length;
+        const overdueInvoices = this.invoices.filter(inv => inv.status === 'overdue').length;
+        const pendingAmount = this.invoices.filter(inv => inv.status === 'unpaid').reduce((sum, inv) => sum + inv.amount, 0);
+        const overdueAmount = this.invoices.filter(inv => inv.status === 'overdue').reduce((sum, inv) => sum + inv.amount, 0);
+        
+        // Update summary cards content
+        const summaryCards = document.querySelectorAll('.summary-card');
+        if (summaryCards.length >= 4) {
+          // Total Transactions
+          summaryCards[0].querySelector('h3').textContent = 'Total Transactions';
+          summaryCards[0].querySelector('.card-value').textContent = totalInvoices;
+          summaryCards[0].querySelector('.card-change').textContent = `${incomeInvoices.length} income, ${expenseInvoices.length} expenses`;
+          
+          // Net Revenue (Income - Expenses)
+          summaryCards[1].querySelector('h3').textContent = 'Net Revenue';
+          summaryCards[1].querySelector('.card-value').innerHTML = netRevenue >= 0 ? 
+            `<span class="amount-positive">+RM ${netRevenue.toFixed(2)}</span>` :
+            `<span class="amount-negative">-RM ${Math.abs(netRevenue).toFixed(2)}</span>`;
+          summaryCards[1].querySelector('.card-change').textContent = `Income: +RM ${totalIncome.toFixed(2)} | Expenses: -RM ${totalExpenses.toFixed(2)}`;
+          summaryCards[1].querySelector('.card-change').className = 'card-change';
+          
+          // Pending
+          summaryCards[2].querySelector('.card-value').textContent = pendingInvoices;
+          summaryCards[2].querySelector('.card-change').textContent = `RM ${pendingAmount.toFixed(2)}`;
+          
+          // Overdue
+          summaryCards[3].querySelector('.card-value').textContent = overdueInvoices;
+          summaryCards[3].querySelector('.card-change').textContent = `RM ${overdueAmount.toFixed(2)}`;
+        }
+      }
+
+      addLineItem() {
+        this.lineItemCounter++;
+        const container = document.getElementById('line-items');
+        const lineItem = document.createElement('div');
+        lineItem.className = 'line-item';
+        lineItem.innerHTML = `
+          <div class="line-item-row">
+            <div class="form-group flex-grow">
+              <label>Description</label>
+              <input type="text" name="description[]" placeholder="Item description" required>
+            </div>
+            <div class="form-group">
+              <label>Qty</label>
+              <input type="number" name="quantity[]" min="1" value="1" onchange="calculateLineTotal(this)">
+            </div>
+            <div class="form-group">
+              <label>Price (RM)</label>
+              <input type="number" name="price[]" step="0.01" min="0" placeholder="0.00" onchange="calculateLineTotal(this)">
+            </div>
+            <div class="form-group">
+              <label>Total</label>
+              <input type="text" class="line-total" readonly placeholder="0.00">
+            </div>
+            <button type="button" class="remove-item-btn" onclick="removeLineItem(this)" title="Remove item">×</button>
+          </div>
+        `;
+        container.appendChild(lineItem);
+      }
+
+      viewInvoice(invoiceId) {
+        const invoice = this.invoices.find(inv => inv.id === invoiceId);
+        if (!invoice) return;
+
+        document.getElementById('invoice-detail-title').textContent = `Invoice ${invoice.id}`;
+        
+        const preview = document.getElementById('invoice-preview');
+        preview.innerHTML = this.generateInvoicePreview(invoice);
+        
+        // Show/hide pay button based on invoice status and type
+        const payButton = document.getElementById('pay-invoice-btn');
+        if (invoice.type === 'expense' && invoice.status === 'unpaid') {
+          payButton.style.display = 'inline-block';
+        } else {
+          payButton.style.display = 'none';
+        }
+        
+        document.getElementById('invoice-detail-modal').classList.add('active');
+      }
+
+      generateInvoicePreview(invoice) {
+        const subtotal = invoice.amount / 1.06; // Assuming 6% SST
+        const sst = invoice.amount - subtotal;
+        
+        return `
+          <div class="invoice-document">
+            <div class="invoice-header">
+              <div class="company-info">
+                <h2>${invoice.customerName}</h2>
+                <p>${invoice.customerAddress || 'No address provided'}<br>
+                ${invoice.customerEmail || 'No email provided'}</p>
+              </div>
+              <div class="invoice-meta">
+                <h1>INVOICE</h1>
+                <p><strong>Invoice #:</strong> ${invoice.id}</p>
+                <p><strong>Date:</strong> ${this.formatDate(invoice.date)}</p>
+                <p><strong>Due Date:</strong> ${this.formatDate(invoice.dueDate)}</p>
+              </div>
+            </div>
+            
+            <div class="customer-info">
+              <h3>Bill To:</h3>
+              <p><strong>${invoice.customerName}</strong><br>
+              ${invoice.customerEmail || 'No email provided'}<br>
+              ${invoice.customerAddress || 'No address provided'}</p>
+            </div>
+            
+            <div class="invoice-items">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${invoice.items.map(item => `
+                    <tr>
+                      <td>${item.description}</td>
+                      <td>${item.quantity}</td>
+                      <td>RM ${item.price.toFixed(2)}</td>
+                      <td>RM ${(item.quantity * item.price).toFixed(2)}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="invoice-totals">
+              <div class="total-row">
+                <span>Subtotal:</span>
+                <span>RM ${subtotal.toFixed(2)}</span>
+              </div>
+              <div class="total-row">
+                <span>SST (6%):</span>
+                <span>RM ${sst.toFixed(2)}</span>
+              </div>
+              <div class="total-row final">
+                <span><strong>Total:</strong></span>
+                <span><strong>RM ${invoice.amount.toFixed(2)}</strong></span>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      getNextInvoiceNumber() {
+        let maxNumber = 0;
+        this.invoices.forEach(invoice => {
+          const match = invoice.id.match(/INV-2024-(\d+)/);
+          if (match) {
+            const num = parseInt(match[1]);
+            if (num > maxNumber) {
+              maxNumber = num;
+            }
+          }
+        });
+        
+        return `INV-2024-${String(maxNumber + 1).padStart(3, '0')}`;
+      }
+
+      getNextExpenseNumber() {
+        let maxNumber = 0;
+        this.invoices.forEach(invoice => {
+          const match = invoice.id.match(/EXP-2024-(\d+)/);
+          if (match) {
+            const num = parseInt(match[1]);
+            if (num > maxNumber) {
+              maxNumber = num;
+            }
+          }
+        });
+        
+        return `EXP-2024-${String(maxNumber + 1).padStart(3, '0')}`;
+      }
+
+      announce(message) {
+        document.getElementById('live-region').textContent = message;
+      }
+
+      // New function to update invoice status by ID
+      updateInvoiceStatusById(invoiceId, newStatus) {
+        const invoiceIndex = this.invoices.findIndex(inv => inv.id === invoiceId);
+        if (invoiceIndex !== -1) {
+          this.invoices[invoiceIndex].status = newStatus;
+          this.saveToStorage();
+          console.log(`Updated invoice ${invoiceId} status to ${newStatus}`);
+        }
+      }
+    }
+
+    // Global functions
+    function showCreateInvoice() {
+      // Reset form
+      const form = document.getElementById('create-invoice-form');
+      form.reset();
+      
+      // Clear editing state
+      delete form.dataset.editingInvoiceId;
+      
+      // Reset modal title and button text
+      document.querySelector('#create-invoice-modal .modal-header h2').textContent = 'Create New Invoice';
+      document.querySelector('#create-invoice-modal .btn-primary').textContent = 'Create & Send';
+      
+      // Clear existing line items
+      document.getElementById('line-items').innerHTML = '';
+      
+      // Generate next invoice number
+      const nextInvoiceNumber = invoiceController.getNextInvoiceNumber();
+      document.getElementById('invoice-number').value = nextInvoiceNumber;
+      
+      // Set default transaction type
+      document.getElementById('transaction-type').value = 'income';
+      
+      // Set default dates
+      const today = new Date();
+      document.getElementById('invoice-date').value = today.toISOString().split('T')[0];
+      
+      const dueDate = new Date(today);
+      dueDate.setDate(today.getDate() + 30);
+      document.getElementById('due-date').value = dueDate.toISOString().split('T')[0];
+      
+      // Reset totals
+      calculateTotals();
+      
+      document.getElementById('create-invoice-modal').classList.add('active');
+      invoiceController.addLineItem(); // Add initial line item
+    }
+
+    function updateInvoiceNumberFormat() {
+      const transactionType = document.getElementById('transaction-type').value;
+      const isEditing = document.getElementById('create-invoice-form').dataset.editingInvoiceId;
+      
+      if (!isEditing) {
+        // Only update number format for new invoices
+        if (transactionType === 'expense') {
+          const nextExpenseNumber = invoiceController.getNextExpenseNumber();
+          document.getElementById('invoice-number').value = nextExpenseNumber;
+        } else {
+          const nextInvoiceNumber = invoiceController.getNextInvoiceNumber();
+          document.getElementById('invoice-number').value = nextInvoiceNumber;
+        }
+      }
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function applyFilters() {
+      invoiceController.applyFilters();
+    }
+
+    function clearFilters() {
+      invoiceController.clearFilters();
+    }
+
+    function toggleView(view) {
+      invoiceController.toggleView(view);
+    }
+
+    function changePage(direction) {
+      invoiceController.changePage(direction);
+    }
+
+    function viewInvoice(invoiceId) {
+      console.log('Viewing invoice:', invoiceId);
+      const invoice = invoiceController.invoices.find(inv => inv.id === invoiceId);
+      if (!invoice) {
+        alert('Invoice not found');
+        return;
+      }
+
+      document.getElementById('invoice-detail-title').textContent = `Invoice ${invoice.id}`;
+      
+      const preview = document.getElementById('invoice-preview');
+      preview.innerHTML = invoiceController.generateInvoicePreview(invoice);
+      
+      // Show/hide pay button based on invoice status and type
+      const payButton = document.getElementById('pay-invoice-btn');
+      if (invoice.type === 'expense' && invoice.status === 'unpaid') {
+        payButton.style.display = 'inline-block';
+      } else {
+        payButton.style.display = 'none';
+      }
+      
+      document.getElementById('invoice-detail-modal').classList.add('active');
+    }
+
+    function payInvoice(invoiceId) {
+      console.log('Paying invoice:', invoiceId);
+      const invoice = invoiceController.invoices.find(inv => inv.id === invoiceId);
+      if (!invoice) {
+        alert('Invoice not found');
+        return;
+      }
+
+      if (invoice.type !== 'expense' || invoice.status !== 'unpaid') {
+        alert('This invoice cannot be paid');
+        return;
+      }
+
+      // Store invoice data for payment page
+      localStorage.setItem('pay_invoice_data', JSON.stringify({
+        invoiceId: invoice.id,
+        amount: invoice.amount,
+        customerName: invoice.customerName,
+        description: `Payment for ${invoice.id} - ${invoice.customerName}`
+      }));
+
+      // Redirect to pay-invoice page
+      window.location.href = 'pay-invoice.html';
+    }
+
+    function editInvoice(invoiceId) {
+      console.log('Editing invoice:', invoiceId);
+      const invoice = invoiceController.invoices.find(inv => inv.id === invoiceId);
+      if (!invoice) {
+        alert('Invoice not found');
+        return;
+      }
+      
+      // Reset form first
+      const form = document.getElementById('create-invoice-form');
+      form.reset();
+      document.getElementById('line-items').innerHTML = '';
+      
+      // Populate customer information
+      document.getElementById('customer-name').value = invoice.customerName;
+      document.getElementById('customer-email').value = invoice.customerEmail || '';
+      document.getElementById('customer-address').value = invoice.customerAddress || '';
+      
+      // Populate invoice details
+      document.getElementById('invoice-number').value = invoice.id;
+      document.getElementById('invoice-date').value = invoice.date;
+      document.getElementById('due-date').value = invoice.dueDate;
+      document.getElementById('transaction-type').value = invoice.type || 'income';
+      document.getElementById('transaction-category').value = invoice.category || 'business-expenses';
+      
+      // Populate line items
+      invoice.items.forEach(item => {
+        invoiceController.addLineItem();
+        const lineItems = document.querySelectorAll('.line-item');
+        const lastItem = lineItems[lineItems.length - 1];
+        
+        lastItem.querySelector('input[name="description[]"]').value = item.description;
+        lastItem.querySelector('input[name="quantity[]"]').value = item.quantity;
+        lastItem.querySelector('input[name="price[]"]').value = item.price.toFixed(2);
+        
+        // Calculate line total
+        const qty = item.quantity;
+        const price = item.price;
+        const total = qty * price;
+        lastItem.querySelector('.line-total').value = total.toFixed(2);
+      });
+      
+      // Calculate totals
+      calculateTotals();
+      
+      // Store the invoice ID being edited
+      form.dataset.editingInvoiceId = invoiceId;
+      
+      // Change modal title and button text
+      document.querySelector('#create-invoice-modal .modal-header h2').textContent = `Edit Invoice ${invoice.id}`;
+      document.querySelector('#create-invoice-modal .btn-primary').textContent = 'Update Invoice';
+      
+      // Show modal
+      document.getElementById('create-invoice-modal').classList.add('active');
+    }
+
+    function downloadInvoice(invoiceId) {
+      console.log('Downloading invoice:', invoiceId);
+      // Get the invoice data
+      const invoice = invoiceController.invoices.find(inv => inv.id === (invoiceId || getCurrentInvoiceId()));
+      if (!invoice) {
+        alert('Invoice not found');
+        return;
+      }
+
+
+
+      try {
+        // Create PDF using jsPDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Set font
+        doc.setFont("helvetica");
+
+        // Header - Customer Info
+        doc.setFontSize(20);
+        doc.setFont("helvetica", "bold");
+        doc.text(invoice.customerName, 20, 25);
+        
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        if (invoice.customerAddress) {
+          const addressLines = invoice.customerAddress.split('\n');
+          addressLines.forEach((line, index) => {
+            doc.text(line.trim(), 20, 35 + (index * 7));
+          });
+        }
+        if (invoice.customerEmail) {
+          doc.text(invoice.customerEmail, 20, 35 + (invoice.customerAddress ? invoice.customerAddress.split('\n').length * 7 : 0));
+        }
+
+        // Invoice Title and Meta
+        doc.setFontSize(24);
+        doc.setFont("helvetica", "bold");
+        doc.text("INVOICE", 150, 25);
+        
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Invoice #: ${invoice.id}`, 150, 40);
+        doc.text(`Date: ${invoiceController.formatDate(invoice.date)}`, 150, 47);
+        doc.text(`Due Date: ${invoiceController.formatDate(invoice.dueDate)}`, 150, 54);
+
+        // Bill To Section
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text("Bill To:", 20, 70);
+        
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text(invoice.customerName, 20, 80);
+        if (invoice.customerEmail) {
+          doc.text(invoice.customerEmail, 20, 87);
+        }
+
+        // Table Header
+        let yPosition = 110;
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        
+        // Draw table header background
+        doc.setFillColor(245, 245, 245);
+        doc.rect(20, yPosition - 7, 170, 12, 'F');
+        
+        // Table headers
+        doc.text("Description", 25, yPosition);
+        doc.text("Qty", 120, yPosition);
+        doc.text("Price (RM)", 140, yPosition);
+        doc.text("Total (RM)", 170, yPosition);
+        
+        // Draw header border
+        doc.setDrawColor(200, 200, 200);
+        doc.line(20, yPosition + 3, 190, yPosition + 3);
+
+        // Table Content
+        yPosition += 15;
+        doc.setFont("helvetica", "normal");
+        
+        let subtotal = 0;
+        invoice.items.forEach((item, index) => {
+          const lineTotal = item.quantity * item.price;
+          subtotal += lineTotal;
+          
+          // Handle long descriptions
+          const description = item.description.length > 35 ? 
+            item.description.substring(0, 35) + "..." : item.description;
+          
+          doc.text(description, 25, yPosition);
+          doc.text(item.quantity.toString(), 125, yPosition);
+          doc.text(lineTotal.toFixed(2), 175, yPosition);
+          
+          yPosition += 8;
+          
+          // Add new page if needed
+          if (yPosition > 250) {
+            doc.addPage();
+            yPosition = 30;
+          }
+        });
+
+        // Totals Section
+        yPosition += 10;
+        const sst = subtotal * 0.06;
+        const total = subtotal + sst;
+
+        // Draw totals background
+        doc.setFillColor(248, 249, 250);
+        doc.rect(130, yPosition - 5, 60, 25, 'F');
+        doc.setDrawColor(233, 236, 239);
+        doc.rect(130, yPosition - 5, 60, 25);
+
+        doc.setFont("helvetica", "normal");
+        doc.text("Subtotal:", 135, yPosition);
+        doc.text(`RM ${subtotal.toFixed(2)}`, 175, yPosition);
+        
+        yPosition += 7;
+        doc.text("SST (6%):", 135, yPosition);
+        doc.text(`RM ${sst.toFixed(2)}`, 175, yPosition);
+        
+        // Final total with emphasis
+        yPosition += 7;
+        doc.setFont("helvetica", "bold");
+        doc.text("Total:", 135, yPosition);
+        doc.text(`RM ${total.toFixed(2)}`, 175, yPosition);
+
+        // Footer
+        yPosition += 20;
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(100, 100, 100);
+        doc.text("Thank you for your business!", 20, yPosition);
+        doc.text(`Generated on ${new Date().toLocaleDateString('en-MY')}`, 20, yPosition + 7);
+
+        // Save the PDF
+        const fileName = `Invoice_${invoice.id}_${invoice.customerName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+        doc.save(fileName);
+
+        // Show success message
+        invoiceController.announce(`Invoice ${invoice.id} downloaded successfully`);
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        alert(`Error generating PDF: ${error.message}`);
+      }
+
+
+    }
+
+    function getCurrentInvoiceId() {
+      // Get current invoice ID from modal title or other context
+      const modalTitle = document.getElementById('invoice-detail-title');
+      if (modalTitle) {
+        const match = modalTitle.textContent.match(/Invoice\s+([\w-]+)/);
+        return match ? match[1] : null;
+      }
+      return null;
+    }
+
+
+
+    function addLineItem() {
+      invoiceController.addLineItem();
+    }
+
+    function removeLineItem(button) {
+      button.closest('.line-item').remove();
+      calculateTotals();
+    }
+
+    function calculateLineTotal(input) {
+      const row = input.closest('.line-item-row');
+      const qty = row.querySelector('input[name="quantity[]"]').value || 0;
+      const price = row.querySelector('input[name="price[]"]').value || 0;
+      const total = qty * price;
+      
+      row.querySelector('.line-total').value = total.toFixed(2);
+      calculateTotals();
+    }
+
+    function calculateTotals() {
+      const lineTotals = Array.from(document.querySelectorAll('.line-total')).map(input => parseFloat(input.value) || 0);
+      const subtotal = lineTotals.reduce((sum, total) => sum + total, 0);
+      const sst = subtotal * 0.06;
+      const total = subtotal + sst;
+      
+      document.getElementById('subtotal-amount').textContent = `RM ${subtotal.toFixed(2)}`;
+      document.getElementById('sst-amount').textContent = `RM ${sst.toFixed(2)}`;
+      document.getElementById('total-amount').innerHTML = `<strong>RM ${total.toFixed(2)}</strong>`;
+    }
+
+    function saveAsDraft() {
+  const form = document.getElementById('create-invoice-form');
+  const formData = new FormData(form);
+  const isEditing = form.dataset.editingInvoiceId;
+  
+  // Validate minimum required fields for draft
+  if (!formData.get('customerName')) {
+    alert('Please enter a customer name before saving as draft');
+    return;
+  }
+  
+  // Get transaction type and category (use defaults if not provided)
+  const transactionType = formData.get('transactionType') || 'income';
+  const transactionCategory = formData.get('transactionCategory') || 'business-expenses';
+  
+  // Get line items (allow empty for drafts)
+  const lineItems = Array.from(document.querySelectorAll('.line-item')).map(item => {
+    const description = item.querySelector('input[name="description[]"]').value;
+    const quantity = parseFloat(item.querySelector('input[name="quantity[]"]').value) || 0;
+    const price = parseFloat(item.querySelector('input[name="price[]"]').value) || 0;
+    
+    if (description || quantity > 0 || price > 0) {
+      return { description: description || 'Draft item', quantity, price };
+    }
+    return null;
+  }).filter(item => item !== null);
+  
+  // If no line items, add a placeholder
+  if (lineItems.length === 0) {
+    lineItems.push({ description: 'Draft item', quantity: 1, price: 0 });
+  }
+  
+  // Calculate totals
+  const subtotal = lineItems.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+  const total = subtotal * 1.06; // Adding 6% SST
+  
+  if (isEditing) {
+    // Update existing invoice as draft
+    const invoiceIndex = invoiceController.invoices.findIndex(inv => inv.id === isEditing);
+    const filteredIndex = invoiceController.filteredInvoices.findIndex(inv => inv.id === isEditing);
+    
+    if (invoiceIndex !== -1) {
+      const updatedInvoice = {
+        id: isEditing, // Keep the same ID
+        customerName: formData.get('customerName'),
+        customerEmail: formData.get('customerEmail') || '',
+        customerAddress: formData.get('customerAddress') || '',
+        amount: total,
+        date: formData.get('invoiceDate') || new Date().toISOString().split('T')[0],
+        dueDate: formData.get('dueDate') || new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
+        status: 'draft',
+        type: transactionType,
+        category: transactionCategory,
+        items: lineItems
+      };
+      
+      // Update in both arrays
+      invoiceController.invoices[invoiceIndex] = updatedInvoice;
+      if (filteredIndex !== -1) {
+        invoiceController.filteredInvoices[filteredIndex] = updatedInvoice;
+      }
+      
+      // Save to localStorage
+      invoiceController.saveToStorage();
+      
+      // Refresh the invoice list display
+      invoiceController.renderInvoices();
+      
+      // Update summary cards
+      invoiceController.updateSummaryCards();
+      
+      // Show success message
+      invoiceController.announce(`Invoice ${isEditing} saved as draft`);
+      
+      alert(`Invoice ${isEditing} saved as draft successfully!`);
+    }
+  } else {
+    // Create new draft invoice
+    const newInvoiceId = transactionType === 'expense' ? 
+      invoiceController.getNextExpenseNumber() : 
+      invoiceController.getNextInvoiceNumber();
+    
+    const newInvoice = {
+      id: newInvoiceId,
+      customerName: formData.get('customerName'),
+      customerEmail: formData.get('customerEmail') || '',
+      customerAddress: formData.get('customerAddress') || '',
+      amount: total,
+      date: formData.get('invoiceDate') || new Date().toISOString().split('T')[0],
+      dueDate: formData.get('dueDate') || new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
+      status: 'draft',
+      type: transactionType,
+      category: transactionCategory,
+      items: lineItems
+    };
+    
+    // Add to invoices array
+    invoiceController.invoices.unshift(newInvoice);
+    invoiceController.filteredInvoices.unshift(newInvoice);
+    
+    // Save to localStorage
+    invoiceController.saveToStorage();
+    
+    // Refresh the invoice list display
+    invoiceController.renderInvoices();
+    
+    // Update summary cards
+    invoiceController.updateSummaryCards();
+    
+    // Show success message
+    invoiceController.announce(`Invoice ${newInvoiceId} saved as draft`);
+    
+    alert(`Invoice ${newInvoiceId} saved as draft successfully!`);
+  }
+  
+  // Reset form
+  form.reset();
+  document.getElementById('line-items').innerHTML = '';
+  calculateTotals();
+  
+  // Clear editing state
+  delete form.dataset.editingInvoiceId;
+  
+  // Reset modal title and button text
+  document.querySelector('#create-invoice-modal .modal-header h2').textContent = 'Create New Invoice';
+  document.querySelector('#create-invoice-modal .btn-primary').textContent = 'Create & Send';
+  
+  // Close modal
+  closeModal('create-invoice-modal');
+}
+
+function createInvoice() {
+  const form = document.getElementById('create-invoice-form');
+  const formData = new FormData(form);
+  const isEditing = form.dataset.editingInvoiceId;
+  
+  // Validate required fields
+  const requiredFields = ['customerName', 'invoiceDate', 'dueDate', 'transactionType', 'transactionCategory'];
+  for (const field of requiredFields) {
+    if (!formData.get(field)) {
+      alert(`Please fill in the ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+      return;
+    }
+  }
+  
+  // Check if there are line items
+  const lineItems = Array.from(document.querySelectorAll('.line-item')).map(item => {
+    const description = item.querySelector('input[name="description[]"]').value;
+    const quantity = parseFloat(item.querySelector('input[name="quantity[]"]').value) || 0;
+    const price = parseFloat(item.querySelector('input[name="price[]"]').value) || 0;
+    
+    if (description && quantity > 0 && price > 0) {
+      return { description, quantity, price };
+    }
+    return null;
+  }).filter(item => item !== null);
+  
+  if (lineItems.length === 0) {
+    alert('Please add at least one line item');
+    return;
+  }
+  
+  // Calculate totals
+  const subtotal = lineItems.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+  const total = subtotal * 1.06; // Adding 6% SST
+  
+  if (isEditing) {
+    // Update existing invoice
+    const invoiceIndex = invoiceController.invoices.findIndex(inv => inv.id === isEditing);
+    const filteredIndex = invoiceController.filteredInvoices.findIndex(inv => inv.id === isEditing);
+    
+    if (invoiceIndex !== -1) {
+      const updatedInvoice = {
+        id: isEditing, // Keep the same ID
+        customerName: formData.get('customerName'),
+        customerEmail: formData.get('customerEmail') || '',
+        customerAddress: formData.get('customerAddress') || '',
+        amount: total,
+        date: formData.get('invoiceDate'),
+        dueDate: formData.get('dueDate'),
+        status: invoiceController.invoices[invoiceIndex].status, // Keep existing status
+        type: formData.get('transactionType'),
+        category: formData.get('transactionCategory'),
+        items: lineItems
+      };
+      
+      // Update in both arrays
+      invoiceController.invoices[invoiceIndex] = updatedInvoice;
+      if (filteredIndex !== -1) {
+        invoiceController.filteredInvoices[filteredIndex] = updatedInvoice;
+      }
+      
+      // Save to localStorage
+      invoiceController.saveToStorage();
+      
+      // Refresh the invoice list display
+      invoiceController.renderInvoices();
+      
+      // Update summary cards
+      invoiceController.updateSummaryCards();
+      
+      // Show success message
+      invoiceController.announce(`Invoice ${isEditing} updated successfully`);
+      
+      alert(`Invoice ${isEditing} updated successfully!`);
+    }
+  } else {
+    // Create new invoice
+    const transactionType = formData.get('transactionType');
+    const newInvoiceId = transactionType === 'expense' ? 
+      invoiceController.getNextExpenseNumber() : 
+      invoiceController.getNextInvoiceNumber();
+    
+    const newInvoice = {
+      id: newInvoiceId,
+      customerName: formData.get('customerName'),
+      customerEmail: formData.get('customerEmail') || '',
+      customerAddress: formData.get('customerAddress') || '',
+      amount: total,
+      date: formData.get('invoiceDate'),
+      dueDate: formData.get('dueDate'),
+      status: 'unpaid',
+      type: transactionType,
+      category: formData.get('transactionCategory'),
+      items: lineItems
+    };
+    
+    // Add to invoices array
+    invoiceController.invoices.unshift(newInvoice);
+    invoiceController.filteredInvoices.unshift(newInvoice);
+    
+    // Save to localStorage
+    invoiceController.saveToStorage();
+    
+    // Refresh the invoice list display
+    invoiceController.renderInvoices();
+    
+    // Update summary cards
+    invoiceController.updateSummaryCards();
+    
+    // Show success message
+    invoiceController.announce(`Invoice ${newInvoiceId} created successfully`);
+    
+    alert(`Invoice ${newInvoiceId} created successfully!`);
+  }
+  
+  // Reset form
+  form.reset();
+  document.getElementById('line-items').innerHTML = '';
+  calculateTotals();
+  
+  // Clear editing state
+  delete form.dataset.editingInvoiceId;
+  
+  // Reset modal title and button text
+  document.querySelector('#create-invoice-modal .modal-header h2').textContent = 'Create New Invoice';
+  document.querySelector('#create-invoice-modal .btn-primary').textContent = 'Create & Send';
+  
+  // Close modal
+  closeModal('create-invoice-modal');
+}
+
+    function editInvoice(invoiceId) {
+  const invoice = invoiceController.invoices.find(inv => inv.id === invoiceId);
+  if (!invoice) {
+    alert('Invoice not found');
+    return;
+  }
+  
+  // Reset form first
+  const form = document.getElementById('create-invoice-form');
+  form.reset();
+  document.getElementById('line-items').innerHTML = '';
+  
+  // Populate customer information
+  document.getElementById('customer-name').value = invoice.customerName;
+  document.getElementById('customer-email').value = invoice.customerEmail || '';
+  document.getElementById('customer-address').value = invoice.customerAddress || '';
+  
+  // Populate invoice details
+  document.getElementById('invoice-number').value = invoice.id;
+  document.getElementById('invoice-date').value = invoice.date;
+  document.getElementById('due-date').value = invoice.dueDate;
+  document.getElementById('transaction-type').value = invoice.type || 'income';
+  document.getElementById('transaction-category').value = invoice.category || 'business-expenses';
+  
+  // Populate line items
+  invoice.items.forEach(item => {
+    invoiceController.addLineItem();
+    const lineItems = document.querySelectorAll('.line-item');
+    const lastItem = lineItems[lineItems.length - 1];
+    
+    lastItem.querySelector('input[name="description[]"]').value = item.description;
+    lastItem.querySelector('input[name="quantity[]"]').value = item.quantity;
+    lastItem.querySelector('input[name="price[]"]').value = item.price.toFixed(2);
+    
+    // Calculate line total
+    const qty = item.quantity;
+    const price = item.price;
+    const total = qty * price;
+    lastItem.querySelector('.line-total').value = total.toFixed(2);
+  });
+  
+  // Calculate totals
+  calculateTotals();
+  
+  // Store the invoice ID being edited
+  form.dataset.editingInvoiceId = invoiceId;
+  
+  // Change modal title and button text
+  document.querySelector('#create-invoice-modal .modal-header h2').textContent = `Edit Invoice ${invoice.id}`;
+  document.querySelector('#create-invoice-modal .btn-primary').textContent = 'Update Invoice';
+  
+  // Show modal
+  document.getElementById('create-invoice-modal').classList.add('active');
+}
+
+function downloadInvoice(invoiceId) {
+  // Get the invoice data
+  const invoice = invoiceController.invoices.find(inv => inv.id === (invoiceId || getCurrentInvoiceId()));
+  if (!invoice) {
+    alert('Invoice not found');
+    return;
+  }
+
+  // Show loading indicator
+  const originalText = event.target ? event.target.textContent : 'Download';
+  if (event.target) {
+    event.target.textContent = 'Generating PDF...';
+    event.target.disabled = true;
+  }
+
+  // Create PDF using jsPDF
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Set font
+  doc.setFont("helvetica");
+
+  // Header - Customer Info
+  doc.setFontSize(20);
+  doc.setFont("helvetica", "bold");
+  doc.text(invoice.customerName, 20, 25);
+  
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  if (invoice.customerAddress) {
+    const addressLines = invoice.customerAddress.split('\n');
+    addressLines.forEach((line, index) => {
+      doc.text(line.trim(), 20, 35 + (index * 7));
+    });
+  }
+  if (invoice.customerEmail) {
+    doc.text(invoice.customerEmail, 20, 35 + (invoice.customerAddress ? invoice.customerAddress.split('\n').length * 7 : 0));
+  }
+
+  // Invoice Title and Meta
+  doc.setFontSize(24);
+  doc.setFont("helvetica", "bold");
+  doc.text("INVOICE", 150, 25);
+  
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Invoice #: ${invoice.id}`, 150, 40);
+  doc.text(`Date: ${invoiceController.formatDate(invoice.date)}`, 150, 47);
+  doc.text(`Due Date: ${invoiceController.formatDate(invoice.dueDate)}`, 150, 54);
+
+  // Bill To Section
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("Bill To:", 20, 70);
+  
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.text(invoice.customerName, 20, 80);
+  if (invoice.customerEmail) {
+    doc.text(invoice.customerEmail, 20, 87);
+  }
+
+  // Table Header
+  let yPosition = 110;
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  
+  // Draw table header background
+  doc.setFillColor(245, 245, 245);
+  doc.rect(20, yPosition - 7, 170, 12, 'F');
+  
+  // Table headers
+  doc.text("Description", 25, yPosition);
+  doc.text("Qty", 120, yPosition);
+  doc.text("Price (RM)", 140, yPosition);
+  doc.text("Total (RM)", 170, yPosition);
+  
+  // Draw header border
+  doc.setDrawColor(200, 200, 200);
+  doc.line(20, yPosition + 3, 190, yPosition + 3);
+
+  // Table Content
+  yPosition += 15;
+  doc.setFont("helvetica", "normal");
+  
+  let subtotal = 0;
+  invoice.items.forEach((item, index) => {
+    const lineTotal = item.quantity * item.price;
+    subtotal += lineTotal;
+    
+    // Handle long descriptions
+    const description = item.description.length > 35 ? 
+      item.description.substring(0, 35) + "..." : item.description;
+    
+    doc.text(description, 25, yPosition);
+    doc.text(item.quantity.toString(), 125, yPosition);
+    doc.text(item.price.toFixed(2), 145, yPosition);
+    doc.text(lineTotal.toFixed(2), 175, yPosition);
+    
+    yPosition += 8;
+    
+    // Add new page if needed
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 30;
+    }
+  });
+
+  // Totals Section
+  yPosition += 10;
+  const sst = subtotal * 0.06;
+  const total = subtotal + sst;
+
+  // Draw totals background
+  doc.setFillColor(248, 249, 250);
+  doc.rect(130, yPosition - 5, 60, 25, 'F');
+  doc.setDrawColor(233, 236, 239);
+  doc.rect(130, yPosition - 5, 60, 25);
+
+  doc.setFont("helvetica", "normal");
+  doc.text("Subtotal:", 135, yPosition);
+  doc.text(`RM ${subtotal.toFixed(2)}`, 175, yPosition);
+  
+  yPosition += 7;
+  doc.text("SST (6%):", 135, yPosition);
+  doc.text(`RM ${sst.toFixed(2)}`, 175, yPosition);
+  
+  // Final total with emphasis
+  yPosition += 7;
+  doc.setFont("helvetica", "bold");
+  doc.text("Total:", 135, yPosition);
+  doc.text(`RM ${total.toFixed(2)}`, 175, yPosition);
+
+  // Footer
+  yPosition += 20;
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 100, 100);
+  doc.text("Thank you for your business!", 20, yPosition);
+  doc.text(`Generated on ${new Date().toLocaleDateString('en-MY')}`, 20, yPosition + 7);
+
+  // Save the PDF
+  const fileName = `Invoice_${invoice.id}_${invoice.customerName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+  doc.save(fileName);
+
+  // Reset button
+  setTimeout(() => {
+    if (event.target) {
+      event.target.textContent = originalText;
+      event.target.disabled = false;
+    }
+  }, 1000);
+
+  // Show success message
+  invoiceController.announce(`Invoice ${invoice.id} downloaded successfully`);
+}
+
+function getCurrentInvoiceId() {
+  // Get current invoice ID from modal title or other context
+  const modalTitle = document.getElementById('invoice-detail-title');
+  if (modalTitle) {
+    const match = modalTitle.textContent.match(/Invoice\s+([\w-]+)/);
+    return match ? match[1] : null;
+  }
+  return null;
+}
+
+function downloadAllInvoices() {
+  console.log('Download all invoices called');
+  console.log('Total filtered invoices:', invoiceController.filteredInvoices.length);
+  console.log('Invoices to download:', invoiceController.filteredInvoices.map(inv => inv.id));
+  
+  if (invoiceController.filteredInvoices.length === 0) {
+    alert('No invoices to download');
+    return;
+  }
+
+  if (invoiceController.filteredInvoices.length > 10) {
+    if (!confirm(`This will download ${invoiceController.filteredInvoices.length} invoices. Continue?`)) {
+      return;
+    }
+  }
+
+  // Ask user for download method
+  const downloadMethod = confirm(
+    `Download ${invoiceController.filteredInvoices.length} invoices.\n\n` +
+    'Click OK for batch download (recommended for many files)\n' +
+    'Click Cancel for individual downloads'
+  );
+
+  // Show progress
+  const progressDiv = document.createElement('div');
+  progressDiv.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    min-width: 300px;
+    text-align: center;
+  `;
+  progressDiv.innerHTML = `
+    <h3>Downloading Invoices</h3>
+    <div style="margin: 10px 0;">
+      <div id="download-progress" style="width: 100%; background: #f0f0f0; border-radius: 4px; height: 20px;">
+        <div id="progress-bar" style="width: 0%; background: #2563eb; height: 100%; border-radius: 4px; transition: width 0.3s;"></div>
+      </div>
+    </div>
+    <p id="progress-text">Preparing downloads...</p>
+  `;
+  document.body.appendChild(progressDiv);
+
+  // Download each invoice with delay
+  let completed = 0;
+  const total = invoiceController.filteredInvoices.length;
+
+  if (downloadMethod) {
+    // Batch download method - download in smaller batches
+    const batchSize = 3; // Download 3 at a time
+    let currentBatch = 0;
+
+    const downloadBatch = () => {
+      const startIndex = currentBatch * batchSize;
+      const endIndex = Math.min(startIndex + batchSize, total);
+      
+      if (startIndex >= total) {
+        document.body.removeChild(progressDiv);
+        alert(`Successfully downloaded ${total} invoices!`);
+        return;
+      }
+
+      // Download current batch
+      for (let i = startIndex; i < endIndex; i++) {
+        const invoice = invoiceController.filteredInvoices[i];
+        console.log(`Downloading invoice ${i + 1}/${total}:`, invoice.id);
+        
+        try {
+          generateInvoicePDF(invoice);
+          console.log(`Successfully generated PDF for ${invoice.id}`);
+        } catch (error) {
+          console.error(`Error generating PDF for ${invoice.id}:`, error);
+        }
+      }
+
+      completed = endIndex;
+      currentBatch++;
+      
+      const progress = Math.round((completed / total) * 100);
+      document.getElementById('progress-bar').style.width = progress + '%';
+      document.getElementById('progress-text').textContent = 
+        `Downloaded ${completed} of ${total} invoices...`;
+
+      // Wait before downloading next batch
+      setTimeout(downloadBatch, 2000); // 2 second delay between batches
+    };
+
+    downloadBatch();
+  } else {
+    // Individual download method - one by one with longer delays
+    const downloadNext = () => {
+      if (completed >= total) {
+        document.body.removeChild(progressDiv);
+        alert(`Successfully downloaded ${total} invoices!`);
+        return;
+      }
+
+      const invoice = invoiceController.filteredInvoices[completed];
+      const progress = Math.round((completed / total) * 100);
+      
+      document.getElementById('progress-bar').style.width = progress + '%';
+      document.getElementById('progress-text').textContent = 
+        `Downloading ${invoice.id} (${completed + 1} of ${total})`;
+
+      console.log(`Downloading invoice ${completed + 1}/${total}:`, invoice.id);
+
+      // Generate PDF for this invoice
+      try {
+        generateInvoicePDF(invoice);
+        console.log(`Successfully generated PDF for ${invoice.id}`);
+      } catch (error) {
+        console.error(`Error generating PDF for ${invoice.id}:`, error);
+      }
+      
+      completed++;
+      // Use a longer delay to prevent browser download blocking
+      setTimeout(downloadNext, 2500); // 2.5 second delay between downloads
+    };
+
+    downloadNext();
+  }
+}
+
+function generateInvoicePDF(invoice) {
+  try {
+    const { jsPDF } = window.jspdf;
+    if (!jsPDF) {
+      throw new Error('jsPDF library not loaded');
+    }
+    const doc = new jsPDF();
+
+    // Same PDF generation logic as downloadInvoice
+    doc.setFont("helvetica");
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.text(invoice.customerName, 20, 25);
+    
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    if (invoice.customerAddress) {
+      const addressLines = invoice.customerAddress.split('\n');
+      addressLines.forEach((line, index) => {
+        doc.text(line.trim(), 20, 35 + (index * 7));
+      });
+    }
+    if (invoice.customerEmail) {
+      doc.text(invoice.customerEmail, 20, 35 + (invoice.customerAddress ? invoice.customerAddress.split('\n').length * 7 : 0));
+    }
+
+    doc.setFontSize(24);
+    doc.setFont("helvetica", "bold");
+    doc.text("INVOICE", 150, 25);
+    
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Invoice #: ${invoice.id}`, 150, 40);
+    doc.text(`Date: ${invoiceController.formatDate(invoice.date)}`, 150, 47);
+    doc.text(`Due Date: ${invoiceController.formatDate(invoice.dueDate)}`, 150, 54);
+
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("Bill To:", 20, 70);
+    
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text(invoice.customerName, 20, 80);
+    if (invoice.customerEmail) {
+      doc.text(invoice.customerEmail, 20, 87);
+    }
+
+    let yPosition = 110;
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    
+    doc.setFillColor(245, 245, 245);
+    doc.rect(20, yPosition - 7, 170, 12, 'F');
+    
+    doc.text("Description", 25, yPosition);
+    doc.text("Qty", 120, yPosition);
+    doc.text("Price (RM)", 140, yPosition);
+    doc.text("Total (RM)", 170, yPosition);
+    
+    doc.setDrawColor(200, 200, 200);
+    doc.line(20, yPosition + 3, 190, yPosition + 3);
+
+    yPosition += 15;
+    doc.setFont("helvetica", "normal");
+    
+    let subtotal = 0;
+    invoice.items.forEach((item, index) => {
+      const lineTotal = item.quantity * item.price;
+      subtotal += lineTotal;
+      
+      const description = item.description.length > 35 ? 
+        item.description.substring(0, 35) + "..." : item.description;
+      
+      doc.text(description, 25, yPosition);
+      doc.text(item.quantity.toString(), 125, yPosition);
+      doc.text(item.price.toFixed(2), 145, yPosition);
+      doc.text(lineTotal.toFixed(2), 175, yPosition);
+      
+      yPosition += 8;
+    });
+
+    yPosition += 10;
+    const sst = subtotal * 0.06;
+    const total = subtotal + sst;
+
+    doc.setFillColor(248, 249, 250);
+    doc.rect(130, yPosition - 5, 60, 25, 'F');
+
+    doc.setFont("helvetica", "normal");
+    doc.text("Subtotal:", 135, yPosition);
+    doc.text(`RM ${subtotal.toFixed(2)}`, 175, yPosition);
+    
+    yPosition += 7;
+    doc.text("SST (6%):", 135, yPosition);
+    doc.text(`RM ${sst.toFixed(2)}`, 175, yPosition);
+    
+    yPosition += 7;
+    doc.setFont("helvetica", "bold");
+    doc.text("Total:", 135, yPosition);
+    doc.text(`RM ${total.toFixed(2)}`, 175, yPosition);
+
+    const fileName = `Invoice_${invoice.id}_${invoice.customerName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+    doc.save(fileName);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    alert(`Error generating PDF for ${invoice.id}: ${error.message}`);
+  }
+}
+
+    // Initialize
+    let invoiceController;
+    document.addEventListener('DOMContentLoaded', () => {
+      invoiceController = new InvoiceController();
+      // Make controller globally accessible for Excel upload
+      window.invoiceController = invoiceController;
+    });
+
+    // Debug function - can be called from browser console to reset data
+    function clearAllInvoiceData() {
+      if (invoiceController) {
+        localStorage.removeItem('msme_invoices');
+        invoiceController.loadMockData();
+        invoiceController.renderInvoices();
+        invoiceController.updateSummaryCards();
+        console.log('All invoice data cleared and reset to defaults');
+        console.log('Current invoices:', invoiceController.invoices.map(inv => ({
+          id: inv.id, 
+          category: inv.category, 
+          type: inv.type,
+          categoryInfo: invoiceController.getCategoryInfo(inv.category)
+        })));
+      }
+    }
+
+    // // Add button to clear data for testing
+    // document.addEventListener('DOMContentLoaded', () => {
+    //   // Add debug button
+    //   const debugBtn = document.createElement('button');
+    //   debugBtn.textContent = 'Reset Data (Debug)';
+    //   debugBtn.style.cssText = 'position: fixed; top: 10px; right: 10px; z-index: 9999; background: red; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer;';
+    //   debugBtn.onclick = clearAllInvoiceData;
+    //   document.body.appendChild(debugBtn);
+    // });
+  </script>
+
+  <style>
+    /* Base styles */
+    :root {
+      --primary-blue: #2563eb;
+      --primary-blue-light: #3b82f6;
+      --primary-dark: #1d4ed8;
+      --secondary-green: #10b981;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-surface: #ffffff;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --text-tertiary: #9ca3af;
+      --text-inverse: #ffffff;
+      --border-light: #e5e7eb;
+      --border-medium: #d1d5db;
+      --spacing-1: 0.25rem;
+      --spacing-2: 0.5rem;
+      --spacing-3: 0.75rem;
+      --spacing-4: 1rem;
+      --spacing-5: 1.25rem;
+      --spacing-6: 1.5rem;
+      --spacing-8: 2rem;
+      --spacing-10: 2.5rem;
+      --radius-sm: 0.25rem;
+      --radius-md: 0.375rem;
+      --radius-lg: 0.5rem;
+      --radius-xl: 0.75rem;
+      --radius-full: 9999px;
+      --font-size-xs: 0.75rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 1rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.25rem;
+      --font-size-2xl: 1.5rem;
+      --transition-fast: 0.15s ease;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-4);
+    }
+
+    /* Header styles */
+    .app-header {
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-light);
+      padding: var(--spacing-4) 0;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-4);
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      padding: var(--spacing-2);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: var(--spacing-3);
+    }
+
+    /* Button styles */
+    .btn-primary {
+      background: var(--primary-blue);
+      color: var(--text-inverse);
+      border: none;
+      padding: var(--spacing-3) var(--spacing-4);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color var(--transition-fast);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-medium);
+      padding: var(--spacing-3) var(--spacing-4);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-light);
+    }
+
+    .btn-tertiary {
+      background: none;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-medium);
+      padding: var(--spacing-3) var(--spacing-4);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-tertiary:hover {
+      background: var(--bg-secondary);
+    }
+
+    /* Invoice Management Styles */
+    .invoice-main {
+      padding: var(--spacing-4) 0;
+      min-height: calc(100vh - 80px);
+    }
+
+    .invoice-summary {
+      margin-bottom: var(--spacing-6);
+    }
+
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-4);
+    }
+
+    .summary-card {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-4);
+      padding: var(--spacing-5);
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+    }
+
+    .card-icon {
+      font-size: var(--font-size-2xl);
+    }
+
+    .card-info h3 {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-1);
+    }
+
+    .card-value {
+      font-size: var(--font-size-xl);
+      font-weight: 600;
+      margin-bottom: var(--spacing-1);
+    }
+
+    .card-change {
+      font-size: var(--font-size-xs);
+      color: var(--text-tertiary);
+    }
+
+    .card-change.positive {
+      color: var(--secondary-green);
+    }
+
+    .card-change.negative {
+      color: var(--error);
+    }
+
+    /* Amount Color Coding */
+    .amount-positive {
+      color: #16a085 !important;
+      font-weight: 600;
+    }
+
+    .amount-negative {
+      color: #e74c3c !important;
+      font-weight: 600;
+    }
+
+    /* Filters */
+    .invoice-filters {
+      margin-bottom: var(--spacing-6);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: var(--spacing-4);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: var(--spacing-3);
+      padding-right: var(--spacing-10);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+    }
+
+    .search-btn {
+      position: absolute;
+      right: var(--spacing-3);
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: var(--spacing-3);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-controls select,
+    .filter-controls input {
+      padding: var(--spacing-3);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+    }
+
+    /* Type filter styling */
+    #type-filter {
+      background: var(--primary-blue);
+      color: var(--text-inverse);
+      font-weight: 500;
+      border-color: var(--primary-blue);
+    }
+
+    #type-filter:focus {
+      border-color: var(--primary-dark);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    /* List View */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-4);
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: var(--spacing-2);
+    }
+
+    .view-btn {
+      padding: var(--spacing-2);
+      border: 1px solid var(--border-medium);
+      background: var(--bg-surface);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+
+    .view-btn.active {
+      background: var(--primary-blue);
+      color: var(--text-inverse);
+      border-color: var(--primary-blue);
+    }
+
+    .invoice-list {
+      display: none;
+    }
+
+    .invoice-list.active {
+      display: block;
+    }
+
+    .list-header {
+      display: grid;
+      grid-template-columns: 120px 1fr 120px 100px 100px 140px 120px;
+      gap: var(--spacing-3);
+      padding: var(--spacing-3);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      margin-bottom: var(--spacing-2);
+    }
+
+    .invoice-item {
+      display: grid;
+      grid-template-columns: 120px 1fr 120px 100px 100px 140px 120px;
+      gap: var(--spacing-3);
+      padding: var(--spacing-4);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-2);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .invoice-item:hover {
+      border-color: var(--primary-blue);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    }
+
+    .item-cell {
+      display: flex;
+      align-items: center;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: var(--spacing-2);
+    }
+
+    .action-btn {
+      padding: var(--spacing-1);
+      background: none;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .action-btn:hover {
+      background: var(--bg-secondary);
+    }
+
+    /* Grid View */
+    .invoice-grid {
+      display: none;
+    }
+
+    .invoice-grid.active {
+      display: block;
+    }
+
+    .invoice-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--spacing-4);
+    }
+
+    .invoice-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-4);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .invoice-card:hover {
+      border-color: var(--primary-blue);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-3);
+    }
+
+    .invoice-number {
+      font-weight: 600;
+      color: var(--primary-blue);
+    }
+
+    .card-body h4 {
+      margin-bottom: var(--spacing-2);
+    }
+
+    .amount {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      margin-bottom: var(--spacing-1);
+    }
+
+    .card-body .category-tag {
+      margin-top: var(--spacing-2);
+      max-width: 100%;
+    }
+
+    .date, .due-date {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-1);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: var(--spacing-2);
+      margin-top: var(--spacing-3);
+      padding-top: var(--spacing-3);
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* Status badges */
+    .status-badge {
+      padding: var(--spacing-1) var(--spacing-3);
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .status-badge.draft {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+    }
+
+    .status-badge.unpaid {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--primary-blue);
+    }
+
+    .status-badge.paid {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--secondary-green);
+    }
+
+    .status-badge.overdue {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+    }
+
+    /* Category Tags */
+    .category-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-1);
+      padding: var(--spacing-1) var(--spacing-2);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      white-space: nowrap;
+      max-width: 140px;
+    }
+
+    .category-icon {
+      font-size: var(--font-size-sm);
+    }
+
+    .category-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--spacing-4);
+      margin-top: var(--spacing-6);
+    }
+
+    .page-btn {
+      padding: var(--spacing-2) var(--spacing-4);
+      border: 1px solid var(--border-medium);
+      background: var(--bg-surface);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-primary);
+      border-radius: var(--radius-xl);
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-content.large {
+      max-width: 900px;
+      width: 90vw;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-6);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .modal-header h2 {
+      font-size: var(--font-size-xl);
+      font-weight: 600;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      padding: var(--spacing-2);
+    }
+
+    .modal-body {
+      padding: var(--spacing-6);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--spacing-3);
+      padding: var(--spacing-6);
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* Form styles */
+    .form-section {
+      margin-bottom: var(--spacing-6);
+    }
+
+    .section-header h3 {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      margin-bottom: var(--spacing-4);
+      padding-bottom: var(--spacing-2);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .section-step {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+      padding: var(--spacing-1) var(--spacing-3);
+      border-radius: var(--radius-full);
+    }
+
+    .form-row {
+      display: flex;
+      gap: var(--spacing-4);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .form-group {
+      flex: 1;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      margin-bottom: var(--spacing-2);
+      color: var(--text-primary);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: var(--spacing-3);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-base);
+      transition: border-color var(--transition-fast);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .field-help {
+      font-size: var(--font-size-xs);
+      color: var(--text-tertiary);
+      margin-top: var(--spacing-1);
+    }
+
+    /* Line Items */
+    .items-container {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .items-header {
+      display: grid;
+      grid-template-columns: 1fr 80px 100px 100px 40px;
+      gap: var(--spacing-3);
+      padding: var(--spacing-3);
+      background: var(--bg-secondary);
+      font-weight: 600;
+      font-size: var(--font-size-sm);
+    }
+
+    .line-items {
+      padding: var(--spacing-3);
+    }
+
+    .line-item {
+      margin-bottom: var(--spacing-3);
+    }
+
+    .line-item-row {
+      display: grid;
+      grid-template-columns: 1fr 80px 100px 100px 40px;
+      gap: var(--spacing-3);
+      align-items: end;
+    }
+
+    .flex-grow {
+      grid-column: span 1;
+    }
+
+    .remove-item-btn {
+      background: var(--error);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: var(--font-size-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .add-item-container {
+      padding: var(--spacing-3);
+      text-align: center;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-light);
+    }
+
+    .btn-add-item {
+      background: var(--primary-blue);
+      color: var(--text-inverse);
+      padding: var(--spacing-2) var(--spacing-4);
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-2);
+    }
+
+    .btn-add-item:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Totals Section */
+    .totals-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-6);
+    }
+
+    .totals-breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-3);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-3);
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .breakdown-row.total-row {
+      font-weight: 700;
+      font-size: var(--font-size-lg);
+      background: var(--primary-blue);
+      color: var(--text-inverse);
+    }
+
+    .payment-terms {
+      text-align: center;
+      padding: var(--spacing-4);
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      border-left: 4px solid var(--primary-blue);
+    }
+
+    .terms-text {
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* Invoice Preview */
+    .invoice-document {
+      background: white;
+      padding: var(--spacing-6);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      color: var(--text-primary);
+    }
+
+    .invoice-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-6);
+      padding-bottom: var(--spacing-4);
+      border-bottom: 2px solid var(--border-medium);
+    }
+
+    .company-info h2 {
+      color: var(--primary-blue);
+      margin-bottom: var(--spacing-2);
+      font-weight: 700;
+    }
+
+    .invoice-meta {
+      text-align: right;
+    }
+
+    .invoice-meta h1 {
+      color: var(--primary-blue);
+      margin-bottom: var(--spacing-2);
+      font-weight: 700;
+    }
+
+    .customer-info {
+      margin-bottom: var(--spacing-6);
+    }
+
+    .customer-info h3 {
+      margin-bottom: var(--spacing-2);
+      font-weight: 600;
+    }
+
+    .invoice-items table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: var(--spacing-4);
+    }
+
+    .invoice-items th,
+    .invoice-items td {
+      padding: var(--spacing-3);
+      text-align: left;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .invoice-items th {
+      background: var(--bg-secondary);
+      font-weight: 600;
+    }
+
+    .invoice-items td:nth-child(2),
+    .invoice-items td:nth-child(3),
+    .invoice-items td:nth-child(4) {
+      text-align: right;
+    }
+
+    .invoice-totals {
+      margin-left: auto;
+      width: 300px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--spacing-2) 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .total-row.final {
+      border-top: 2px solid var(--text-primary);
+      border-bottom: 2px solid var(--text-primary);
+      font-weight: 700;
+      font-size: var(--font-size-lg);
+    }
+
+    /* Skip links for accessibility */
+    .skip-links {
+      position: absolute;
+      top: -40px;
+      left: 6px;
+      z-index: 1000;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 6px;
+      background: var(--primary-blue);
+      color: var(--text-inverse);
+      padding: 8px;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+
+    .skip-link:focus {
+      top: 6px;
+    }
+
+    .sr-live-region {
+      position: absolute;
+      left: -10000px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .summary-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .filter-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-box {
+        min-width: auto;
+      }
+
+      .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .list-header {
+        display: none;
+      }
+
+      .invoice-item {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-2);
+      }
+
+      .item-cell {
+        justify-content: space-between;
+        padding: var(--spacing-2) 0;
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .item-cell:last-child {
+        border-bottom: none;
+      }
+
+      .item-cell::before {
+        content: attr(data-label);
+        font-weight: 600;
+        margin-right: var(--spacing-2);
+        color: var(--text-secondary);
+        flex: 0 0 auto;
+      }
+
+      .invoice-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        flex-direction: column;
+      }
+
+      .line-item-row {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-2);
+      }
+
+      .items-header {
+        display: none;
+      }
+
+      .modal-content.large {
+        width: 95vw;
+        height: 95vh;
+        margin: 2.5vh auto;
+      }
+    }
+  </style>
+  
+
+  
+  <!-- SheetJS Library for Excel Processing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  
+  <!-- Excel Upload Feature -->
+  <link rel="stylesheet" href="css/excel-upload.css">
+  <script src="js/excel-upload.js"></script>
+</body>
+</html>

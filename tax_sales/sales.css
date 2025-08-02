@@ -1,0 +1,596 @@
+/* Statistics Page Styles */
+
+:root {
+    --income-color: #4475F2;
+    --expense-color: #FF7CA3;
+    --chart-height: 280px;
+    --metric-card-height: 72px;
+}
+
+/* Base Layout */
+.screen {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* Header Styles */
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 16px;
+}
+
+.stats-header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1A1D1F;
+}
+
+.period-selector-container {
+    position: relative;
+}
+
+.period-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #F4F4F4;
+    border: none;
+    border-radius: 100px;
+    color: #1A1D1F;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.period-selector:hover {
+    background: #EBEBEB;
+}
+
+.period-selector[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+}
+
+.period-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    min-width: 160px;
+    display: none;
+    z-index: 100;
+}
+
+.period-dropdown.show {
+    display: block;
+}
+
+.period-option {
+    width: 100%;
+    padding: 8px 16px;
+    border: none;
+    background: none;
+    text-align: left;
+    font-size: 14px;
+    color: #1A1D1F;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.period-option:hover {
+    background: #F4F4F4;
+}
+
+/* Chart Section */
+.chart-section {
+    position: relative;
+    padding: 20px 0;
+    margin: 0 16px;
+    height: var(--chart-height);
+}
+
+.y-axis-labels {
+    position: absolute;
+    left: 0;
+    top: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #6F767E;
+}
+
+.chart-container {
+    margin-left: 50px;
+    height: 100%;
+    background: #FFFFFF;
+}
+
+/* Metrics Section */
+.metrics-section {
+    padding: 20px 16px;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.metric-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #F4F4F4;
+    border-radius: 12px;
+    height: var(--metric-card-height);
+}
+
+.metric-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.metric-card.income .metric-icon {
+    background: rgba(68, 117, 242, 0.1);
+}
+
+.metric-card.income .metric-icon svg {
+    stroke: var(--income-color);
+}
+
+.metric-card.expense .metric-icon {
+    background: rgba(255, 124, 163, 0.1);
+}
+
+.metric-card.expense .metric-icon svg {
+    stroke: var(--expense-color);
+}
+
+.metric-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.metric-amount {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1A1D1F;
+}
+
+.metric-label {
+    font-size: 14px;
+    color: #6F767E;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal.show {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 900px;
+    border-radius: 16px;
+    padding: 24px;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal.show .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1A1D1F;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #6F767E;
+}
+
+.category-summary {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: #F4F4F4;
+    border-radius: 12px;
+}
+
+.pie-chart-container {
+    width: 200px;
+    height: 200px;
+}
+
+.category-legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+.legend-label {
+    flex: 1;
+    font-size: 14px;
+    color: #1A1D1F;
+}
+
+.legend-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1A1D1F;
+}
+
+.modal-filters {
+    margin-bottom: 16px;
+}
+
+.modal-transactions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modal-transactions .transaction-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #F4F4F4;
+    border-radius: 12px;
+}
+
+.transaction-category {
+    font-size: 12px;
+    color: #6F767E;
+    margin-top: 4px;
+}
+
+/* Mobile Responsive Styles */
+@media screen and (max-width: 480px) {
+    .metrics-grid {
+        gap: 8px;
+    }
+
+    .metric-card {
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .metric-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .metric-amount {
+        font-size: 14px;
+    }
+
+    .metric-label {
+        font-size: 12px;
+    }
+
+    .modal-content {
+        padding: 16px;
+    }
+
+    .category-summary {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .pie-chart-container {
+        width: 160px;
+        height: 160px;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .metrics-grid {
+        gap: 6px;
+    }
+
+    .metric-card {
+        padding: 6px;
+        gap: 6px;
+    }
+
+    .metric-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .metric-amount {
+        font-size: 13px;
+    }
+}
+
+/* Transactions Section */
+.transactions-section {
+    padding: 20px 16px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.section-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1A1D1F;
+}
+
+.view-all-btn {
+    color: var(--income-color);
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.transaction-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.filter-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn.income {
+    background: #F5F7FF;
+    color: var(--income-color);
+}
+
+.filter-btn.income.active {
+    background: var(--income-color);
+    color: white;
+}
+
+.filter-btn.expense {
+    background: #FFF5F8;
+    color: var(--expense-color);
+}
+
+.filter-btn.expense.active {
+    background: var(--expense-color);
+    color: white;
+}
+
+/* Transactions List */
+.transactions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #F4F4F4;
+    border-radius: 12px;
+    transition: opacity 0.3s ease;
+}
+
+.transaction-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.transaction-item.income .transaction-icon {
+    background: rgba(68, 117, 242, 0.1);
+    color: var(--income-color);
+}
+
+.transaction-item.expense .transaction-icon {
+    background: rgba(255, 124, 163, 0.1);
+    color: var(--expense-color);
+}
+
+.transaction-details {
+    flex: 1;
+}
+
+.transaction-details h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1A1D1F;
+    margin-bottom: 4px;
+}
+
+.transaction-details p {
+    font-size: 12px;
+    color: #6F767E;
+    margin: 0;
+}
+
+.transaction-amount {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.transaction-amount.income {
+    color: var(--income-color);
+}
+
+.transaction-amount.expense {
+    color: var(--expense-color);
+}
+
+/* Desktop Styles */
+@media screen and (min-width: 1024px) {
+    .screen {
+        padding: 24px;
+    }
+
+    .stats-header {
+        padding: 0 0 24px 0;
+    }
+
+    .stats-header h1 {
+        font-size: 24px;
+    }
+
+    .chart-section {
+        margin: 0;
+        height: 400px;
+        background: #FFFFFF;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .metrics-section {
+        padding: 24px 0;
+    }
+
+    .metrics-grid {
+        gap: 24px;
+    }
+
+    .metric-card {
+        padding: 20px;
+        height: 90px;
+    }
+
+    .transactions-section {
+        padding: 0;
+        background: #FFFFFF;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .section-header {
+        padding: 24px;
+        border-bottom: 1px solid #E8E8E8;
+        margin-bottom: 0;
+    }
+
+    .section-header h2 {
+        font-size: 20px;
+    }
+
+    .transaction-filters {
+        padding: 16px 24px;
+        border-bottom: 1px solid #E8E8E8;
+        margin-bottom: 0;
+    }
+
+    .transactions-list {
+        padding: 24px;
+    }
+
+    .transaction-item {
+        padding: 20px;
+    }
+
+    .transaction-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .transaction-category {
+        font-size: 13px;
+        background: #F4F4F4;
+        padding: 4px 8px;
+        border-radius: 4px;
+        display: inline-block;
+    }
+}
+
+/* Desktop Modal Styles */
+@media screen and (min-width: 1024px) {
+    .modal-content {
+        padding: 32px;
+    }
+
+    .pie-chart-container {
+        width: 280px;
+        height: 280px;
+    }
+
+    .modal-transactions {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microloan Application - MSME Finance Platform</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="microloancss/microloans.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <div class="header-content">
+                <div>
+                    <div class="breadcrumb">
+                        <a href="index.html">Dashboard</a>
+                        <span class="breadcrumb-separator">/</span>
+                        <a href="analytics-graph.html">Analytics Graph</a>
+                        <span class="breadcrumb-separator">/</span>
+                        <span>Microloan Application</span>
+                    </div>
+                    <h1 class="page-title">Microloan Application</h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="form-container">
+            <form id="applicationForm">
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <h2 class="form-section-title">Personal Information</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input type="text" id="fullName" name="fullName" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="accountNumber" class="form-label">Account Number</label>
+                            <input type="text" id="accountNumber" name="accountNumber" class="form-input" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="businessReg" class="form-label">Business Registration Number</label>
+                            <input type="text" id="businessReg" name="businessReg" class="form-input" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Information Section -->
+                <div class="form-section">
+                    <h2 class="form-section-title">Business Information</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="businessName" class="form-label">Business Name</label>
+                            <input type="text" id="businessName" name="businessName" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="businessType" class="form-label">Business Type</label>
+                            <select id="businessType" name="businessType" class="form-select" required>
+                                <option value="">Select Business Type</option>
+                                <option value="Retail Trading">Retail Trading</option>
+                                <option value="Food & Beverage">Food & Beverage</option>
+                                <option value="Services">Services</option>
+                                <option value="Manufacturing">Manufacturing</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="monthlyRevenue" class="form-label">Monthly Revenue (RM)</label>
+                            <input type="number" id="monthlyRevenue" name="monthlyRevenue" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="yearsInOperation" class="form-label">Years in Operation</label>
+                            <select id="yearsInOperation" name="yearsInOperation" class="form-select" required>
+                                <option value="">Select Years</option>
+                                <option value="1">Less than 1 year</option>
+                                <option value="2">1-2 years</option>
+                                <option value="3">2-3 years</option>
+                                <option value="4">3-4 years</option>
+                                <option value="5">4-5 years</option>
+                                <option value="6">5+ years</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loan Details Section -->
+                <div class="form-section">
+                    <h2 class="form-section-title">Loan Details</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="loanType" class="form-label">Loan Type</label>
+                            <input type="text" id="loanType" name="loanType" class="form-input" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="loanPurpose" class="form-label">Loan Purpose</label>
+                            <select id="loanPurpose" name="loanPurpose" class="form-select" required>
+                                <option value="">Select Purpose</option>
+                                <option value="Business Expansion">Business Expansion</option>
+                                <option value="Inventory Purchase">Inventory Purchase</option>
+                                <option value="Equipment Purchase">Equipment Purchase</option>
+                                <option value="Working Capital">Working Capital</option>
+                                <option value="Marketing & Advertising">Marketing & Advertising</option>
+                                <option value="Emergency Funds">Emergency Funds</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="repaymentPeriod" class="form-label">Repayment Period</label>
+                            <select id="repaymentPeriod" name="repaymentPeriod" class="form-select" required>
+                                <option value="">Select Period</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Loan Amount Slider -->
+                    <div class="amount-slider-container">
+                        <label class="form-label">Loan Amount</label>
+                        <div class="amount-display" id="amountDisplay">RM 5,000</div>
+                        <div class="amount-range">
+                            <span id="minAmount">RM 2,000</span>
+                            <span id="maxAmount">RM 15,000</span>
+                        </div>
+                        <input type="range" id="loanAmount" name="loanAmount" class="amount-slider" 
+                               min="2000" max="15000" value="5000" step="500">
+                    </div>
+
+                    <!-- Loan Calculation Summary -->
+                    <div style="background: var(--bg-secondary); padding: 20px; border-radius: var(--radius-md); margin-top: 20px;">
+                        <h3 style="margin-bottom: 15px; color: var(--text-primary);">Loan Summary</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                            <div>
+                                <div style="font-size: 14px; color: var(--text-secondary);">Monthly Payment</div>
+                                <div style="font-size: 18px; font-weight: 600; color: var(--primary-blue);" id="monthlyPayment">RM 0.00</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 14px; color: var(--text-secondary);">Total Amount</div>
+                                <div style="font-size: 18px; font-weight: 600; color: var(--text-primary);" id="totalAmount">RM 0.00</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 14px; color: var(--text-secondary);">Total Interest</div>
+                                <div style="font-size: 18px; font-weight: 600; color: var(--success-green);" id="totalInterest">RM 0.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="form-section">
+                    <h2 class="form-section-title">Terms and Conditions</h2>
+                    <div class="form-group">
+                        <label class="form-label" style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="termsConditions" name="termsConditions" required>
+                            <span>I agree to the terms and conditions of the microloan application</span>
+                        </label>
+                        <div style="margin-top: 10px; font-size: 14px; color: var(--text-secondary);">
+                            By checking this box, you acknowledge that you have read and agree to our 
+                            <a href="#" style="color: var(--primary-blue);">Terms of Service</a> and 
+                            <a href="#" style="color: var(--primary-blue);">Privacy Policy</a>.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <div id="errorMessage" style="display: none; background: var(--danger-red); color: white; padding: 12px; border-radius: var(--radius-md); margin-bottom: 20px;"></div>
+
+                <!-- Form Actions -->
+                <div style="display: flex; gap: 16px; justify-content: center; margin-top: 32px;">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='analytics-graph.html'">
+                        ← Back to Loans
+                    </button>
+                    <button type="button" id="submitBtn" class="btn btn-primary">
+                        Submit Application
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- JavaScript Files -->
+    <script src="microloanjs/microloans.js"></script>
+</body>
+</html> 

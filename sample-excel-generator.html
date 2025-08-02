@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Excel Generator - MSME Finance Platform</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8fafc;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2563eb;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .description {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .description h3 {
+            color: #0369a1;
+            margin-top: 0;
+        }
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        .btn-secondary {
+            background: #6b7280;
+        }
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        .button-group {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .button-group .btn {
+            margin: 0 10px;
+        }
+        .sample-data {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .sample-data h4 {
+            color: #374151;
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background: #f3f4f6;
+            font-weight: 600;
+        }
+        .instructions {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .instructions h4 {
+            color: #92400e;
+            margin-top: 0;
+        }
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Sample Excel File Generator</h1>
+        
+        <div class="description">
+            <h3>Excel Upload Feature Test</h3>
+            <p>This page generates a sample Excel file with the exact format expected by the Excel upload feature. Use this file to test the upload functionality on the invoices page.</p>
+        </div>
+
+        <div class="instructions">
+            <h4>📋 How to Test the Excel Upload Feature:</h4>
+            <ol>
+                <li>Click "Generate Sample Excel File" below to download the test file</li>
+                <li>Go to the <a href="invoices.html" target="_blank">Invoices page</a></li>
+                <li>Click the "📊 Upload Excel" button in the header</li>
+                <li>Select the downloaded Excel file</li>
+                <li>Watch as the new invoices are added to the list!</li>
+            </ol>
+        </div>
+
+        <div class="button-group">
+            <button class="btn" onclick="generateSampleExcel()">📊 Generate Sample Excel File</button>
+            <button class="btn btn-secondary" onclick="window.open('invoices.html', '_blank')">📄 Go to Invoices Page</button>
+        </div>
+
+        <div class="sample-data">
+            <h4>📋 Sample Data Preview</h4>
+            <p>The generated Excel file will contain these test invoices:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Invoice #</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th>Amount (RM)</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Alice Tan</td>
+                        <td>INV-2024-006</td>
+                        <td>Income</td>
+                        <td>Business Expenses</td>
+                        <td>500.00</td>
+                        <td>31/07/2025</td>
+                    </tr>
+                    <tr>
+                        <td>John Lee</td>
+                        <td>INV-2024-007</td>
+                        <td>Income</td>
+                        <td>Technology</td>
+                        <td>150.00</td>
+                        <td>31/07/2025</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="description">
+            <h3>✅ Expected Results</h3>
+            <p>After uploading the Excel file, you should see:</p>
+            <ul>
+                <li>2 new invoice items added to the invoice list</li>
+                <li>Alice Tan and John Lee invoices with proper styling</li>
+                <li>Success message: "Added 2 invoices to the list!"</li>
+                <li>New invoices appear with the same styling as existing ones</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function generateSampleExcel() {
+            // Sample data matching the expected Excel format
+            const sampleData = [
+                {
+                    'Customer Name': 'Alice Tan',
+                    'Email Address': 'alice@example.com',
+                    'Billing Address': '123 Jalan ABC, KL',
+                    'Invoice Number': 'INV-2024-006',
+                    'Transaction Type': 'Income',
+                    'Invoice Date': '31/07/2025',
+                    'Due Date': '30/08/2025',
+                    'Category': 'Business Expenses',
+                    'Item Description': 'Consulting Service',
+                    'Qty': 1,
+                    'Unit Price (RM)': 500,
+                    'Total (RM)': 500
+                },
+                {
+                    'Customer Name': 'John Lee',
+                    'Email Address': 'john@example.com',
+                    'Billing Address': '456 Jalan XYZ, Penang',
+                    'Invoice Number': 'INV-2024-007',
+                    'Transaction Type': 'Income',
+                    'Invoice Date': '31/07/2025',
+                    'Due Date': '30/08/2025',
+                    'Category': 'Technology',
+                    'Item Description': 'Wireless Mouse',
+                    'Qty': 2,
+                    'Unit Price (RM)': 75,
+                    'Total (RM)': 150
+                }
+            ];
+
+            // Create workbook and worksheet
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.json_to_sheet(sampleData);
+
+            // Add worksheet to workbook
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Invoices');
+
+            // Generate and download the file
+            XLSX.writeFile(workbook, 'sample-invoices.xlsx');
+        }
+    </script>
+</body>
+</html> 

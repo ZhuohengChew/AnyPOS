@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSME Finance Platform - Digital Banking for Malaysian Businesses</title>
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/accessibility.css">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2563eb">
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="MSME Finance Platform - The complete digital banking solution for Malaysian small and medium enterprises. Simplified onboarding, e-invoicing, and ESG features.">
+  <meta name="keywords" content="MSME, Malaysia, digital banking, e-invoicing, small business, financial platform">
+  
+  <!-- Accessibility -->
+  <meta name="description" content="Login to MSME Finance Platform - Digital banking solution for Malaysian businesses">
+</head>
+<body>
+  <!-- Skip Links for Accessibility -->
+  <div class="skip-links">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+  </div>
+
+  <!-- ARIA Live Region for Announcements -->
+  <div id="live-region" class="sr-live-region" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Landing Page -->
+  <div id="landing-page" class="screen active">
+    <!-- Header Navigation -->
+    <header class="landing-header">
+      <div class="container">
+        <div class="header-content">
+          <div class="logo">
+            <h1>💼 MSME Finance</h1>
+          </div>
+          <nav class="header-nav">
+            <button class="language-selector" onclick="toggleLanguageMenu()" aria-label="Select Language">
+              <span class="lang-flag">🇲🇾</span>
+              <span class="lang-text">EN</span>
+              <span class="dropdown-arrow">▼</span>
+            </button>
+            <div class="language-dropdown hidden" id="language-dropdown">
+              <button onclick="changeLanguage('en')" class="lang-option">
+                <span class="lang-flag">🇲🇾</span>
+                <span>English</span>
+              </button>
+              <button onclick="changeLanguage('my')" class="lang-option">
+                <span class="lang-flag">🇲🇾</span>
+                <span>Bahasa Malaysia</span>
+              </button>
+              <button onclick="changeLanguage('zh')" class="lang-option">
+                <span class="lang-flag">🇨🇳</span>
+                <span>中文</span>
+              </button>
+              <button onclick="changeLanguage('ta')" class="lang-option">
+                <span class="lang-flag">🇮🇳</span>
+                <span>தமிழ்</span>
+              </button>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="landing-main">
+      <div class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+          <div class="hero-content">
+            <div class="hero-text">
+              <h2 class="hero-title">Digital Banking Designed for Malaysian MSMEs</h2>
+              <p class="hero-subtitle">
+                Simplify your business finances with one-click onboarding, LHDN-compliant e-invoicing, 
+                and ESG features. Join 96% of Malaysian businesses going digital.
+              </p>
+              
+              <div class="hero-features">
+                <div class="feature-item">
+                  <span class="feature-icon">⚡</span>
+                  <span>5-minute onboarding</span>
+                </div>
+                <div class="feature-item">
+                  <span class="feature-icon">📄</span>
+                  <span>LHDN e-invoicing ready</span>
+                </div>
+                <div class="feature-item">
+                  <span class="feature-icon">🌱</span>
+                  <span>ESG & sustainability tracking</span>
+                </div>
+                <div class="feature-item">
+                  <span class="feature-icon">♿</span>
+                  <span>Accessibility-first design</span>
+                </div>
+              </div>
+
+              <div class="hero-stats">
+                <div class="stat-item">
+                  <div class="stat-number">96%</div>
+                  <div class="stat-label">of Malaysian businesses</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-number">2025</div>
+                  <div class="stat-label">LHDN e-invoicing ready</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-number">4</div>
+                  <div class="stat-label">languages supported</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Login Form -->
+            <div class="login-container">
+              <div class="login-card">
+                <div class="login-header">
+                  <h3>Welcome Back</h3>
+                  <p>Sign in to your MSME account</p>
+                </div>
+
+                <form id="login-form" class="login-form" novalidate>
+                  <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input 
+                      type="email" 
+                      id="email" 
+                      name="email" 
+                      required 
+                      placeholder="your.email@company.com"
+                      autocomplete="email"
+                    >
+                    <div class="error-message hidden" id="email-error"></div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-input">
+                      <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required 
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                      >
+                      <button 
+                        type="button" 
+                        class="password-toggle" 
+                        onclick="togglePassword('password')" 
+                        aria-label="Toggle password visibility"
+                      >
+                        👁️
+                      </button>
+                    </div>
+                    <div class="error-message hidden" id="password-error"></div>
+                  </div>
+
+                  <div class="form-options">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="remember" name="remember">
+                      <span class="checkmark"></span>
+                      <span class="checkbox-text">Remember me</span>
+                    </label>
+                    <button type="button" class="forgot-password-btn" onclick="showForgotPassword()">
+                      Forgot password?
+                    </button>
+                  </div>
+
+                  <button type="submit" class="btn-primary btn-full" id="login-btn">
+                    Sign In
+                  </button>
+
+                  <div class="form-divider">
+                    <span>or</span>
+                  </div>
+
+                  <div class="signup-prompt">
+                    <p>Don't have an account yet?</p>
+                    <a href="register.html" class="signup-link">
+                      Create Account →
+                    </a>
+                  </div>
+                </form>
+
+                <!-- Demo Credentials -->
+                <div class="demo-section">
+                  <div class="demo-header">
+                    <span class="demo-icon">🚀</span>
+                    <span>Try Demo Account</span>
+                  </div>
+                  <div class="demo-credentials">
+                    <div class="demo-account">
+                      <strong>Business Account:</strong><br>
+                      Email: ahmad@bakery.com<br>
+                      Password: SecurePass123!
+                    </div>
+                    <div class="demo-account">
+                      <strong>Individual Account:</strong><br>
+                      Email: sarah@freelance.com<br>
+                      Password: MyPassword456!
+                    </div>
+                  </div>
+                  <button type="button" class="btn-tertiary demo-fill-btn" onclick="fillDemoCredentials('business')">
+                    Fill Business Demo
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+          <div class="section-header">
+            <h3>Why Choose MSME Finance Platform?</h3>
+            <p>Built specifically for Malaysian small and medium enterprises</p>
+          </div>
+
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon">🏦</div>
+              <h4>Multi-Bank Integration</h4>
+              <p>Connect with Maybank, CIMB, RHB, Public Bank, and more. Real-time synchronization with DuitNow and TNG.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">📊</div>
+              <h4>Smart Analytics</h4>
+              <p>Track sales performance, customer behavior, and cash flow trends with AI-powered insights.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🧾</div>
+              <h4>E-Invoicing (2025 Ready)</h4>
+              <p>LHDN MyInvoice compliant with automatic SST calculation and digital signatures.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🌍</div>
+              <h4>ESG Tracking</h4>
+              <p>Monitor your environmental impact, enable donation round-ups, and track sustainability goals.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">♿</div>
+              <h4>Accessibility First</h4>
+              <p>Elderly-friendly mode, voice feedback, high contrast, and support for 4 languages.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🔒</div>
+              <h4>Bank-Grade Security</h4>
+              <p>End-to-end encryption, biometric authentication, and compliance with Malaysian banking standards.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials-section">
+          <div class="section-header">
+            <h3>Trusted by Malaysian Businesses</h3>
+          </div>
+
+          <div class="testimonials-grid">
+            <div class="testimonial-card">
+              <div class="testimonial-content">
+                <p>"Finally, a platform that understands Malaysian SMEs. The e-invoicing feature saved us hours every week."</p>
+              </div>
+              <div class="testimonial-author">
+                <div class="author-avatar">👨‍💼</div>
+                <div class="author-info">
+                  <div class="author-name">Ahmad bin Rahman</div>
+                  <div class="author-title">Owner, Ahmad Bakery Sdn Bhd</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="testimonial-card">
+              <div class="testimonial-content">
+                <p>"The accessibility features make it so easy for my elderly father to manage our family business finances."</p>
+              </div>
+              <div class="testimonial-author">
+                <div class="author-avatar">👩‍💼</div>
+                <div class="author-info">
+                  <div class="author-name">Siti Nurhaliza</div>
+                  <div class="author-title">Manager, Family Textile Shop</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="testimonial-card">
+              <div class="testimonial-content">
+                <p>"The ESG tracking helps us show our customers we care about sustainability. Great for our brand!"</p>
+              </div>
+              <div class="testimonial-author">
+                <div class="author-avatar">👨‍🔧</div>
+                <div class="author-info">
+                  <div class="author-name">Raj Kumar</div>
+                  <div class="author-title">Founder, Green Tech Solutions</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h4>MSME Finance Platform</h4>
+            <p>Empowering Malaysian businesses with digital-first financial solutions.</p>
+          </div>
+
+          <div class="footer-section">
+            <h4>Support</h4>
+            <ul class="footer-links">
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Contact Support</a></li>
+              <li><a href="#">📞 1-300-88-MSME</a></li>
+              <li><a href="#">📧 support@msme.my</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Legal</h4>
+            <ul class="footer-links">
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms of Service</a></li>
+              <li><a href="#">PDPA Compliance</a></li>
+              <li><a href="#">Security</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Connect</h4>
+            <div class="social-links">
+              <a href="#">📱 Download App</a>
+              <a href="#">💼 LinkedIn</a>
+              <a href="#">📘 Facebook</a>
+              <a href="#">🐦 Twitter</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2024 MSME Finance Platform. All rights reserved. | Licensed by Bank Negara Malaysia</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay hidden">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p>Signing you in...</p>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgot-password-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Reset Password</h3>
+        <button class="close-btn" onclick="closeModal('forgot-password-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Enter your email address and we'll send you a link to reset your password.</p>
+        <form id="forgot-password-form">
+          <div class="form-group">
+            <label for="reset-email">Email Address</label>
+            <input type="email" id="reset-email" name="reset-email" required placeholder="your.email@company.com">
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="closeModal('forgot-password-modal')">Cancel</button>
+            <button type="submit" class="btn-primary">Send Reset Link</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data/mock-data.js"></script>
+  <script>
+    // Enhanced User Storage System (from previous artifact)
+    class UserStorage {
+      constructor() {
+        this.usersKey = 'msme-users';
+        this.currentUserKey = 'msme-current-user';
+        this.initializeDemoUsers();
+      }
+
+      initializeDemoUsers() {
+        const users = this.getAllUsers();
+        if (users.length === 0) {
+          this.createDemoUsers();
+        }
+      }
+
+      getAllUsers() {
+        try {
+          const users = localStorage.getItem(this.usersKey);
+          return users ? JSON.parse(users) : [];
+        } catch (error) {
+          console.error('Error getting users:', error);
+          return [];
+        }
+      }
+
+      findUserByEmail(email) {
+        const users = this.getAllUsers();
+        return users.find(user => user.email === email);
+      }
+
+      verifyLogin(email, password) {
+        try {
+          const user = this.findUserByEmail(email);
+          
+          if (!user) {
+            return { success: false, error: 'User not found' };
+          }
+
+          if (user.status !== 'active') {
+            return { success: false, error: 'Account is not active' };
+          }
+
+          if (this.hashPassword(password) !== user.password) {
+            return { success: false, error: 'Invalid password' };
+          }
+
+          this.setCurrentUser(user);
+          return { success: true, user };
+        } catch (error) {
+          console.error('Error verifying login:', error);
+          return { success: false, error: 'Login failed' };
+        }
+      }
+
+      setCurrentUser(user) {
+        try {
+          const currentUser = {
+            id: user.id,
+            email: user.email,
+            profile: user.profile,
+            businessInfo: user.businessInfo,
+            individualInfo: user.individualInfo,
+            security: user.security,
+            preferences: user.preferences,
+            loginTime: new Date().toISOString()
+          };
+          
+          localStorage.setItem(this.currentUserKey, JSON.stringify(currentUser));
+        } catch (error) {
+          console.error('Error setting current user:', error);
+        }
+      }
+
+      hashPassword(password) {
+        let hash = 0;
+        if (password.length === 0) return hash;
+        for (let i = 0; i < password.length; i++) {
+          const char = password.charCodeAt(i);
+          hash = ((hash << 5) - hash) + char;
+          hash = hash & hash;
+        }
+        return hash.toString();
+      }
+
+      generateUserId() {
+        return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      }
+
+      createDemoUsers() {
+        const demoUsers = [
+          {
+            id: this.generateUserId(),
+            email: 'ahmad@bakery.com',
+            password: this.hashPassword('SecurePass123!'),
+            profile: {
+              fullName: 'Ahmad bin Abdullah',
+              icNumber: '850123-05-1234',
+              phoneNumber: '+60123456789',
+              languagePreference: 'en',
+              userType: 'business'
+            },
+            businessInfo: {
+              businessName: 'Ahmad Food Truck Sdn Bhd',
+              ssmNumber: '12345678-X',
+              businessType: 'sdn_bhd',
+              industry: 'fnb',
+              businessAddress: 'No. 15, Jalan Usahawan 2, Taman Perindustrian Subang, 47500 Subang Jaya, Selangor',
+              primaryBank: 'maybank'
+            },
+            security: {
+              pin: '123456',
+              elderlyMode: false,
+              voiceFeedback: false,
+              highContrast: false
+            },
+            preferences: {
+              agreeMarketing: true
+            },
+            createdAt: new Date().toISOString(),
+            status: 'active'
+          },
+          {
+            id: this.generateUserId(),
+            email: 'sarah@freelance.com',
+            password: this.hashPassword('MyPassword456!'),
+            profile: {
+              fullName: 'Sarah binti Ali',
+              icNumber: '900215-08-5678',
+              phoneNumber: '+60198765432',
+              languagePreference: 'en',
+              userType: 'individual'
+            },
+            individualInfo: {
+              individualBank: 'cimb',
+              accountType: 'savings'
+            },
+            security: {
+              pin: '654321',
+              elderlyMode: false,
+              voiceFeedback: false,
+              highContrast: false
+            },
+            preferences: {
+              agreeMarketing: false
+            },
+            createdAt: new Date().toISOString(),
+            status: 'active'
+          }
+        ];
+
+        localStorage.setItem(this.usersKey, JSON.stringify(demoUsers));
+      }
+    }
+
+    // Login Controller
+    class LoginController {
+      constructor() {
+        this.userStorage = new UserStorage();
+        this.currentLanguage = 'en';
+        this.init();
+      }
+
+      init() {
+        this.setupEventListeners();
+        this.setupFormValidation();
+      }
+
+      setupEventListeners() {
+        const loginForm = document.getElementById('login-form');
+        loginForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleLogin();
+        });
+
+        const forgotPasswordForm = document.getElementById('forgot-password-form');
+        forgotPasswordForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleForgotPassword();
+        });
+
+        // Real-time validation
+        const inputs = document.querySelectorAll('#login-form input');
+        inputs.forEach(input => {
+          input.addEventListener('blur', () => this.validateField(input));
+          input.addEventListener('input', () => this.clearFieldError(input));
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.language-selector')) {
+            document.getElementById('language-dropdown').classList.add('hidden');
+          }
+        });
+      }
+
+      setupFormValidation() {
+        const emailField = document.getElementById('email');
+        const passwordField = document.getElementById('password');
+
+        emailField.addEventListener('input', () => {
+          if (this.isValidEmail(emailField.value)) {
+            this.clearFieldError(emailField);
+          }
+        });
+
+        passwordField.addEventListener('input', () => {
+          if (passwordField.value.length >= 8) {
+            this.clearFieldError(passwordField);
+          }
+        });
+      }
+
+      validateField(field) {
+        const value = field.value.trim();
+        this.clearFieldError(field);
+
+        if (field.hasAttribute('required') && !value) {
+          this.showFieldError(field, `${this.formatFieldName(field.name)} is required`);
+          return false;
+        }
+
+        if (field.type === 'email' && value && !this.isValidEmail(value)) {
+          this.showFieldError(field, 'Please enter a valid email address');
+          return false;
+        }
+
+        if (field.type === 'password' && value && value.length < 8) {
+          this.showFieldError(field, 'Password must be at least 8 characters');
+          return false;
+        }
+
+        return true;
+      }
+
+      showFieldError(field, message) {
+        field.classList.add('error');
+        const errorElement = document.getElementById(`${field.name}-error`);
+        if (errorElement) {
+          errorElement.textContent = message;
+          errorElement.classList.remove('hidden');
+        }
+      }
+
+      clearFieldError(field) {
+        field.classList.remove('error');
+        const errorElement = document.getElementById(`${field.name}-error`);
+        if (errorElement) {
+          errorElement.classList.add('hidden');
+        }
+      }
+
+      formatFieldName(name) {
+        return name.replace(/([A-Z])/g, ' $1')
+                  .replace(/^./, str => str.toUpperCase())
+                  .toLowerCase()
+                  .replace(/\b\w/g, l => l.toUpperCase());
+      }
+
+      isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+
+      validateForm() {
+        const requiredFields = document.querySelectorAll('#login-form [required]');
+        let isValid = true;
+
+        requiredFields.forEach(field => {
+          if (!this.validateField(field)) {
+            isValid = false;
+          }
+        });
+
+        return isValid;
+      }
+
+      async handleLogin() {
+        if (!this.validateForm()) {
+          this.announce('Please fix the errors before continuing');
+          return;
+        }
+
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const remember = document.getElementById('remember').checked;
+
+        // Show loading
+        this.showLoading();
+
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        const result = this.userStorage.verifyLogin(email, password);
+
+        this.hideLoading();
+
+        if (result.success) {
+          this.announce('Login successful! Redirecting to dashboard...');
+          
+          // Store remember me preference
+          if (remember) {
+            localStorage.setItem('msme-remember-email', email);
+          } else {
+            localStorage.removeItem('msme-remember-email');
+          }
+
+          // Redirect to dashboard
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1000);
+        } else {
+          this.announce('Login failed: ' + result.error);
+          
+          // Show specific error messages
+          if (result.error === 'User not found') {
+            this.showFieldError(document.getElementById('email'), 'No account found with this email');
+          } else if (result.error === 'Invalid password') {
+            this.showFieldError(document.getElementById('password'), 'Incorrect password');
+          } else {
+            alert('Login failed: ' + result.error);
+          }
+        }
+      }
+
+      async handleForgotPassword() {
+        const email = document.getElementById('reset-email').value.trim();
+
+        if (!this.isValidEmail(email)) {
+          alert('Please enter a valid email address');
+          return;
+        }
+
+        // Simulate sending reset email
+        alert(`Password reset link has been sent to ${email} (Demo: Check console for reset instructions)`);
+        console.log(`Password reset for: ${email}`);
+        
+        this.closeModal('forgot-password-modal');
+      }
+
+      showLoading() {
+        document.getElementById('loading-overlay').classList.remove('hidden');
+        document.getElementById('login-btn').disabled = true;
+        document.getElementById('login-btn').textContent = 'Signing In...';
+      }
+
+      hideLoading() {
+        document.getElementById('loading-overlay').classList.add('hidden');
+        document.getElementById('login-btn').disabled = false;
+        document.getElementById('login-btn').textContent = 'Sign In';
+      }
+
+      announce(message) {
+        const liveRegion = document.getElementById('live-region');
+        liveRegion.textContent = message;
+      }
+
+      closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+      }
+    }
+
+    // Global functions
+    function toggleLanguageMenu() {
+      const dropdown = document.getElementById('language-dropdown');
+      dropdown.classList.toggle('hidden');
+    }
+
+    function changeLanguage(lang) {
+      const langMap = {
+        'en': { flag: '🇲🇾', text: 'EN' },
+        'my': { flag: '🇲🇾', text: 'MY' },
+        'zh': { flag: '🇨🇳', text: 'ZH' },
+        'ta': { flag: '🇮🇳', text: 'TA' }
+      };
+
+      const selector = document.querySelector('.language-selector');
+      const flag = selector.querySelector('.lang-flag');
+      const text = selector.querySelector('.lang-text');
+
+      flag.textContent = langMap[lang].flag;
+      text.textContent = langMap[lang].text;
+
+      document.getElementById('language-dropdown').classList.add('hidden');
+      
+      // In a real app, this would trigger actual language change
+      console.log(`Language changed to: ${lang}`);
+    }
+
+    function togglePassword(fieldId) {
+      const field = document.getElementById(fieldId);
+      const toggle = field.nextElementSibling;
+      
+      if (field.type === 'password') {
+        field.type = 'text';
+        toggle.textContent = '🙈';
+        toggle.setAttribute('aria-label', 'Hide password');
+      } else {
+        field.type = 'password';
+        toggle.textContent = '👁️';
+        toggle.setAttribute('aria-label', 'Show password');
+      }
+    }
+
+    function showForgotPassword() {
+      document.getElementById('forgot-password-modal').classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function fillDemoCredentials(type) {
+      const credentials = {
+        business: { email: 'ahmad@bakery.com', password: 'SecurePass123!' },
+        individual: { email: 'sarah@freelance.com', password: 'MyPassword456!' }
+      };
+
+      const cred = credentials[type];
+      document.getElementById('email').value = cred.email;
+      document.getElementById('password').value = cred.password;
+
+      loginController.announce(`${type} demo credentials filled`);
+    }
+
+    // Initialize
+    let loginController;
+    document.addEventListener('DOMContentLoaded', () => {
+      loginController = new LoginController();
+
+      // Check for remembered email
+      const rememberedEmail = localStorage.getItem('msme-remember-email');
+      if (rememberedEmail) {
+        document.getElementById('email').value = rememberedEmail;
+        document.getElementById('remember').checked = true;
+      }
+    });
+  </script>
+
+  <style>
+    /* Landing Page Specific Styles */
+    .landing-header {
+      background-color: var(--bg-primary);
+      border-bottom: 1px solid var(--border-light);
+      position: sticky;
+      top: 0;
+      z-index: var(--z-sticky);
+      padding: var(--spacing-4) 0;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo h1 {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--primary-blue);
+      margin: 0;
+    }
+
+    .header-nav {
+      position: relative;
+    }
+
+    .language-selector {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      padding: var(--spacing-2) var(--spacing-3);
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .language-selector:hover {
+      border-color: var(--primary-blue);
+      background-color: var(--bg-primary);
+    }
+
+    .dropdown-arrow {
+      font-size: var(--font-size-xs);
+      transition: transform var(--transition-fast);
+    }
+
+    .language-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: var(--spacing-1);
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      z-index: var(--z-dropdown);
+      min-width: 160px;
+    }
+
+    .lang-option {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      width: 100%;
+      padding: var(--spacing-3);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: background-color var(--transition-fast);
+      text-align: left;
+    }
+
+    .lang-option:hover {
+      background-color: var(--bg-secondary);
+    }
+
+    .lang-option:first-child {
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+    }
+
+    .lang-option:last-child {
+      border-bottom-left-radius: var(--radius-lg);
+      border-bottom-right-radius: var(--radius-lg);
+    }
+
+    /* Hero Section */
+    .landing-main {
+      padding: var(--spacing-8) 0;
+    }
+
+    .hero-section {
+      margin-bottom: var(--spacing-16);
+    }
+
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-8);
+      align-items: start;
+    }
+
+    .hero-title {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-4);
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: var(--font-size-lg);
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-6);
+      line-height: 1.6;
+    }
+
+    .hero-features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-3);
+      margin-bottom: var(--spacing-6);
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+
+    .feature-icon {
+      font-size: var(--font-size-lg);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-4);
+      margin-bottom: var(--spacing-8);
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: var(--spacing-4);
+      background-color: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+    }
+
+    .stat-number {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--primary-blue);
+      margin-bottom: var(--spacing-1);
+    }
+
+    .stat-label {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+
+    /* Login Container */
+    .login-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .login-card {
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-8);
+      box-shadow: var(--shadow-xl);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: var(--spacing-6);
+    }
+
+    .login-header h3 {
+      font-size: var(--font-size-xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-2);
+    }
+
+    .login-header p {
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+      margin: 0;
+    }
+
+    .password-input {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: var(--spacing-3);
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: var(--font-size-base);
+      padding: var(--spacing-1);
+      min-width: 32px;
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-6);
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      display: none;
+    }
+
+    .checkmark {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-xs);
+      flex-shrink: 0;
+    }
+
+    .checkbox-label input:checked + .checkmark {
+      background-color: var(--primary-blue);
+      border-color: var(--primary-blue);
+      color: var(--text-inverse);
+    }
+
+    .checkbox-label input:checked + .checkmark::after {
+      content: '✓';
+    }
+
+    .checkbox-text {
+      color: var(--text-secondary);
+    }
+
+    .forgot-password-btn {
+      background: none;
+      border: none;
+      color: var(--primary-blue);
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      padding: var(--spacing-1);
+    }
+
+    .forgot-password-btn:hover {
+      text-decoration: underline;
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    .form-divider {
+      text-align: center;
+      margin: var(--spacing-6) 0;
+      position: relative;
+    }
+
+    .form-divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background-color: var(--border-light);
+    }
+
+    .form-divider span {
+      background-color: var(--bg-primary);
+      padding: 0 var(--spacing-3);
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    .signup-prompt {
+      text-align: center;
+    }
+
+    .signup-prompt p {
+      margin-bottom: var(--spacing-2);
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    .signup-link {
+      color: var(--primary-blue);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: var(--font-size-base);
+    }
+
+    .signup-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Demo Section */
+    .demo-section {
+      margin-top: var(--spacing-6);
+      padding: var(--spacing-4);
+      background-color: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+    }
+
+    .demo-header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      margin-bottom: var(--spacing-3);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .demo-credentials {
+      display: grid;
+      gap: var(--spacing-3);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .demo-account {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .demo-fill-btn {
+      width: 100%;
+    }
+
+    /* Features Section */
+    .features-section {
+      margin-bottom: var(--spacing-16);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: var(--spacing-8);
+    }
+
+    .section-header h3 {
+      font-size: var(--font-size-2xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-3);
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      font-size: var(--font-size-base);
+      margin: 0;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-6);
+    }
+
+    .feature-card {
+      padding: var(--spacing-6);
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
+      text-align: center;
+      transition: all var(--transition-fast);
+    }
+
+    .feature-card:hover {
+      border-color: var(--primary-blue);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .feature-card .feature-icon {
+      font-size: var(--font-size-3xl);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .feature-card h4 {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-3);
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* Testimonials Section */
+    .testimonials-section {
+      margin-bottom: var(--spacing-16);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-6);
+    }
+
+    .testimonial-card {
+      padding: var(--spacing-6);
+      background-color: var(--bg-secondary);
+      border-radius: var(--radius-xl);
+    }
+
+    .testimonial-content {
+      margin-bottom: var(--spacing-4);
+    }
+
+    .testimonial-content p {
+      font-style: italic;
+      color: var(--text-primary);
+      font-size: var(--font-size-base);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-3);
+    }
+
+    .author-avatar {
+      font-size: var(--font-size-2xl);
+    }
+
+    .author-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-1);
+    }
+
+    .author-title {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+
+    /* Footer */
+    .landing-footer {
+      background-color: var(--gray-900);
+      color: var(--gray-300);
+      padding: var(--spacing-12) 0 var(--spacing-6);
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-8);
+      margin-bottom: var(--spacing-8);
+    }
+
+    .footer-section h4 {
+      color: var(--text-inverse);
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      margin-bottom: var(--spacing-4);
+    }
+
+    .footer-section p {
+      color: var(--gray-400);
+      font-size: var(--font-size-sm);
+      line-height: 1.6;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: var(--spacing-2);
+    }
+
+    .footer-links a {
+      color: var(--gray-400);
+      text-decoration: none;
+      font-size: var(--font-size-sm);
+      transition: color var(--transition-fast);
+    }
+
+    .footer-links a:hover {
+      color: var(--text-inverse);
+    }
+
+    .social-links {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-2);
+    }
+
+    .social-links a {
+      color: var(--gray-400);
+      text-decoration: none;
+      font-size: var(--font-size-sm);
+      transition: color var(--transition-fast);
+    }
+
+    .social-links a:hover {
+      color: var(--text-inverse);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: var(--spacing-6);
+      border-top: 1px solid var(--gray-700);
+    }
+
+    .footer-bottom p {
+      color: var(--gray-500);
+      font-size: var(--font-size-xs);
+      margin: 0;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: var(--z-modal);
+    }
+
+    .loading-content {
+      background-color: var(--bg-primary);
+      padding: var(--spacing-8);
+      border-radius: var(--radius-xl);
+      text-align: center;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .loading-content p {
+      margin-top: var(--spacing-4);
+      color: var(--text-secondary);
+      font-size: var(--font-size-base);
+      margin-bottom: 0;
+    }
+
+    /* Modal Styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: var(--z-modal);
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--transition-normal);
+    }
+
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background-color: var(--bg-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-8);
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      transform: scale(0.9);
+      transition: transform var(--transition-normal);
+    }
+
+    .modal.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-6);
+      padding-bottom: var(--spacing-4);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: var(--font-size-xl);
+      color: var(--text-primary);
+    }
+
+    .close-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      border: none;
+      background-color: var(--bg-secondary);
+      cursor: pointer;
+      font-size: var(--font-size-xl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+    }
+
+    .close-btn:hover {
+      background-color: var(--gray-200);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: var(--spacing-3);
+      justify-content: flex-end;
+      margin-top: var(--spacing-6);
+    }
+
+    /* Error States */
+    .form-group input.error,
+    .form-group select.error {
+      border-color: var(--error);
+      border-width: 2px;
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: var(--font-size-xs);
+      margin-top: var(--spacing-1);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-1);
+    }
+
+    .error-message::before {
+      content: '⚠️';
+      font-size: var(--font-size-sm);
+    }
+
+    /* Skip Links */
+    .skip-links {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--primary-blue);
+      color: var(--text-inverse);
+      padding: var(--spacing-2) var(--spacing-4);
+      z-index: var(--z-tooltip);
+    }
+
+    .skip-links:focus-within {
+      top: 0;
+    }
+
+    .skip-link {
+      color: var(--text-inverse);
+      text-decoration: underline;
+    }
+
+    .sr-live-region {
+      position: absolute;
+      left: -10000px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    /* Responsive Design */
+    @media (min-width: 768px) {
+      .hero-content {
+        grid-template-columns: 1fr 400px;
+        gap: var(--spacing-12);
+      }
+
+      .hero-features {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stats {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .footer-content {
+        grid-template-columns: 2fr repeat(3, 1fr);
+        gap: var(--spacing-8);
+      }
+
+      .social-links {
+        flex-direction: row;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .hero-title {
+        font-size: var(--font-size-4xl);
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .testimonials-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 767px) {
+      .landing-main {
+        padding: var(--spacing-6) 0;
+      }
+
+      .hero-title {
+        font-size: var(--font-size-2xl);
+      }
+
+      .hero-features {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .login-card {
+        padding: var(--spacing-6);
+      }
+
+      .stat-number {
+        font-size: var(--font-size-xl);
+      }
+    }
+
+    /* Touch Device Optimizations */
+    @media (pointer: coarse) {
+      .language-selector,
+      .lang-option,
+      .forgot-password-btn {
+        min-height: 44px;
+      }
+
+      .password-toggle {
+        min-width: 44px;
+        min-height: 44px;
+      }
+    }
+
+    /* High Contrast Mode */
+    @media (prefers-contrast: high) {
+      :root {
+        --border-light: var(--border-dark);
+        --text-secondary: var(--text-primary);
+      }
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</body>
+</html>

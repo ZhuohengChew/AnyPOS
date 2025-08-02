@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transactions - MSME Finance Platform</title>
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/accessibility.css">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2563eb">
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Accessibility -->
+  <meta name="description" content="Transaction History - View and filter all your business transactions">
+</head>
+<body>
+  <!-- Skip Links for Accessibility -->
+  <div class="skip-links">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+  </div>
+
+  <!-- ARIA Live Region -->
+  <div id="live-region" class="sr-live-region" aria-live="polite"></div>
+
+  <!-- Transactions Screen -->
+  <div id="transactions-screen" class="screen active">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-content">
+        <button class="back-btn" onclick="window.location.href='index.html'" aria-label="Back to dashboard">
+          ←
+        </button>
+        <h1>Transaction History</h1>
+        <div class="header-actions">
+          <button class="btn-secondary" onclick="exportTransactions()">
+            📤 Export
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="transactions-main">
+      <div class="container">
+        <!-- Transaction Summary -->
+        <section class="transaction-summary">
+          <div class="summary-cards">
+            <div class="summary-card income">
+              <div class="card-icon">💰</div>
+              <div class="card-info">
+                <h3>Total Income</h3>
+                <p class="card-value">RM 28,450.75</p>
+                <span class="card-change positive">+15.2% this month</span>
+              </div>
+            </div>
+            
+            <div class="summary-card expense">
+              <div class="card-icon">💸</div>
+              <div class="card-info">
+                <h3>Total Expenses</h3>
+                <p class="card-value">RM 12,680.30</p>
+                <span class="card-change negative">+8.5% this month</span>
+              </div>
+            </div>
+            
+            <div class="summary-card balance">
+              <div class="card-icon">📊</div>
+              <div class="card-info">
+                <h3>Net Balance</h3>
+                <p class="card-value">RM 15,770.45</p>
+                <span class="card-change positive">+22.1% this month</span>
+              </div>
+            </div>
+            
+            <div class="summary-card pending">
+              <div class="card-icon">⏳</div>
+              <div class="card-info">
+                <h3>Pending</h3>
+                <p class="card-value">RM 3,450.00</p>
+                <span class="card-change">12 transactions</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Advanced Filters -->
+        <section class="transaction-filters">
+          <div class="filter-header">
+            <h2>Filters</h2>
+            <button class="filter-toggle" onclick="toggleFilters()" aria-expanded="false" aria-controls="filter-panel">
+              🔽 Show Filters
+            </button>
+          </div>
+          
+          <div id="filter-panel" class="filter-panel collapsed">
+            <!-- Quick Date Filters -->
+            <div class="quick-filters">
+              <h3>Quick Periods</h3>
+              <div class="quick-filter-buttons">
+                <button class="quick-filter-btn active" data-period="this-month" onclick="setQuickFilter('this-month')">This Month</button>
+                <button class="quick-filter-btn" data-period="last-month" onclick="setQuickFilter('last-month')">Last Month</button>
+                <button class="quick-filter-btn" data-period="this-quarter" onclick="setQuickFilter('this-quarter')">This Quarter</button>
+                <button class="quick-filter-btn" data-period="this-year" onclick="setQuickFilter('this-year')">This Year</button>
+                <button class="quick-filter-btn" data-period="last-30-days" onclick="setQuickFilter('last-30-days')">Last 30 Days</button>
+                <button class="quick-filter-btn" data-period="last-90-days" onclick="setQuickFilter('last-90-days')">Last 90 Days</button>
+              </div>
+            </div>
+
+            <!-- Custom Date Range -->
+            <div class="date-filters">
+              <h3>Custom Date Range</h3>
+              <div class="date-inputs">
+                <div class="form-group">
+                  <label for="date-from">From Date</label>
+                  <input type="date" id="date-from" aria-label="From date">
+                </div>
+                <div class="form-group">
+                  <label for="date-to">To Date</label>
+                  <input type="date" id="date-to" aria-label="To date">
+                </div>
+              </div>
+            </div>
+
+            <!-- Other Filters -->
+            <div class="other-filters">
+              <div class="filter-row">
+                <div class="form-group">
+                  <label for="transaction-type">Transaction Type</label>
+                  <select id="transaction-type" aria-label="Filter by transaction type">
+                    <option value="">All Types</option>
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
+                    <option value="transfer">Transfer</option>
+                    <option value="refund">Refund</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="category-filter">Category</label>
+                  <select id="category-filter" aria-label="Filter by category">
+                    <option value="">All Categories</option>
+                    <option value="sales">Sales Revenue</option>
+                    <option value="supplies">Supplies</option>
+                    <option value="utilities">Utilities</option>
+                    <option value="rent">Rent</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="equipment">Equipment</option>
+                    <option value="professional">Professional Services</option>
+                    <option value="insurance">Insurance</option>
+                    <option value="taxes">Taxes</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="status-filter">Status</label>
+                  <select id="status-filter" aria-label="Filter by status">
+                    <option value="">All Status</option>
+                    <option value="completed">Completed</option>
+                    <option value="pending">Pending</option>
+                    <option value="failed">Failed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Amount Range -->
+              <div class="amount-filter">
+                <h3>Amount Range</h3>
+                <div class="amount-inputs">
+                  <div class="form-group">
+                    <label for="amount-min">Min Amount (RM)</label>
+                    <input type="number" id="amount-min" step="0.01" min="0" placeholder="0.00">
+                  </div>
+                  <div class="form-group">
+                    <label for="amount-max">Max Amount (RM)</label>
+                    <input type="number" id="amount-max" step="0.01" min="0" placeholder="No limit">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Search -->
+              <div class="search-filter">
+                <h3>Search</h3>
+                <div class="search-box">
+                  <input type="text" id="transaction-search" placeholder="Search by description, reference, or customer..." aria-label="Search transactions">
+                  <button class="search-btn" aria-label="Search">🔍</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Filter Actions -->
+            <div class="filter-actions">
+              <button class="btn-primary" onclick="applyFilters()">Apply Filters</button>
+              <button class="btn-tertiary" onclick="clearAllFilters()">Clear All</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Transaction Results -->
+        <section class="transaction-results">
+          <div class="results-header">
+            <div class="results-info">
+              <h2>Transactions</h2>
+              <p class="results-count">Showing <span id="results-count">0</span> of <span id="total-count">0</span> transactions</p>
+            </div>
+            
+            <div class="results-controls">
+              <div class="sort-controls">
+                <label for="sort-by">Sort by:</label>
+                <select id="sort-by" onchange="applySorting()">
+                  <option value="date-desc">Date (Newest First)</option>
+                  <option value="date-asc">Date (Oldest First)</option>
+                  <option value="amount-desc">Amount (High to Low)</option>
+                  <option value="amount-asc">Amount (Low to High)</option>
+                  <option value="type">Transaction Type</option>
+                  <option value="status">Status</option>
+                </select>
+              </div>
+              
+              <div class="view-controls">
+                <button class="view-btn active" data-view="list" onclick="toggleView('list')" title="List View">📋</button>
+                <button class="view-btn" data-view="cards" onclick="toggleView('cards')" title="Card View">⊞</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- List View -->
+          <div id="transaction-list" class="transaction-list active">
+            <div class="list-header">
+              <div class="header-cell">Date</div>
+              <div class="header-cell">Description</div>
+              <div class="header-cell">Category</div>
+              <div class="header-cell">Type</div>
+              <div class="header-cell">Amount</div>
+              <div class="header-cell">Status</div>
+              <div class="header-cell">Actions</div>
+            </div>
+            
+            <div id="transaction-items" class="transaction-items">
+              <!-- Dynamic content will be loaded here -->
+            </div>
+          </div>
+
+          <!-- Card View -->
+          <div id="transaction-cards-view" class="transaction-cards-view">
+            <div id="transaction-cards" class="transaction-cards">
+              <!-- Dynamic content will be loaded here -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <button class="page-btn" onclick="changePage(-1)">← Previous</button>
+          <span class="page-info">Page 1 of 10</span>
+          <button class="page-btn" onclick="changePage(1)">Next →</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Transaction Detail Modal -->
+  <div id="transaction-detail-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="transaction-detail-title">Transaction Details</h2>
+        <button class="close-btn" onclick="closeModal('transaction-detail-modal')">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <div id="transaction-detail-content">
+          <!-- Dynamic content will be loaded here -->
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="downloadReceipt()">📥 Download Receipt</button>
+        <button class="btn-tertiary" onclick="closeModal('transaction-detail-modal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data/mock-data.js"></script>
+  <script>
+    // Transaction Management Controller
+    class TransactionController {
+      constructor() {
+        this.transactions = [];
+        this.filteredTransactions = [];
+        this.currentPage = 1;
+        this.itemsPerPage = 20;
+        this.currentView = 'list';
+        this.filtersExpanded = false;
+        
+        this.init();
+      }
+
+      init() {
+        this.loadMockData();
+        this.setupEventListeners();
+        this.setDefaultDates();
+        this.applyQuickFilter('this-month');
+      }
+
+      loadMockData() {
+        // Generate mock transaction data
+        const categories = {
+          income: ['sales', 'services', 'consulting', 'refund'],
+          expense: ['supplies', 'utilities', 'rent', 'marketing', 'equipment', 'professional', 'insurance', 'taxes']
+        };
+
+        const statuses = ['completed', 'pending', 'failed', 'cancelled'];
+        const customers = [
+          'Ahmad Restaurant Sdn Bhd',
+          'Tech Solutions Malaysia',
+          'Green Valley Farm',
+          'Sunrise Bakery',
+          'Local Hardware Store',
+          'KL Mart Sdn Bhd',
+          'Digital Agency MY',
+          'Fresh Food Supplier',
+          'Office Equipment Rental',
+          'Professional Accounting'
+        ];
+
+        this.transactions = [];
+        
+        // Generate transactions for the last 6 months
+        const today = new Date();
+        for (let i = 0; i < 180; i++) {
+          const date = new Date(today);
+          date.setDate(today.getDate() - i);
+          
+          const isIncome = Math.random() > 0.4; // 60% income, 40% expense
+          const type = isIncome ? 'income' : 'expense';
+          const categoryList = categories[type];
+          const category = categoryList[Math.floor(Math.random() * categoryList.length)];
+          const status = statuses[Math.floor(Math.random() * statuses.length)];
+          const customer = customers[Math.floor(Math.random() * customers.length)];
+          
+          const baseAmount = isIncome ? 
+            Math.random() * 5000 + 100 : // Income: RM 100 - RM 5100
+            Math.random() * 2000 + 50;   // Expense: RM 50 - RM 2050
+          
+          const amount = Math.round(baseAmount * 100) / 100;
+          
+          const transaction = {
+            id: `TXN-2024-${String(i + 1).padStart(4, '0')}`,
+            date: date.toISOString().split('T')[0],
+            description: this.generateDescription(type, category, customer),
+            category,
+            type,
+            amount,
+            status: Math.random() > 0.1 ? 'completed' : status, // 90% completed
+            customer,
+            reference: `REF-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+            paymentMethod: this.getRandomPaymentMethod(),
+            notes: Math.random() > 0.7 ? this.generateNotes() : ''
+          };
+          
+          this.transactions.push(transaction);
+        }
+        
+        // Sort by date (newest first)
+        this.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+        this.filteredTransactions = [...this.transactions];
+      }
+
+      generateDescription(type, category, customer) {
+        const descriptions = {
+          income: {
+            sales: [`Payment from ${customer}`, `Invoice payment - ${customer}`, `Sales revenue - ${customer}`],
+            services: [`Service payment - ${customer}`, `Consulting fee from ${customer}`, `Professional services - ${customer}`],
+            consulting: [`Consulting project - ${customer}`, `Advisory services - ${customer}`, `Business consultation - ${customer}`],
+            refund: [`Refund received - ${customer}`, `Credit adjustment - ${customer}`, `Refund processing - ${customer}`]
+          },
+          expense: {
+            supplies: ['Office supplies purchase', 'Raw materials', 'Packaging materials', 'Stationery supplies'],
+            utilities: ['Electricity bill', 'Water bill', 'Internet service', 'Phone bill', 'Gas bill'],
+            rent: ['Office rent', 'Warehouse rent', 'Equipment rental', 'Vehicle rental'],
+            marketing: ['Facebook Ads', 'Google Ads', 'Marketing materials', 'Promotional items', 'Website maintenance'],
+            equipment: ['Computer purchase', 'Printer maintenance', 'Office furniture', 'Production equipment'],
+            professional: ['Accounting services', 'Legal consultation', 'Tax preparation', 'Audit services'],
+            insurance: ['Business insurance', 'Vehicle insurance', 'Property insurance', 'Health insurance'],
+            taxes: ['Corporate tax', 'SST payment', 'Income tax', 'Property tax']
+          }
+        };
+        
+        const categoryDescriptions = descriptions[type][category];
+        return categoryDescriptions[Math.floor(Math.random() * categoryDescriptions.length)];
+      }
+
+      getRandomPaymentMethod() {
+        const methods = ['Bank Transfer', 'Credit Card', 'Cash', 'Online Banking', 'E-Wallet', 'Cheque'];
+        return methods[Math.floor(Math.random() * methods.length)];
+      }
+
+      generateNotes() {
+        const notes = [
+          'Regular monthly payment',
+          'Urgent payment processed',
+          'Bulk order discount applied',
+          'Payment delayed due to bank processing',
+          'Early payment bonus included',
+          'Partial payment - balance pending'
+        ];
+        return notes[Math.floor(Math.random() * notes.length)];
+      }
+
+      setupEventListeners() {
+        // Search functionality
+        document.getElementById('transaction-search').addEventListener('input', (e) => {
+          this.searchTransactions(e.target.value);
+        });
+
+        // Filter changes
+        ['transaction-type', 'category-filter', 'status-filter'].forEach(id => {
+          document.getElementById(id).addEventListener('change', () => {
+            this.applyFilters();
+          });
+        });
+
+        // Date filters
+        ['date-from', 'date-to'].forEach(id => {
+          document.getElementById(id).addEventListener('change', () => {
+            this.applyFilters();
+          });
+        });
+
+        // Amount filters
+        ['amount-min', 'amount-max'].forEach(id => {
+          document.getElementById(id).addEventListener('input', () => {
+            this.applyFilters();
+          });
+        });
+      }
+
+      setDefaultDates() {
+        const today = new Date();
+        const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+        
+        document.getElementById('date-from').value = firstDay.toISOString().split('T')[0];
+        document.getElementById('date-to').value = today.toISOString().split('T')[0];
+      }
+
+      toggleFilters() {
+        this.filtersExpanded = !this.filtersExpanded;
+        const panel = document.getElementById('filter-panel');
+        const toggle = document.querySelector('.filter-toggle');
+        
+        if (this.filtersExpanded) {
+          panel.classList.remove('collapsed');
+          toggle.textContent = '🔼 Hide Filters';
+          toggle.setAttribute('aria-expanded', 'true');
+        } else {
+          panel.classList.add('collapsed');
+          toggle.textContent = '🔽 Show Filters';
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+      }
+
+      setQuickFilter(period) {
+        // Update active button
+        document.querySelectorAll('.quick-filter-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        document.querySelector(`[data-period="${period}"]`).classList.add('active');
+
+        // Calculate date range
+        const today = new Date();
+        let fromDate, toDate = today;
+
+        switch (period) {
+          case 'this-month':
+            fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
+            break;
+          case 'last-month':
+            fromDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+            toDate = new Date(today.getFullYear(), today.getMonth(), 0);
+            break;
+          case 'this-quarter':
+            const quarter = Math.floor(today.getMonth() / 3);
+            fromDate = new Date(today.getFullYear(), quarter * 3, 1);
+            break;
+          case 'this-year':
+            fromDate = new Date(today.getFullYear(), 0, 1);
+            break;
+          case 'last-30-days':
+            fromDate = new Date(today);
+            fromDate.setDate(today.getDate() - 30);
+            break;
+          case 'last-90-days':
+            fromDate = new Date(today);
+            fromDate.setDate(today.getDate() - 90);
+            break;
+          default:
+            fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        }
+
+        // Update date inputs
+        document.getElementById('date-from').value = fromDate.toISOString().split('T')[0];
+        document.getElementById('date-to').value = toDate.toISOString().split('T')[0];
+
+        // Apply filters
+        this.applyFilters();
+      }
+
+      applyFilters() {
+        const filters = {
+          type: document.getElementById('transaction-type').value,
+          category: document.getElementById('category-filter').value,
+          status: document.getElementById('status-filter').value,
+          dateFrom: document.getElementById('date-from').value,
+          dateTo: document.getElementById('date-to').value,
+          amountMin: parseFloat(document.getElementById('amount-min').value) || 0,
+          amountMax: parseFloat(document.getElementById('amount-max').value) || Infinity,
+          search: document.getElementById('transaction-search').value.toLowerCase()
+        };
+
+        this.filteredTransactions = this.transactions.filter(transaction => {
+          const matchesType = !filters.type || transaction.type === filters.type;
+          const matchesCategory = !filters.category || transaction.category === filters.category;
+          const matchesStatus = !filters.status || transaction.status === filters.status;
+          const matchesDateRange = this.isDateInRange(transaction.date, filters.dateFrom, filters.dateTo);
+          const matchesAmountRange = transaction.amount >= filters.amountMin && transaction.amount <= filters.amountMax;
+          const matchesSearch = !filters.search || 
+            transaction.description.toLowerCase().includes(filters.search) ||
+            transaction.customer.toLowerCase().includes(filters.search) ||
+            transaction.reference.toLowerCase().includes(filters.search) ||
+            transaction.id.toLowerCase().includes(filters.search);
+
+          return matchesType && matchesCategory && matchesStatus && 
+                 matchesDateRange && matchesAmountRange && matchesSearch;
+        });
+
+        this.currentPage = 1;
+        this.renderTransactions();
+        this.updateSummary();
+        this.announce(`Found ${this.filteredTransactions.length} transactions`);
+      }
+
+      isDateInRange(transactionDate, fromDate, toDate) {
+        if (!fromDate && !toDate) return true;
+        
+        const date = new Date(transactionDate);
+        const from = fromDate ? new Date(fromDate) : new Date('1900-01-01');
+        const to = toDate ? new Date(toDate) : new Date('2099-12-31');
+        
+        return date >= from && date <= to;
+      }
+
+      clearAllFilters() {
+        // Clear all filter inputs
+        document.getElementById('transaction-type').value = '';
+        document.getElementById('category-filter').value = '';
+        document.getElementById('status-filter').value = '';
+        document.getElementById('transaction-search').value = '';
+        document.getElementById('amount-min').value = '';
+        document.getElementById('amount-max').value = '';
+
+        // Reset to this month
+        this.setDefaultDates();
+        this.setQuickFilter('this-month');
+      }
+
+      applySorting() {
+        const sortBy = document.getElementById('sort-by').value;
+        
+        this.filteredTransactions.sort((a, b) => {
+          switch (sortBy) {
+            case 'date-desc':
+              return new Date(b.date) - new Date(a.date);
+            case 'date-asc':
+              return new Date(a.date) - new Date(b.date);
+            case 'amount-desc':
+              return b.amount - a.amount;
+            case 'amount-asc':
+              return a.amount - b.amount;
+            case 'type':
+              return a.type.localeCompare(b.type);
+            case 'status':
+              return a.status.localeCompare(b.status);
+            default:
+              return new Date(b.date) - new Date(a.date);
+          }
+        });
+
+        this.renderTransactions();
+      }
+
+      toggleView(view) {
+        this.currentView = view;
+        
+        // Update view buttons
+        document.querySelectorAll('.view-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        document.querySelector(`[data-view="${view}"]`).classList.add('active');
+        
+        // Toggle view containers
+        document.getElementById('transaction-list').classList.toggle('active', view === 'list');
+        document.getElementById('transaction-cards-view').classList.toggle('active', view === 'cards');
+        
+        this.renderTransactions();
+      }
+
+      renderTransactions() {
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        const pageTransactions = this.filteredTransactions.slice(startIndex, endIndex);
+
+        if (this.currentView === 'list') {
+          this.renderListView(pageTransactions);
+        } else {
+          this.renderCardView(pageTransactions);
+        }
+
+        this.updatePagination();
+        this.updateResultsCount();
+      }
+
+      renderListView(transactions) {
+        const container = document.getElementById('transaction-items');
+        container.innerHTML = transactions.map(transaction => `
+          <div class="transaction-item" onclick="viewTransactionDetail('${transaction.id}')">
+            <div class="item-cell">${this.formatDate(transaction.date)}</div>
+            <div class="item-cell">
+              <div class="transaction-description">
+                <span class="description-text">${transaction.description}</span>
+                <span class="reference-text">${transaction.reference}</span>
+              </div>
+            </div>
+            <div class="item-cell">
+              <span class="category-badge ${transaction.category}">${this.formatCategory(transaction.category)}</span>
+            </div>
+            <div class="item-cell">
+              <span class="type-badge ${transaction.type}">${this.formatType(transaction.type)}</span>
+            </div>
+            <div class="item-cell">
+              <span class="amount ${transaction.type}">
+                ${transaction.type === 'expense' ? '-' : '+'}RM ${transaction.amount.toFixed(2)}
+              </span>
+            </div>
+            <div class="item-cell">
+              <span class="status-badge ${transaction.status}">${this.formatStatus(transaction.status)}</span>
+            </div>
+            <div class="item-cell">
+              <div class="action-buttons">
+                <button class="action-btn" onclick="event.stopPropagation(); viewTransactionDetail('${transaction.id}')" title="View">👁️</button>
+                <button class="action-btn" onclick="event.stopPropagation(); downloadReceipt('${transaction.id}')" title="Download">📥</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      renderCardView(transactions) {
+        const container = document.getElementById('transaction-cards');
+        container.innerHTML = transactions.map(transaction => `
+          <div class="transaction-card" onclick="viewTransactionDetail('${transaction.id}')">
+            <div class="card-header">
+              <div class="transaction-info">
+                <span class="transaction-id">${transaction.id}</span>
+                <span class="transaction-date">${this.formatDate(transaction.date)}</span>
+              </div>
+              <div class="transaction-badges">
+                <span class="type-badge ${transaction.type}">${this.formatType(transaction.type)}</span>
+                <span class="status-badge ${transaction.status}">${this.formatStatus(transaction.status)}</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h4>${transaction.description}</h4>
+              <p class="customer">${transaction.customer}</p>
+              <p class="reference">Ref: ${transaction.reference}</p>
+              <div class="amount-info">
+                <span class="amount ${transaction.type}">
+                  ${transaction.type === 'expense' ? '-' : '+'}RM ${transaction.amount.toFixed(2)}
+                </span>
+                <span class="category-badge ${transaction.category}">${this.formatCategory(transaction.category)}</span>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="action-btn" onclick="event.stopPropagation(); viewTransactionDetail('${transaction.id}')" title="View">👁️</button>
+              <button class="action-btn" onclick="event.stopPropagation(); downloadReceipt('${transaction.id}')" title="Download">📥</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      updatePagination() {
+        const totalPages = Math.ceil(this.filteredTransactions.length / this.itemsPerPage);
+        document.querySelector('.page-info').textContent = `Page ${this.currentPage} of ${totalPages}`;
+        
+        document.querySelector('.page-btn[onclick="changePage(-1)"]').disabled = this.currentPage === 1;
+        document.querySelector('.page-btn[onclick="changePage(1)"]').disabled = this.currentPage === totalPages;
+      }
+
+      updateResultsCount() {
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        const endIndex = Math.min(startIndex + this.itemsPerPage, this.filteredTransactions.length);
+        
+        document.getElementById('results-count').textContent = this.filteredTransactions.length;
+        document.getElementById('total-count').textContent = this.transactions.length;
+      }
+
+      updateSummary() {
+        const income = this.filteredTransactions
+          .filter(t => t.type === 'income' && t.status === 'completed')
+          .reduce((sum, t) => sum + t.amount, 0);
+        
+        const expenses = this.filteredTransactions
+          .filter(t => t.type === 'expense' && t.status === 'completed')
+          .reduce((sum, t) => sum + t.amount, 0);
+        
+        const pending = this.filteredTransactions
+          .filter(t => t.status === 'pending')
+          .reduce((sum, t) => sum + t.amount, 0);
+
+        // Update summary cards
+        document.querySelector('.summary-card.income .card-value').textContent = `RM ${income.toFixed(2)}`;
+        document.querySelector('.summary-card.expense .card-value').textContent = `RM ${expenses.toFixed(2)}`;
+        document.querySelector('.summary-card.balance .card-value').textContent = `RM ${(income - expenses).toFixed(2)}`;
+        document.querySelector('.summary-card.pending .card-value').textContent = `RM ${pending.toFixed(2)}`;
+      }
+
+      changePage(direction) {
+        const totalPages = Math.ceil(this.filteredTransactions.length / this.itemsPerPage);
+        const newPage = this.currentPage + direction;
+        
+        if (newPage >= 1 && newPage <= totalPages) {
+          this.currentPage = newPage;
+          this.renderTransactions();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+
+      viewTransactionDetail(transactionId) {
+        const transaction = this.transactions.find(t => t.id === transactionId);
+        if (!transaction) return;
+
+        document.getElementById('transaction-detail-title').textContent = `Transaction ${transaction.id}`;
+        
+        const content = document.getElementById('transaction-detail-content');
+        content.innerHTML = `
+          <div class="transaction-detail">
+            <div class="detail-section">
+              <h3>Transaction Information</h3>
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <label>Transaction ID:</label>
+                  <span>${transaction.id}</span>
+                </div>
+                <div class="detail-item">
+                  <label>Date:</label>
+                  <span>${this.formatDate(transaction.date)}</span>
+                </div>
+                <div class="detail-item">
+                  <label>Type:</label>
+                  <span class="type-badge ${transaction.type}">${this.formatType(transaction.type)}</span>
+                </div>
+                <div class="detail-item">
+                  <label>Status:</label>
+                  <span class="status-badge ${transaction.status}">${this.formatStatus(transaction.status)}</span>
+                </div>
+                <div class="detail-item">
+                  <label>Amount:</label>
+                  <span class="amount ${transaction.type}">
+                    ${transaction.type === 'expense' ? '-' : '+'}RM ${transaction.amount.toFixed(2)}
+                  </span>
+                </div>
+                <div class="detail-item">
+                  <label>Category:</label>
+                  <span class="category-badge ${transaction.category}">${this.formatCategory(transaction.category)}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="detail-section">
+              <h3>Description & Details</h3>
+              <p><strong>Description:</strong> ${transaction.description}</p>
+              <p><strong>Customer/Vendor:</strong> ${transaction.customer}</p>
+              <p><strong>Reference:</strong> ${transaction.reference}</p>
+              <p><strong>Payment Method:</strong> ${transaction.paymentMethod}</p>
+              ${transaction.notes ? `<p><strong>Notes:</strong> ${transaction.notes}</p>` : ''}
+            </div>
+          </div>
+        `;
+        
+        document.getElementById('transaction-detail-modal').classList.add('active');
+      }
+
+      formatDate(dateString) {
+        return new Date(dateString).toLocaleDateString('en-MY', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        });
+      }
+
+      formatType(type) {
+        const typeMap = {
+          'income': 'Income',
+          'expense': 'Expense',
+          'transfer': 'Transfer',
+          'refund': 'Refund'
+        };
+        return typeMap[type] || type;
+      }
+
+      formatStatus(status) {
+        const statusMap = {
+          'completed': 'Completed',
+          'pending': 'Pending',
+          'failed': 'Failed',
+          'cancelled': 'Cancelled'
+        };
+        return statusMap[status] || status;
+      }
+
+      formatCategory(category) {
+        const categoryMap = {
+          'sales': 'Sales Revenue',
+          'services': 'Services',
+          'consulting': 'Consulting',
+          'refund': 'Refund',
+          'supplies': 'Supplies',
+          'utilities': 'Utilities',
+          'rent': 'Rent',
+          'marketing': 'Marketing',
+          'equipment': 'Equipment',
+          'professional': 'Professional',
+          'insurance': 'Insurance',
+          'taxes': 'Taxes',
+          'other': 'Other'
+        };
+        return categoryMap[category] || category;
+      }
+
+      searchTransactions(query) {
+        // Apply search with current filters
+        this.applyFilters();
+      }
+
+      announce(message) {
+        document.getElementById('live-region').textContent = message;
+      }
+    }
+
+    // Global functions
+    function toggleFilters() {
+      transactionController.toggleFilters();
+    }
+
+    function setQuickFilter(period) {
+      transactionController.setQuickFilter(period);
+    }
+
+    function applyFilters() {
+      transactionController.applyFilters();
+    }
+
+    function clearAllFilters() {
+      transactionController.clearAllFilters();
+    }
+
+    function applySorting() {
+      transactionController.applySorting();
+    }
+
+    function toggleView(view) {
+      transactionController.toggleView(view);
+    }
+
+    function changePage(direction) {
+      transactionController.changePage(direction);
+    }
+
+    function viewTransactionDetail(transactionId) {
+      transactionController.viewTransactionDetail(transactionId);
+    }
+
+    function downloadReceipt(transactionId) {
+      alert(`Download receipt for transaction ${transactionId || 'current'}`);
+    }
+
+    function exportTransactions() {
+      alert('Export transactions functionality');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    // Initialize
+    let transactionController;
+    document.addEventListener('DOMContentLoaded', () => {
+      transactionController = new TransactionController();
+    });
+  </script>
+
+  <style>
+    /* Transaction Page Styles */
+    .transactions-main {
+      padding: var(--spacing-4) 0;
+      min-height: calc(100vh - 80px);
+    }
+
+    /* Summary Cards */
+    .transaction-summary {
+      margin-bottom: var(--spacing-6);
+    }
+
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-4);
+    }
+
+    .summary-card {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-4);
+      padding: var(--spacing-5);
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+    }
+
+    .summary-card.income {
+      border-left: 4px solid var(--secondary-green);
+    }
+
+    .summary-card.expense {
+      border-left: 4px solid var(--error);
+    }
+
+    .summary-card.balance {
+      border-left: 4px solid var(--primary-blue);
+    }
+
+    .summary-card.pending {
+      border-left: 4px solid var(--warning);
+    }
+
+    /* Filters */
+    .transaction-filters {
+      margin-bottom: var(--spacing-6);
+    }
+
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-4);
+    }
+
+    .filter-toggle {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-medium);
+      padding: var(--spacing-2) var(--spacing-4);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+
+    .filter-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-5);
+      transition: all var(--transition-normal);
+    }
+
+    .filter-panel.collapsed {
+      display: none;
+    }
+
+    .filter-panel h3 {
+      margin-bottom: var(--spacing-3);
+      font-size: var(--font-size-base);
+      color: var(--text-primary);
+    }
+
+    .quick-filters {
+      margin-bottom: var(--spacing-5);
+    }
+
+    .quick-filter-buttons {
+      display: flex;
+      gap: var(--spacing-2);
+      flex-wrap: wrap;
+    }
+
+    .quick-filter-btn {
+      padding: var(--spacing-2) var(--spacing-4);
+      border: 1px solid var(--border-medium);
+      background: var(--bg-surface);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      transition: all var(--transition-fast);
+    }
+
+    .quick-filter-btn.active,
+    .quick-filter-btn:hover {
+      background: var(--primary-blue);
+      color: var(--text-inverse);
+      border-color: var(--primary-blue);
+    }
+
+    .date-filters,
+    .other-filters,
+    .amount-filter,
+    .search-filter {
+      margin-bottom: var(--spacing-4);
+    }
+
+    .date-inputs,
+    .filter-row,
+    .amount-inputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-4);
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding-right: var(--spacing-10);
+    }
+
+    .search-btn {
+      position: absolute;
+      right: var(--spacing-3);
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: var(--spacing-3);
+      margin-top: var(--spacing-4);
+      padding-top: var(--spacing-4);
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* Results */
+    .transaction-results {
+      margin-bottom: var(--spacing-6);
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-4);
+    }
+
+    .results-count {
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    .results-controls {
+      display: flex;
+      gap: var(--spacing-4);
+      align-items: center;
+    }
+
+    .sort-controls {
+      display: flex;
+      gap: var(--spacing-2);
+      align-items: center;
+    }
+
+    .view-controls {
+      display: flex;
+      gap: var(--spacing-2);
+    }
+
+    .view-btn {
+      padding: var(--spacing-2);
+      border: 1px solid var(--border-medium);
+      background: var(--bg-surface);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+
+    .view-btn.active {
+      background: var(--primary-blue);
+      color: var(--text-inverse);
+      border-color: var(--primary-blue);
+    }
+
+    /* List View */
+    .transaction-list {
+      display: none;
+    }
+
+    .transaction-list.active {
+      display: block;
+    }
+
+    .list-header {
+      display: grid;
+      grid-template-columns: 100px 2fr 120px 100px 120px 100px 100px;
+      gap: var(--spacing-3);
+      padding: var(--spacing-3);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      margin-bottom: var(--spacing-2);
+    }
+
+    .transaction-item {
+      display: grid;
+      grid-template-columns: 100px 2fr 120px 100px 120px 100px 100px;
+      gap: var(--spacing-3);
+      padding: var(--spacing-4);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-2);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .transaction-item:hover {
+      border-color: var(--primary-blue);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    }
+
+    .item-cell {
+      display: flex;
+      align-items: center;
+    }
+
+    .transaction-description {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .description-text {
+      font-weight: 500;
+      margin-bottom: var(--spacing-1);
+    }
+
+    .reference-text {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+
+    /* Card View */
+    .transaction-cards-view {
+      display: none;
+    }
+
+    .transaction-cards-view.active {
+      display: block;
+    }
+
+    .transaction-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: var(--spacing-4);
+    }
+
+    .transaction-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-4);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .transaction-card:hover {
+      border-color: var(--primary-blue);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-3);
+    }
+
+    .transaction-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .transaction-id {
+      font-weight: 600;
+      color: var(--primary-blue);
+      font-size: var(--font-size-sm);
+    }
+
+    .transaction-date {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+
+    .transaction-badges {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-1);
+      align-items: flex-end;
+    }
+
+    .card-body h4 {
+      margin-bottom: var(--spacing-2);
+      font-size: var(--font-size-base);
+    }
+
+    .card-body p {
+      margin-bottom: var(--spacing-1);
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+
+    .amount-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: var(--spacing-3);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: var(--spacing-2);
+      margin-top: var(--spacing-3);
+      padding-top: var(--spacing-3);
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* Badges */
+    .type-badge,
+    .status-badge,
+    .category-badge {
+      padding: var(--spacing-1) var(--spacing-2);
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .type-badge.income {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--secondary-green);
+    }
+
+    .type-badge.expense {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+    }
+
+    .type-badge.transfer {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--primary-blue);
+    }
+
+    .type-badge.refund {
+      background: rgba(168, 85, 247, 0.1);
+      color: var(--purple-600);
+    }
+
+    .status-badge.completed {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--secondary-green);
+    }
+
+    .status-badge.pending {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+
+    .status-badge.failed {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+    }
+
+    .status-badge.cancelled {
+      background: var(--gray-100);
+      color: var(--gray-600);
+    }
+
+    .category-badge {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-light);
+    }
+
+    /* Amount styling */
+    .amount {
+      font-weight: 600;
+      font-size: var(--font-size-base);
+    }
+
+    .amount.income {
+      color: var(--secondary-green);
+    }
+
+    .amount.expense {
+      color: var(--error);
+    }
+
+    /* Action buttons */
+    .action-buttons {
+      display: flex;
+      gap: var(--spacing-2);
+    }
+
+    .action-btn {
+      padding: var(--spacing-1);
+      background: none;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .action-btn:hover {
+      background: var(--bg-secondary);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--spacing-4);
+      margin-top: var(--spacing-6);
+    }
+
+    .page-btn {
+      padding: var(--spacing-2) var(--spacing-4);
+      border: 1px solid var(--border-medium);
+      background: var(--bg-surface);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Transaction Detail Modal */
+    .transaction-detail {
+      padding: var(--spacing-4);
+    }
+
+    .detail-section {
+      margin-bottom: var(--spacing-5);
+    }
+
+    .detail-section h3 {
+      margin-bottom: var(--spacing-3);
+      padding-bottom: var(--spacing-2);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-3);
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-1);
+    }
+
+    .detail-item label {
+      font-weight: 500;
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .filter-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-3);
+      }
+
+      .quick-filter-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-2);
+      }
+
+      .date-inputs,
+      .filter-row,
+      .amount-inputs {
+        grid-template-columns: 1fr;
+      }
+
+      .results-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-3);
+      }
+
+      .results-controls {
+        justify-content: space-between;
+      }
+
+      .list-header {
+        display: none;
+      }
+
+      .transaction-item {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-2);
+      }
+
+      .item-cell {
+        justify-content: space-between;
+      }
+
+      .item-cell::before {
+        content: attr(data-label);
+        font-weight: 600;
+        margin-right: var(--spacing-2);
+      }
+
+      .transaction-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</body>
+</html> 

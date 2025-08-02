@@ -1,0 +1,728 @@
+/* Tax Management Styles */
+
+.tax-main {
+    padding: var(--spacing-6) var(--spacing-4);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Tax Summary Cards */
+.tax-summary {
+    margin-bottom: var(--spacing-8);
+}
+
+.tax-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-4);
+}
+
+.tax-card {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+    color: var(--text-inverse);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.tax-card h3 {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    margin-bottom: var(--spacing-2);
+    opacity: 0.9;
+}
+
+.tax-amount {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-2);
+}
+
+.tax-period {
+    font-size: var(--font-size-sm);
+    opacity: 0.8;
+}
+
+/* Tax Forms */
+.tax-forms {
+    background-color: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-light);
+    margin-bottom: var(--spacing-8);
+    overflow: hidden;
+}
+
+.form-tabs {
+    display: flex;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-light);
+    padding: var(--spacing-2);
+    gap: var(--spacing-2);
+}
+
+.tab-btn {
+    padding: var(--spacing-3) var(--spacing-6);
+    background: none;
+    border: none;
+    border-radius: var(--radius-lg);
+    color: var(--text-secondary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.tab-btn.active {
+    background-color: var(--bg-primary);
+    color: var(--primary-blue);
+    box-shadow: var(--shadow-sm);
+}
+
+.form-content {
+    padding: var(--spacing-6);
+}
+
+.form-section {
+    margin-bottom: var(--spacing-8);
+}
+
+.form-section h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-4);
+    padding-bottom: var(--spacing-2);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-4);
+}
+
+.form-group label {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    margin-bottom: var(--spacing-2);
+    color: var(--text-primary);
+}
+
+.tax-input {
+    width: 100%;
+    padding: var(--spacing-3);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    transition: all var(--transition-fast);
+}
+
+.tax-input:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    outline: none;
+}
+
+.form-group small {
+    display: block;
+    color: var(--text-secondary);
+    font-size: var(--font-size-xs);
+    margin-top: var(--spacing-1);
+}
+
+/* Action Buttons */
+.tax-actions {
+    display: flex;
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-8);
+}
+
+.tax-actions button {
+    flex: 1;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .tax-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .tax-actions {
+        flex-direction: column;
+    }
+
+    .form-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Loading States */
+.tax-input.loading {
+    background-color: var(--bg-secondary);
+    pointer-events: none;
+}
+
+/* Error States */
+.tax-input.error {
+    border-color: var(--error);
+}
+
+.error-message {
+    color: var(--error);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-1);
+}
+
+/* Success States */
+.tax-input.success {
+    border-color: var(--success);
+}
+
+/* Green Success Button */
+.btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    padding: var(--spacing-3) var(--spacing-6);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-success:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+}
+
+/* Pulse Animation for Auto-Fill Button Highlight */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+    }
+}
+
+/* Print Styles */
+@media print {
+    .tax-main {
+        padding: 0;
+    }
+
+    .screen-header,
+    .form-tabs,
+    .tax-actions {
+        display: none;
+    }
+
+    .tax-card {
+        break-inside: avoid;
+        background: none !important;
+        color: black !important;
+        box-shadow: none !important;
+        border: 1px solid #000;
+    }
+}
+
+/* ===== TAX STATUS STYLES ===== */
+
+/* Status Summary Cards */
+.status-summary {
+    margin-bottom: var(--spacing-8);
+}
+
+.status-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-4);
+}
+
+.status-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    transition: all var(--transition-fast);
+}
+
+.status-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.status-card h3 {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    margin-bottom: var(--spacing-2);
+    color: var(--text-secondary);
+}
+
+.status-number {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-2);
+    color: var(--text-primary);
+}
+
+.status-period {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+}
+
+/* Status Card Variants */
+.status-card.accepted {
+    border-left: 4px solid var(--success);
+}
+
+.status-card.accepted .status-number {
+    color: var(--success);
+}
+
+.status-card.pending {
+    border-left: 4px solid var(--warning);
+}
+
+.status-card.pending .status-number {
+    color: var(--warning);
+}
+
+.status-card.declined {
+    border-left: 4px solid var(--error);
+}
+
+.status-card.declined .status-number {
+    color: var(--error);
+}
+
+/* Status Records */
+.status-records {
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-light);
+    overflow: hidden;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-6);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.section-header h2 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    margin: 0;
+}
+
+.status-filter {
+    padding: var(--spacing-2) var(--spacing-4);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-sm);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.records-list {
+    padding: var(--spacing-4);
+}
+
+.record-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-4);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-3);
+    background: var(--bg-primary);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.record-item:hover {
+    border-color: var(--primary-blue);
+    box-shadow: var(--shadow-sm);
+}
+
+.record-info {
+    flex: 1;
+}
+
+.record-id {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-1);
+}
+
+.record-date {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.record-amount {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-1);
+}
+
+.record-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--spacing-2);
+}
+
+.status-indicator {
+    padding: var(--spacing-1) var(--spacing-3);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-indicator.accepted {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+}
+
+.status-indicator.pending {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+}
+
+.status-indicator.declined {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--error);
+}
+
+/* ===== TAX STATUS DETAIL STYLES ===== */
+
+/* Submission Info */
+.submission-info {
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-light);
+    padding: var(--spacing-6);
+    margin-bottom: var(--spacing-6);
+}
+
+.submission-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.submission-id h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    margin: 0 0 var(--spacing-2) 0;
+    color: var(--text-primary);
+}
+
+.submission-date {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.status-badge {
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+.status-badge.pending {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+}
+
+.status-badge.accepted {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+}
+
+.status-badge.declined {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--error);
+}
+
+/* Tax Summary Detail */
+.tax-summary-detail {
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-light);
+    padding: var(--spacing-6);
+    margin-bottom: var(--spacing-6);
+}
+
+.tax-summary-detail h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin: 0 0 var(--spacing-4) 0;
+    color: var(--text-primary);
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-3);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+}
+
+.summary-item label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.summary-item span {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.summary-item.total {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+    color: var(--text-inverse);
+}
+
+.summary-item.total label,
+.summary-item.total span {
+    color: var(--text-inverse);
+}
+
+/* Status Timeline */
+.status-timeline {
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-light);
+    padding: var(--spacing-6);
+    margin-bottom: var(--spacing-6);
+}
+
+.status-timeline h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin: 0 0 var(--spacing-4) 0;
+    color: var(--text-primary);
+}
+
+.timeline {
+    position: relative;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border-light);
+}
+
+.timeline-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-4);
+    position: relative;
+}
+
+.timeline-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--primary-blue);
+    margin-right: var(--spacing-4);
+    margin-top: var(--spacing-1);
+    flex-shrink: 0;
+}
+
+.timeline-content {
+    flex: 1;
+    padding-left: var(--spacing-2);
+}
+
+.timeline-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-1);
+}
+
+.timeline-date {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.timeline-description {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-top: var(--spacing-1);
+}
+
+/* Correction Prompts */
+.correction-prompts {
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-light);
+    padding: var(--spacing-6);
+    margin-bottom: var(--spacing-6);
+}
+
+.correction-prompts h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin: 0 0 var(--spacing-4) 0;
+    color: var(--text-primary);
+}
+
+.prompts-list {
+    margin-bottom: var(--spacing-6);
+}
+
+.prompt-item {
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-4);
+    margin-bottom: var(--spacing-3);
+}
+
+.prompt-title {
+    font-weight: 600;
+    color: var(--error);
+    margin-bottom: var(--spacing-2);
+}
+
+.prompt-description {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-2);
+}
+
+.prompt-action {
+    font-size: var(--font-size-sm);
+    color: var(--primary-blue);
+    font-weight: 500;
+}
+
+.correction-actions {
+    display: flex;
+    gap: var(--spacing-4);
+}
+
+/* Documents Section */
+.documents-section {
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-light);
+    padding: var(--spacing-6);
+    margin-bottom: var(--spacing-6);
+}
+
+.documents-section h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin: 0 0 var(--spacing-4) 0;
+    color: var(--text-primary);
+}
+
+.documents-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+}
+
+.document-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-4);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+}
+
+.document-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.document-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-1);
+}
+
+.document-date {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+/* Detail Actions */
+.detail-actions {
+    display: flex;
+    gap: var(--spacing-4);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .status-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .section-header {
+        flex-direction: column;
+        gap: var(--spacing-4);
+        align-items: stretch;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .submission-header {
+        flex-direction: column;
+        gap: var(--spacing-4);
+    }
+
+    .correction-actions {
+        flex-direction: column;
+    }
+
+    .detail-actions {
+        flex-direction: column;
+    }
+
+    .document-item {
+        flex-direction: column;
+        gap: var(--spacing-3);
+        align-items: stretch;
+    }
+} 

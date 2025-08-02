@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Status - MSME Finance Platform</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="tax_sales/main.css">
+    <link rel="stylesheet" href="tax_sales/mobile.css">
+    <link rel="stylesheet" href="tax_sales/tax.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="tax-status-screen" class="screen active">
+        <!-- Header -->
+        <header class="screen-header">
+            <button class="back-btn" onclick="window.location.href='lhdn-tax.html'">←</button>
+            <h1>Tax Status</h1>
+            <button class="help-btn" onclick="showStatusHelp()">?</button>
+        </header>
+
+        <main class="tax-main">
+            <!-- Status Summary -->
+            <section class="status-summary">
+                <div class="status-cards">
+                    <div class="status-card">
+                        <h3>Total Submissions</h3>
+                        <div class="status-number" id="total-submissions">12</div>
+                        <div class="status-period">All Time</div>
+                    </div>
+                    
+                    <div class="status-card accepted">
+                        <h3>Accepted</h3>
+                        <div class="status-number" id="accepted-count">8</div>
+                        <div class="status-period">This Year</div>
+                    </div>
+                    
+                    <div class="status-card pending">
+                        <h3>Pending</h3>
+                        <div class="status-number" id="pending-count">2</div>
+                        <div class="status-period">Under Review</div>
+                    </div>
+                    
+                    <div class="status-card declined">
+                        <h3>Need Resubmission</h3>
+                        <div class="status-number" id="resubmission-count">2</div>
+                        <div class="status-period">Requires Action</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Status Records -->
+            <section class="status-records">
+                <div class="section-header">
+                    <h2>Submission Records</h2>
+                    <div class="filter-controls">
+                        <select id="status-filter" class="status-filter">
+                            <option value="all">All Status</option>
+                            <option value="accepted">Accepted</option>
+                            <option value="pending">Pending</option>
+                            <option value="declined">Need Resubmission</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="records-list" id="records-list">
+                    <!-- Records will be populated by JavaScript -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="tax_sales/mock-data.js"></script>
+    <script src="tax_sales/tax-status.js"></script>
+</body>
+</html> 

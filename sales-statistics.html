@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics - MSME Finance Platform</title>
+    <!-- Add this CSS block after your existing CSS links -->
+<style>
+    /* Tabbed Analytics Styles */
+    .tabbed-analytics-container {
+        background: var(--bg-primary, #fff);
+        border-radius: 16px;
+        margin: 32px auto 0 auto;
+        max-width: 1200px;
+        box-shadow: 0 2px 12px rgba(68,117,242,0.07);
+        border: 1px solid var(--border-light, #e5e7eb);
+        overflow: hidden;
+    }
+    
+    .analytics-tabs {
+        display: flex;
+        background: #f8fafc;
+        border-bottom: 1px solid var(--border-light, #e5e7eb);
+        position: relative;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    .analytics-tabs::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .tab-button {
+        flex: 1;
+        min-width: 160px;
+        padding: 16px 24px;
+        border: none;
+        background: transparent;
+        color: var(--text-secondary, #6b7280);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .tab-button:hover {
+        background: rgba(68, 117, 242, 0.05);
+        color: var(--primary-blue, #4475F2);
+    }
+    
+    .tab-button.active {
+        background: var(--bg-primary, #fff);
+        color: var(--primary-blue, #4475F2);
+        font-weight: 600;
+    }
+    
+    .tab-button.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--primary-blue, #4475F2);
+        border-radius: 3px 3px 0 0;
+    }
+    
+    .tab-icon {
+        font-size: 16px;
+    }
+    
+    .tab-content {
+        display: none;
+        padding: 32px;
+        animation: fadeIn 0.4s ease-out;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Mobile responsive for tabs */
+    @media (max-width: 768px) {
+        .tab-content {
+            padding: 20px;
+        }
+        
+        .tab-button {
+            min-width: 120px;
+            padding: 12px 16px;
+            font-size: 13px;
+        }
+        
+        .tab-icon {
+            font-size: 14px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .tab-content {
+            padding: 16px;
+        }
+        
+        .tab-button {
+            min-width: 100px;
+            padding: 10px 12px;
+            font-size: 12px;
+        }
+    }
+    </style>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="tax_sales/main.css">
+    <link rel="stylesheet" href="tax_sales/mobile.css">
+    <link rel="stylesheet" href="tax_sales/sales.css">
+    <link rel="stylesheet" href="css/sales-analytics.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Main Content -->
+    <div id="statistics-page" class="screen active">
+        <!-- Header -->
+        <header class="stats-header">
+            <div class="header-left">
+                <button class="back-btn" onclick="window.location.href='index.html'" aria-label="Go back to main page">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <h1>Sales Statistics</h1>
+            </div>
+            <div class="period-selector-container">
+                <button class="period-selector" id="periodSelectorBtn" aria-label="Select time period" aria-expanded="false">
+                    This week
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </button>
+                <div class="period-dropdown" id="periodDropdown">
+                    <button class="period-option" data-value="today">Today</button>
+                    <button class="period-option" data-value="this_week">This week</button>
+                    <button class="period-option" data-value="this_month">This month</button>
+                    <button class="period-option" data-value="last_month">Last month</button>
+                    <button class="period-option" data-value="this_year">This year</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="stats-content">
+            <!-- Chart Section -->
+            <section class="chart-section">
+                <div class="y-axis-labels">
+                    <span>RM2000</span>
+                    <span>RM1500</span>
+                    <span>RM1000</span>
+                    <span>RM500</span>
+                    <span>RM250</span>
+                    <span>RM100</span>
+                    <span>  </span>
+                    <span>  </span>
+                    <span>  </span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="main-chart"></canvas>
+                </div>
+            </section>
+
+            <!-- Metrics Section -->
+            <section class="metrics-section">
+                <div class="metrics-grid">
+                    <div class="metric-card income">
+                        <div class="metric-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M12 5v14M5 12l7-7 7 7"/>
+                            </svg>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-amount">RM2670.40</div>
+                            <div class="metric-label">Income</div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card expense">
+                        <div class="metric-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M12 19V5M5 12l7 7 7-7"/>
+                            </svg>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-amount">RM1265.70</div>
+                            <div class="metric-label">Expense</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transactions Section -->
+            <section class="transactions-section">
+                <div class="section-header">
+                    <h2>Transactions</h2>
+                    <button class="view-all-btn">See All</button>
+                </div>
+
+                <div class="transaction-filters">
+                    <button class="filter-btn income active">Income</button>
+                    <button class="filter-btn expense">Expense</button>
+                </div>
+
+                <div class="transactions-list">
+                    <!-- Income Transactions -->
+                    <div class="transaction-item income">
+                        <div class="transaction-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M12 5v14M5 12l7-7 7 7"/>
+                            </svg>
+                        </div>
+                        <div class="transaction-details">
+                            <h4>Sales Revenue</h4>
+                            <p>Today, 11:30 AM</p>
+                        </div>
+                        <div class="transaction-amount income">+RM1,250.00</div>
+                    </div>
+
+                    <div class="transaction-item income">
+                        <div class="transaction-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M12 5v14M5 12l7-7 7 7"/>
+                            </svg>
+                        </div>
+                        <div class="transaction-details">
+                            <h4>Service Payment</h4>
+                            <p>Today, 09:15 AM</p>
+                        </div>
+                        <div class="transaction-amount income">+RM850.40</div>
+                    </div>
+
+                    <!-- Expense Transactions -->
+                    <div class="transaction-item expense">
+                        <div class="transaction-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M12 19V5M5 12l7 7 7-7"/>
+                            </svg>
+                        </div>
+                        <div class="transaction-details">
+                            <h4>Equipment Purchase</h4>
+                            <p>Yesterday, 3:45 PM</p>
+                        </div>
+                        <div class="transaction-amount expense">-RM675.00</div>
+                    </div>
+
+                    <div class="transaction-item expense">
+                        <div class="transaction-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M12 19V5M5 12l7 7 7-7"/>
+                            </svg>
+                        </div>
+                        <div class="transaction-details">
+                            <h4>Office Supplies</h4>
+                            <p>Yesterday, 2:30 PM</p>
+                        </div>
+                        <div class="transaction-amount expense">-RM245.70</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Transaction Modal (moved outside screen div) -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>All Transactions</h2>
+                <button class="modal-close" aria-label="Close modal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="category-summary">
+                <div class="pie-chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+                <div class="category-legend">
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #4475F2"></span>
+                        <span class="legend-label">Salary</span>
+                        <span class="legend-value">40%</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #FF7CA3"></span>
+                        <span class="legend-label">Food & Drink</span>
+                        <span class="legend-value">20%</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #7C5CFC"></span>
+                        <span class="legend-label">E-Wallet</span>
+                        <span class="legend-value">15%</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #34C759"></span>
+                        <span class="legend-label">Internet</span>
+                        <span class="legend-value">5%</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #FFB258"></span>
+                        <span class="legend-label">Shopping</span>
+                        <span class="legend-value">20%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="transaction-filters modal-filters">
+                <button class="filter-btn all active">All</button>
+                <button class="filter-btn income">Income</button>
+                <button class="filter-btn expense">Expense</button>
+            </div>
+
+            <div class="modal-transactions">
+                <!-- Income Transactions -->
+                <div class="transaction-item income" data-category="Salary">
+                    <div class="transaction-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M12 5v14M5 12l7-7 7 7"/>
+                        </svg>
+                    </div>
+                    <div class="transaction-details">
+                        <h4>Monthly Salary</h4>
+                        <p>Today, 11:30 AM</p>
+                        <span class="transaction-category">Category: Salary</span>
+                    </div>
+                    <div class="transaction-amount income">+RM3,500.00</div>
+                </div>
+
+                <!-- Expense Transactions -->
+                <div class="transaction-item expense" data-category="Food & Drink">
+                    <div class="transaction-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M12 19V5M5 12l7 7 7-7"/>
+                        </svg>
+                    </div>
+                    <div class="transaction-details">
+                        <h4>Restaurant Payment</h4>
+                        <p>Yesterday, 7:30 PM</p>
+                        <span class="transaction-category">Category: Food & Drink</span>
+                    </div>
+                    <div class="transaction-amount expense">-RM85.50</div>
+                </div>
+
+                <div class="transaction-item expense" data-category="Shopping">
+                    <div class="transaction-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M12 19V5M5 12l7 7 7-7"/>
+                        </svg>
+                    </div>
+                    <div class="transaction-details">
+                        <h4>Online Shopping</h4>
+                        <p>Yesterday, 3:15 PM</p>
+                        <span class="transaction-category">Category: Shopping</span>
+                    </div>
+                    <div class="transaction-amount expense">-RM250.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Sales Analytics Sections -->
+    
+    <!-- Tabbed Analytics Container -->
+<div class="tabbed-analytics-container">
+    <!-- Tab Navigation -->
+    <div class="analytics-tabs" role="tablist" aria-label="Analytics sections">
+        <button 
+            class="tab-button active" 
+            id="tab-quantity"
+            role="tab" 
+            aria-selected="true" 
+            aria-controls="quantity-panel"
+            tabindex="0"
+        >
+            <span class="tab-icon">📦</span>
+            <span>Quantity</span>
+        </button>
+        <button 
+            class="tab-button" 
+            id="tab-sst"
+            role="tab" 
+            aria-selected="false" 
+            aria-controls="sst-panel"
+            tabindex="-1"
+        >
+            <span class="tab-icon">🏷️</span>
+            <span>SST</span>
+        </button>
+        <button 
+            class="tab-button" 
+            id="tab-daily"
+            role="tab" 
+            aria-selected="false" 
+            aria-controls="daily-panel"
+            tabindex="-1"
+        >
+            <span class="tab-icon">📊</span>
+            <span>Daily Sales</span>
+        </button>
+    </div>
+
+    <!-- Tab Content Panels -->
+    
+    <!-- Quantity Analytics Panel -->
+    <div 
+        class="tab-content active" 
+        id="quantity-panel"
+        role="tabpanel" 
+        aria-labelledby="tab-quantity"
+    >
+        <!-- Move your existing Goods Quantity Analytics content here -->
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card quantity" id="total-items" style="--card-index: 0;">
+                <div class="summary-card-icon">📦</div>
+                <div class="summary-card-value">247 items</div>
+                <div class="summary-card-label">Total Items Sold Today</div>
+            </div>
+            <div class="summary-card quantity" id="most-sold" style="--card-index: 1;">
+                <div class="summary-card-icon">🏆</div>
+                <div class="summary-card-value">Electronic Gadgets (45 units)</div>
+                <div class="summary-card-label">Most Sold Product</div>
+            </div>
+            <div class="summary-card quantity" id="avg-items" style="--card-index: 2;">
+                <div class="summary-card-icon">📊</div>
+                <div class="summary-card-value">3.2 items</div>
+                <div class="summary-card-label">Average Items per Transaction</div>
+            </div>
+        </div>
+        
+        <!-- Recent Transactions Table -->
+        <div class="data-table-container">
+            <div class="data-table-header">
+                <h3>Recent Transactions</h3>
+                <input type="text" id="searchTransactions" class="search-input" placeholder="Search transactions...">
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table" id="transactionsTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Transaction ID</th>
+                            <th>Product Name</th>
+                            <th>Quantity Sold</th>
+                            <th>Unit Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination-container" id="transactionsPagination">
+                <!-- Pagination controls will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- SST Panel -->
+    <div 
+        class="tab-content" 
+        id="sst-panel"
+        role="tabpanel" 
+        aria-labelledby="tab-sst"
+    >
+        <!-- Move your existing SST Calculation content here -->
+        <!-- SST Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card sst" id="daily-sales-before" style="--card-index: 0;">
+                <div class="summary-card-icon">💰</div>
+                <div class="summary-card-value">RM 16,392.50</div>
+                <div class="summary-card-label">Daily Sales (Before SST)</div>
+            </div>
+            <div class="summary-card sst" id="sst-amount" style="--card-index: 1;">
+                <div class="summary-card-icon">🏷️</div>
+                <div class="summary-card-value">RM 983.55</div>
+                <div class="summary-card-label">SST Amount (6%)</div>
+            </div>
+            <div class="summary-card sst" id="daily-sales-after" style="--card-index: 2;">
+                <div class="summary-card-icon">💳</div>
+                <div class="summary-card-value">RM 17376.05</div>
+                <div class="summary-card-label">Daily Sales (After SST)</div>
+            </div>
+        </div>
+        
+        <!-- SST Monthly Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3 class="chart-title">Monthly SST Collection Trend</h3>
+            </div>
+            <canvas id="sstChart" height="200"></canvas>
+        </div>
+        
+        <!-- SST Transactions Table -->
+        <div class="data-table-container">
+            <div class="data-table-header">
+                <h3>SST Transaction Details</h3>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table" id="sstTransactionsTable">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Gross Sales</th>
+                            <th>SST Rate</th>
+                            <th>SST Amount</th>
+                            <th>Total (Inc. SST)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TXN-2025-001234</td>
+                            <td>RM 675.00</td>
+                            <td>6%</td>
+                            <td>RM 40.50</td>
+                            <td>RM 715.50</td>
+                        </tr>
+                        <tr>
+                            <td>TXN-2025-001235</td>
+                            <td>RM 9600.00</td>
+                            <td>6%</td>
+                            <td>RM 576.00</td>
+                            <td>RM 10176.00</td>
+                        </tr>
+                        <tr>
+                            <td>TXN-2025-001236</td>
+                            <td>RM 312.50</td>
+                            <td>6%</td>
+                            <td>RM 18.75</td>
+                            <td>RM 331.25</td>
+                        </tr>
+                        <tr>
+                            <td>TXN-2025-001237</td>
+                            <td>RM 4005.00</td>
+                            <td>6%</td>
+                            <td>RM 240.30</td>
+                            <td>RM 4245.30</td>
+                        </tr>
+                        <tr>
+                            <td>TXN-2025-001238</td>
+                            <td>RM 1800.00</td>
+                            <td>6%</td>
+                            <td>RM 108.00</td>
+                            <td>RM 1908.00</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><strong>Total</strong></td>
+                            <td><strong>RM 164042.50</strong></td>
+                            <td>6%</td>
+                            <td><strong>RM 9842.55</strong></td>
+                            <td><strong>RM 173885.05</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="pagination-container" id="sstTablePagination">
+                <!-- Pagination controls will be populated by JavaScript -->
+            </div>
+        </div>
+
+        
+        
+    </div>
+
+    <!-- Daily Sales Panel -->
+    <div 
+        class="tab-content" 
+        id="daily-panel"
+        role="tabpanel" 
+        aria-labelledby="tab-daily"
+    >
+        <!-- Move your existing Daily Sales Report content here -->
+        <!-- Date Filter Controls -->
+        <div class="date-filter">
+            <input type="date" id="datePicker" class="date-picker">
+        </div>
+        
+        <!-- Daily Report Summary -->
+        <div class="summary-cards">
+            <div class="summary-card sales" id="daily-sales-card" style="--card-index: 0;">
+                <div class="summary-card-icon">💰</div>
+                <div class="summary-card-label">Daily Sales</div>
+                <div class="summary-card-value" id="daily-sales">RM 15,750.00</div>
+            </div>
+            <div class="summary-card sales" id="daily-items-card" style="--card-index: 1;">
+                <div class="summary-card-icon">📦</div>
+                <div class="summary-card-label">Items Sold</div>
+                <div class="summary-card-value" id="daily-items">247 units</div>
+            </div>
+            <div class="summary-card sales" id="daily-transactions-card" style="--card-index: 2;">
+                <div class="summary-card-icon">💳</div>
+                <div class="summary-card-label">Transactions</div>
+                <div class="summary-card-value" id="daily-transactions">42</div>
+            </div>
+            <div class="summary-card sales" id="daily-sst-card" style="--card-index: 3;">
+                <div class="summary-card-icon">🏷️</div>
+                <div class="summary-card-label">SST Amount</div>
+                <div class="summary-card-value" id="daily-sst">RM 945.00</div>
+            </div>
+        </div>
+        
+        <!-- Daily Sales Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3 class="chart-title">Daily Sales Trend (Last 30 Days)</h3>
+            </div>
+            <canvas id="dailySalesChart" height="200"></canvas>
+        </div>
+        
+        <!-- Daily Breakdown Table -->
+        <div class="data-table-container">
+            <div class="data-table-header">
+                <h3>Daily Sales Breakdown</h3>
+            </div>
+            <table class="data-table" id="dailyBreakdownTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Transactions</th>
+                        <th>Quantity</th>
+                        <th>Gross Sales</th>
+                        <th>SST (6%)</th>
+                        <th>Net Sales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Populated by JavaScript -->
+                </tbody>
+            </table>
+            <div class="pagination-controls" id="dailyBreakdownPagination">
+                <!-- Pagination controls will be added by JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Microloan Recommendation Section -->
+    <section id="microloan-recommendation" class="microloan-section">
+        <h2 class="microloan-title">🏦 Available Microloans for Your Business</h2>
+        <div class="microloan-recommendations" id="loanOptionsGrid">
+            <!-- Loan options will be dynamically generated by JavaScript -->
+        </div>
+        <div class="microloan-tools">
+            <div class="loan-tips">
+                <h3>Tips to Improve Eligibility</h3>
+                <ul>
+                    <li>Maintain consistent monthly revenue</li>
+                    <li>Reduce unnecessary expenses</li>
+                    <li>Keep business records up to date</li>
+                    <li>Pay existing loans on time</li>
+                    <li>Grow your customer base</li>
+                </ul>
+            </div>
+            <div class="loan-checklist">
+                <h3>Application Checklist</h3>
+                <ul>
+                    <li>Business registration documents</li>
+                    <li>Latest bank statements</li>
+                    <li>Proof of business address</li>
+                    <li>Business plan or cash flow statement</li>
+                    <li>NRIC/ID of business owner</li>
+                </ul>
+            </div>
+            <div class="loan-testimonials">
+                <h3>Success Stories</h3>
+                <div id="loanTestimonials">
+                    <div>"Thanks to Tekun, I expanded my stall and doubled my sales!" – Aisyah, Penang</div>
+                    <div>"BSN microloan helped me buy new equipment with low interest." – Mr. Lim, KL</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <style>
+    .microloan-section {
+        background: var(--bg-primary, #fff);
+        border-radius: 16px;
+        margin: 32px auto 0 auto;
+        padding: 32px 16px;
+        max-width: 900px;
+        box-shadow: 0 2px 12px rgba(68,117,242,0.07);
+        border: 1px solid var(--border-light, #e5e7eb);
+    }
+    .microloan-title { font-size: 1.5rem; margin-bottom: 16px; color: var(--primary-blue, #4475F2); }
+    .microloan-loading, .microloan-error { text-align: center; font-size: 1.1rem; margin: 16px 0; color: #888; }
+    .microloan-error { color: #d32f2f; }
+    .microloan-recommendations { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+    .microloan-card {
+        background: var(--bg-primary, #fff);
+        border-radius: 12px;
+        box-shadow: 0 1px 6px rgba(68,117,242,0.06);
+        border: 1px solid var(--border-light, #e5e7eb);
+        padding: 24px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        position: relative;
+        margin-bottom: 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .microloan-card:not(:last-child) {
+        border-bottom: 2px solid var(--border-light, #e5e7eb);
+        margin-bottom: 0;
+        padding-bottom: 24px;
+    }
+    
+    .microloan-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(68,117,242,0.1);
+        border-color: var(--primary-blue, #4475F2);
+    }
+    .microloan-card .loan-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    
+    .microloan-card .loan-main {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+    }
+    
+    .microloan-card h4 { 
+        margin: 0; 
+        font-size: 1.2rem; 
+        color: #222; 
+        font-weight: 600;
+    }
+    
+    .microloan-card .loan-badge {
+        background: #10b981;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .microloan-card .loan-amount {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary-blue, #4475F2);
+        text-align: right;
+    }
+    
+    .microloan-card .loan-details {
+        margin-bottom: 20px;
+    }
+    
+    .microloan-card .loan-detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+    }
+    
+    .microloan-card .loan-detail-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
+    
+    .microloan-card .detail-label {
+        color: #666;
+        font-weight: 500;
+        min-width: 80px;
+    }
+    
+    .microloan-card .detail-value {
+        font-weight: 500;
+        color: #222;
+    }
+    
+    .microloan-card .interest-rate {
+        color: #10b981;
+        font-weight: 600;
+    }
+    
+    .microloan-card .loan-actions { 
+        display: flex; 
+        gap: 12px; 
+        justify-content: flex-end;
+    }
+    
+    /* Mobile responsive design */
+    @media (max-width: 768px) {
+        .microloan-card .loan-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .microloan-card .loan-amount {
+            text-align: left;
+        }
+        
+        .microloan-card .loan-detail-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        
+        .microloan-card .loan-actions {
+            flex-direction: column;
+        }
+        
+        .microloan-card .loan-actions button {
+            width: 100%;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .microloan-card {
+            padding: 16px;
+        }
+        
+        .microloan-card .loan-header {
+            gap: 8px;
+        }
+        
+        .microloan-card .loan-detail-grid {
+            gap: 8px;
+        }
+    }
+    .microloan-card .loan-actions button {
+        background: var(--primary-blue, #4475F2);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-size: 0.97rem;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .microloan-card .loan-actions button.secondary {
+        background: #fff;
+        color: var(--primary-blue, #4475F2);
+        border: 1px solid var(--primary-blue, #4475F2);
+    }
+    .microloan-card .loan-actions button:hover { background: #3358b6; }
+    .microloan-card .loan-actions button.secondary:hover { background: #f0f4ff; }
+    .microloan-tools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        margin-bottom: 24px;
+        justify-content: space-between;
+    }
+    .loan-tips, .loan-checklist, .loan-testimonials {
+        background: #f6f8fa;
+        border-radius: 10px;
+        padding: 16px 14px;
+        min-width: 220px;
+        flex: 1 1 220px;
+        margin-bottom: 0;
+        box-shadow: 0 1px 4px rgba(68,117,242,0.04);
+        border: 1px solid #e5e7eb;
+    }
+    .loan-tips h3, .loan-checklist h3, .loan-testimonials h3 { font-size: 1.08rem; margin-bottom: 8px; color: #4475F2; }
+    .loan-tips ul, .loan-checklist ul { margin: 0; padding-left: 18px; font-size: 0.97rem; }
+    .loan-testimonials { min-height: 80px; }
+    .microloan-refresh { display: block; margin: 0 auto; background: #fff; color: #4475F2; border: 1px solid #4475F2; border-radius: 6px; padding: 7px 18px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    .microloan-refresh:hover { background: #f0f4ff; }
+    @media (max-width: 900px) {
+        .microloan-section { padding: 18px 2vw; }
+        .microloan-recommendations { flex-direction: column; align-items: center; }
+        .microloan-tools { flex-direction: column; gap: 16px; }
+    }
+    
+    /* Back Button and Header Styles */
+    .stats-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 0;
+        margin-bottom: 24px;
+    }
+    
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .back-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .back-btn:hover {
+        background: #f8f9fa;
+        border-color: #4475F2;
+        box-shadow: 0 2px 6px rgba(68, 117, 242, 0.15);
+    }
+    
+    .back-btn svg {
+        color: #4475F2;
+        transition: transform 0.2s ease;
+    }
+    
+    .back-btn:hover svg {
+        transform: translateX(-2px);
+    }
+    
+    .stats-header h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1f2937;
+    }
+    
+    @media (max-width: 768px) {
+        .stats-header {
+            padding: 12px 0;
+            margin-bottom: 20px;
+        }
+        
+        .header-left {
+            gap: 8px;
+        }
+        
+        .back-btn {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .stats-header h1 {
+            font-size: 1.25rem;
+        }
+    }
+    </style>
+    <script>
+        // Tab functionality
+        class AnalyticsTabs {
+            constructor() {
+                this.tabs = document.querySelectorAll('.tab-button');
+                this.panels = document.querySelectorAll('.tab-content');
+                this.init();
+            }
+        
+            init() {
+                this.tabs.forEach((tab, index) => {
+                    tab.addEventListener('click', () => this.switchTab(index));
+                    tab.addEventListener('keydown', (e) => this.handleKeydown(e, index));
+                });
+            }
+        
+            switchTab(targetIndex) {
+                // Update tabs
+                this.tabs.forEach((tab, index) => {
+                    const isActive = index === targetIndex;
+                    tab.classList.toggle('active', isActive);
+                    tab.setAttribute('aria-selected', isActive);
+                    tab.setAttribute('tabindex', isActive ? '0' : '-1');
+                });
+        
+                // Update panels
+                this.panels.forEach((panel, index) => {
+                    panel.classList.toggle('active', index === targetIndex);
+                });
+        
+                // Focus the active tab for accessibility
+                this.tabs[targetIndex].focus();
+            }
+        
+            handleKeydown(e, currentIndex) {
+                let targetIndex = currentIndex;
+        
+                switch (e.key) {
+                    case 'ArrowLeft':
+                        targetIndex = currentIndex > 0 ? currentIndex - 1 : this.tabs.length - 1;
+                        break;
+                    case 'ArrowRight':
+                        targetIndex = currentIndex < this.tabs.length - 1 ? currentIndex + 1 : 0;
+                        break;
+                    case 'Home':
+                        targetIndex = 0;
+                        break;
+                    case 'End':
+                        targetIndex = this.tabs.length - 1;
+                        break;
+                    default:
+                        return;
+                }
+        
+                e.preventDefault();
+                this.switchTab(targetIndex);
+            }
+        }
+        
+        // Initialize tabs when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new AnalyticsTabs();
+        });
+        </script>
+        
+    <script>
+    // --- Microloan Recommendation Logic ---
+    (function() {
+        const PROVIDERS = [
+            {
+                name: 'Tekun Nasional',
+                type: 'interest-free',
+                max: 100000,
+                min: 1000,
+                interest: 0,
+                desc: 'Interest-free loans up to RM 100,000',
+                why: 'Your consistent profit margins qualify for interest-free financing',
+                url: 'https://www.tekun.gov.my/'
+            },
+            {
+                name: 'BSN Micro Business Financing',
+                type: 'micro',
+                max: 50000,
+                min: 5000,
+                interest: 6.5,
+                desc: 'Micro business loans up to RM 50,000',
+                why: 'Strong cash flow history meets BSN\'s requirements',
+                url: 'https://www.bsn.com.my/'
+            },
+            {
+                name: 'Agrobank',
+                type: 'small',
+                max: 100000,
+                min: 5000,
+                interest: 7.0,
+                desc: 'Small business financing up to RM 100,000',
+                why: 'Growing business with stable revenue fits Agrobank\'s profile',
+                url: 'https://www.agrobank.com.my/'
+            },
+            {
+                name: 'SME Corp',
+                type: 'sme',
+                max: 250000,
+                min: 20000,
+                interest: 5.5,
+                desc: 'Various SME financing schemes',
+                why: 'Eligible for SME schemes due to business growth',
+                url: 'https://www.smecorp.gov.my/'
+            },
+            {
+                name: 'Islamic Banking',
+                type: 'shariah',
+                max: 100000,
+                min: 5000,
+                interest: 5.0,
+                desc: 'Shariah-compliant financing options',
+                why: 'Shariah-compliant option for your business',
+                url: 'https://www.maybank2u.com.my/'
+            },
+            {
+                name: 'P2P Lending',
+                type: 'p2p',
+                max: 50000,
+                min: 1000,
+                interest: 8.0,
+                desc: 'Crowdfunding and peer-to-peer options',
+                why: 'Alternative funding for flexible needs',
+                url: 'https://www.fundaztic.com/'
+            }
+        ];
+        const TESTIMONIALS = [
+            '"Thanks to Tekun, I expanded my stall and doubled my sales!" – Aisyah, Penang',
+            '"BSN microloan helped me buy new equipment with low interest." – Mr. Lim, KL',
+            '"Agrobank gave me the boost to open a second outlet." – Siti, Johor',
+            '"P2P lending was fast and easy for my small business." – Kumar, Selangor',
+            '"SME Corp support helped me grow from micro to small business." – Farah, Melaka'
+        ];
+        function getRandomTestimonials(n = 2) {
+            const shuffled = TESTIMONIALS.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, n);
+        }
+        function analyzeSales(analytics) {
+            const months = Object.keys(analytics.monthlyRevenue).sort();
+            const lastMonth = months[months.length - 2];
+            const thisMonth = months[months.length - 1];
+            const lastMonthRevenue = analytics.monthlyRevenue[lastMonth] || 0;
+            const thisMonthRevenue = analytics.monthlyRevenue[thisMonth] || 0;
+            const avgMonthly = months.reduce((sum, m) => sum + analytics.monthlyRevenue[m], 0) / months.length;
+            const growth = lastMonthRevenue ? ((thisMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100 : 0;
+            const weekly = analytics.cashFlow && analytics.cashFlow.weekly ? analytics.cashFlow.weekly : [];
+            const avgDailySales = weekly.length ? weekly.reduce((sum, w) => sum + w.income, 0) / (weekly.length * 1.0) : 0;
+            const avgProfitMargin = weekly.length ? (weekly.reduce((sum, w) => sum + (w.income - w.expense), 0) / weekly.reduce((sum, w) => sum + w.income, 0)) * 100 : 0;
+            const cashFlowStable = weekly.length > 1 ? Math.abs(weekly[0].income - weekly[weekly.length-1].income) < 0.2 * avgDailySales : true;
+            let stallSize = 'Micro';
+            if (thisMonthRevenue >= 20000) stallSize = 'Medium';
+            else if (thisMonthRevenue >= 5000) stallSize = 'Small';
+            let health = 60;
+            if (avgProfitMargin > 30) health += 15;
+            if (growth > 5) health += 10;
+            if (cashFlowStable) health += 10;
+            if (thisMonthRevenue > avgMonthly) health += 5;
+            if (health > 100) health = 100;
+            const risk = cashFlowStable && avgProfitMargin > 20 && thisMonthRevenue > 5000 ? 'Low' : 'Medium';
+            return {
+                thisMonthRevenue,
+                lastMonthRevenue,
+                avgMonthly,
+                avgDailySales,
+                avgProfitMargin,
+                growth,
+                cashFlowStable,
+                stallSize,
+                health,
+                risk
+            };
+        }
+        function recommendLoans(analysis) {
+            const recs = [];
+            if (analysis.stallSize !== 'Medium' && analysis.avgProfitMargin > 20 && analysis.cashFlowStable) {
+                recs.push({
+                    provider: PROVIDERS[0],
+                    match: Math.min(95 + Math.floor(analysis.health/10), 99),
+                    why: PROVIDERS[0].why
+                });
+            }
+            if (analysis.stallSize !== 'Medium' && analysis.thisMonthRevenue >= 5000) {
+                recs.push({
+                    provider: PROVIDERS[1],
+                    match: Math.min(88 + Math.floor(analysis.health/15), 97),
+                    why: PROVIDERS[1].why
+                });
+            }
+            if (analysis.stallSize !== 'Micro' && analysis.growth > 0) {
+                recs.push({
+                    provider: PROVIDERS[2],
+                    match: Math.min(85 + Math.floor(analysis.health/20), 95),
+                    why: PROVIDERS[2].why
+                });
+            }
+            if (analysis.stallSize === 'Medium' && analysis.growth > 5) {
+                recs.push({
+                    provider: PROVIDERS[3],
+                    match: 90,
+                    why: PROVIDERS[3].why
+                });
+            }
+            recs.push({
+                provider: PROVIDERS[4],
+                match: 80,
+                why: PROVIDERS[4].why
+            });
+            if (recs.length < 2) {
+                recs.push({
+                    provider: PROVIDERS[5],
+                    match: 75,
+                    why: PROVIDERS[5].why
+                });
+            }
+            return recs.slice(0,3);
+        }
+        function renderRecommendations(recs, analysis) {
+            const container = document.getElementById('microloan-recommendations');
+            container.innerHTML = '';
+            if (!recs.length) {
+                container.innerHTML = '<div>No suitable microloans found for your current business profile.</div>';
+                return;
+            }
+            recs.forEach(rec => {
+                container.innerHTML += `
+                <div class="microloan-card">
+                    <div class="loan-provider">${rec.provider.name}</div>
+                    <div class="loan-amount">Amount: RM${rec.provider.min.toLocaleString()} - RM${rec.provider.max.toLocaleString()}</div>
+                    <div class="loan-interest">Interest: ${rec.provider.interest === 0 ? '0% (Interest-free)' : rec.provider.interest + '% p.a.'}</div>
+                    <div class="loan-match">Match: ${rec.match}% ✅</div>
+                    <div class="loan-why">Why: ${rec.why}</div>
+                    <div class="loan-actions">
+                        <button onclick="window.open('${rec.provider.url}','_blank')">Apply Now</button>
+                        <button class="secondary" onclick="window.open('${rec.provider.url}','_blank')">Learn More</button>
+                    </div>
+                </div>
+                `;
+            });
+            container.innerHTML = `<div style="width:100%;font-size:1.08rem;margin-bottom:10px;color:#333;">Based on your <b>RM${analysis.thisMonthRevenue.toLocaleString()}</b> monthly revenue and ${analysis.cashFlowStable ? 'stable' : 'variable'} cash flow:</div>` + container.innerHTML;
+        }
+        function showLoading(show) {
+            document.getElementById('microloan-loading').style.display = show ? '' : 'none';
+        }
+        function showError(show) {
+            document.getElementById('microloan-error').style.display = show ? '' : 'none';
+        }
+        function showRecommendations(show) {
+            document.getElementById('microloan-recommendations').style.display = show ? '' : 'none';
+        }
+        function renderTestimonials() {
+            const el = document.getElementById('loanTestimonials');
+            el.innerHTML = getRandomTestimonials(2).map(t => `<div style='margin-bottom:6px;'>${t}</div>`).join('');
+        }
+        // Wait for DataHelper and analytics data to be available
+        function waitForAnalyticsAndRender(attempts = 0) {
+            showLoading(true); showError(false); showRecommendations(false);
+            const maxAttempts = 15; // ~3 seconds
+            if (window.DataHelper && typeof window.DataHelper.getAnalytics === 'function') {
+                const analytics = window.DataHelper.getAnalytics();
+                if (analytics && analytics.monthlyRevenue) {
+                    try {
+                        const analysis = analyzeSales(analytics);
+                        const recs = recommendLoans(analysis);
+                        renderRecommendations(recs, analysis);
+                        showLoading(false); showRecommendations(true);
+                        return;
+                    } catch (e) {
+                        // fall through to error
+                    }
+                }
+            }
+            if (attempts < maxAttempts) {
+                setTimeout(() => waitForAnalyticsAndRender(attempts + 1), 200);
+            } else {
+                showLoading(false); showError(true); showRecommendations(false);
+            }
+        }
+        document.getElementById('refreshMicroloan').onclick = function() {
+            waitForAnalyticsAndRender();
+            renderTestimonials();
+        };
+        renderTestimonials();
+        waitForAnalyticsAndRender();
+    })();
+    </script>
+
+    <!-- JavaScript Files -->
+    <script src="tax_sales/chart-manager.js"></script>
+    <script src="tax_sales/period-selector.js"></script>
+    <script src="tax_sales/transaction-filter.js"></script>
+    <script src="tax_sales/modal-manager.js"></script>
+    <script src="microloanjs/microloans.js"></script>
+    
+    <script>
+        // Transaction Filter Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const transactionItems = document.querySelectorAll('.transaction-item');
+            
+            // Add click event listeners to filter buttons
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const filterType = this.classList.contains('income') ? 'income' : 'expense';
+                    
+                    // Update active button
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Filter transactions
+                    filterTransactions(filterType);
+                    
+                    // Announce to screen readers
+                    announceFilter(filterType);
+                });
+            });
+            
+            function filterTransactions(type) {
+                transactionItems.forEach(item => {
+                    if (item.classList.contains(type)) {
+                        // Show matching transactions with animation
+                        item.style.display = 'flex';
+                        item.style.animation = 'fadeIn 0.3s ease-in';
+                    } else {
+                        // Hide non-matching transactions
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // Update transaction count
+                updateTransactionCount(type);
+            }
+            
+            function updateTransactionCount(type) {
+                const visibleItems = document.querySelectorAll(`.transaction-item.${type}`);
+                const sectionHeader = document.querySelector('.transactions-section .section-header h2');
+                
+                if (sectionHeader) {
+                    const count = visibleItems.length;
+                    const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
+                    sectionHeader.textContent = `${capitalizedType} Transactions (${count})`;
+                }
+            }
+            
+            function announceFilter(type) {
+                const count = document.querySelectorAll(`.transaction-item.${type}`).length;
+                const message = `Showing ${count} ${type} transactions`;
+                
+                // Create or update live region for screen readers
+                let liveRegion = document.getElementById('filter-live-region');
+                if (!liveRegion) {
+                    liveRegion = document.createElement('div');
+                    liveRegion.id = 'filter-live-region';
+                    liveRegion.setAttribute('aria-live', 'polite');
+                    liveRegion.style.position = 'absolute';
+                    liveRegion.style.left = '-10000px';
+                    liveRegion.style.width = '1px';
+                    liveRegion.style.height = '1px';
+                    liveRegion.style.overflow = 'hidden';
+                    document.body.appendChild(liveRegion);
+                }
+                
+                liveRegion.textContent = message;
+            }
+            
+            // Initialize with income filter active
+            filterTransactions('income');
+        });
+        
+        // Add CSS animation for fade in effect
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            .transaction-item {
+                transition: all 0.3s ease;
+            }
+            
+            .filter-btn {
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .filter-btn::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+                transition: left 0.5s;
+            }
+            
+            .filter-btn:hover::after {
+                left: 100%;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    
+    <!-- Sales Analytics JavaScript -->
+    <script src="js/sales-analytics.js"></script>
+</body>
+</html>

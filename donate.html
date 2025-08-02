@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Donation Flow - MSME Digital Financial Platform">
+    <meta name="theme-color" content="#2563eb">
+    <title>Donate - MSME Digital Finance Platform</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="donate/main.css">
+    <link rel="stylesheet" href="donate/mobile.css">
+    <link rel="stylesheet" href="donate/accessibility.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Screen 1: Categories -->
+    <div id="categories-screen" class="screen active">
+        <div class="screen-header">
+            <button class="back-btn" onclick="history.back()" aria-label="Go back">
+                <span class="icon">←</span>
+            </button>
+            <h1>Make a Donation</h1>
+            <button class="help-btn" aria-label="Get help">
+                <span class="icon">?</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <div class="categories-grid">
+                <button class="category-card" data-category="orphanage">
+                    <div class="category-icon">🐻</div>
+                    <h3>Orphanage</h3>
+                    <p>Support children in need</p>
+                </button>
+                
+                <button class="category-card" data-category="elderly">
+                    <div class="category-icon">👵</div>
+                    <h3>Elderly Care</h3>
+                    <p>Help senior citizens</p>
+                </button>
+                
+                <button class="category-card" data-category="animals">
+                    <div class="category-icon">🐾</div>
+                    <h3>Stray Animals</h3>
+                    <p>Care for abandoned pets</p>
+                </button>
+                
+                <button class="category-card" data-category="environment">
+                    <div class="category-icon">🌱</div>
+                    <h3>Environment</h3>
+                    <p>Protect our planet</p>
+                </button>
+                
+                <button class="category-card" data-category="education">
+                    <div class="category-icon">📚</div>
+                    <h3>Education</h3>
+                    <p>Support student learning</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 2: NGO Selection -->
+    <div id="ngo-screen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" onclick="goToScreen('categories-screen')" aria-label="Go back">
+                <span class="icon">←</span>
+            </button>
+            <h1>Select Organization</h1>
+            <button class="help-btn" aria-label="Get help">
+                <span class="icon">?</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="ngo-search" placeholder="Search organizations..." 
+                       onkeyup="filterNGOs(this.value)" aria-label="Search organizations">
+            </div>
+
+            <div id="ngo-list" class="ngo-list">
+                <!-- NGOs will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 3: Amount Selection -->
+    <div id="amount-screen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" onclick="goToScreen('ngo-screen')" aria-label="Go back">
+                <span class="icon">←</span>
+            </button>
+            <h1>Donation Amount</h1>
+            <button class="help-btn" aria-label="Get help">
+                <span class="icon">?</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <div class="selected-ngo-info">
+                <img id="selected-ngo-logo" src="" alt="NGO Logo" class="ngo-logo">
+                <h3 id="selected-ngo-name">Loading...</h3>
+            </div>
+
+            <div class="amount-selection">
+                <div class="quick-amounts">
+                    <button onclick="setAmount(10)" class="amount-btn">RM 10</button>
+                    <button onclick="setAmount(50)" class="amount-btn">RM 50</button>
+                    <button onclick="setAmount(100)" class="amount-btn">RM 100</button>
+                </div>
+
+                <div class="custom-amount">
+                    <label for="custom-amount">Custom Amount (RM)</label>
+                    <input type="number" id="custom-amount" min="1" step="1" 
+                           placeholder="Enter amount" onchange="updateAmount(this.value)">
+                    <div class="error-message" id="amount-error" style="display: none; color: #dc2626; font-size: 0.875rem; margin-top: 0.5rem;">
+                        Please enter or select a donation amount
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="validateAndProceed()">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 4: Bank Selection -->
+    <div id="bank-selection-screen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" onclick="goToScreen('amount-screen')" aria-label="Go back">
+                <span class="icon">←</span>
+            </button>
+            <h1>Select Payment Method</h1>
+            <button class="help-btn" aria-label="Get help">
+                <span class="icon">?</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <div class="donation-summary">
+                <div class="summary-item">
+                    <span class="label">Organization:</span>
+                    <span class="value" id="summary-ngo">Loading...</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Amount:</span>
+                    <span class="value amount" id="summary-amount">RM 0.00</span>
+                </div>
+            </div>
+
+            <div class="payment-methods">
+                <h3>Choose your payment method</h3>
+                
+                <div class="payment-option" onclick="selectPaymentMethod('maybank')">
+                    <div class="payment-icon maybank">🏦</div>
+                    <div class="payment-info">
+                        <h4>Maybank</h4>
+                        <p>Pay with your Maybank account</p>
+                    </div>
+                    <div class="payment-arrow">→</div>
+                </div>
+
+                <div class="payment-option" onclick="selectPaymentMethod('touchngo')">
+                    <div class="payment-icon touchngo">📱</div>
+                    <div class="payment-info">
+                        <h4>Touch 'n Go</h4>
+                        <p>Pay with Touch 'n Go eWallet</p>
+                    </div>
+                    <div class="payment-arrow">→</div>
+                </div>
+
+                <div class="payment-option" onclick="selectPaymentMethod('cimb')">
+                    <div class="payment-icon cimb">🏛️</div>
+                    <div class="payment-info">
+                        <h4>CIMB Bank</h4>
+                        <p>Pay with your CIMB account</p>
+                    </div>
+                    <div class="payment-arrow">→</div>
+                </div>
+
+                <div class="payment-option" onclick="selectPaymentMethod('public')">
+                    <div class="payment-icon public">🏢</div>
+                    <div class="payment-info">
+                        <h4>Public Bank</h4>
+                        <p>Pay with your Public Bank account</p>
+                    </div>
+                    <div class="payment-arrow">→</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 5: PIN Entry (for non-Maybank payments) -->
+    <div id="pin-screen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" onclick="goToScreen('bank-selection-screen')" aria-label="Go back">
+                <span class="icon">←</span>
+            </button>
+            <h1>Confirm Donation</h1>
+            <button class="help-btn" aria-label="Get help">
+                <span class="icon">?</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <div class="bank-interface">
+                <div class="security-section">
+                    <div class="pin-entry">
+                        <h3>Enter PIN</h3>
+                        <div class="pin-dots">
+                            <span class="pin-dot"></span>
+                            <span class="pin-dot"></span>
+                            <span class="pin-dot"></span>
+                            <span class="pin-dot"></span>
+                            <span class="pin-dot"></span>
+                            <span class="pin-dot"></span>
+                        </div>
+                        <div class="pin-pad">
+                            <button class="pin-btn" onclick="donationManager.handlePinInput(1, 'number')">1</button>
+                            <button class="pin-btn" onclick="donationManager.handlePinInput(2, 'number')">2</button>
+                            <button class="pin-btn" onclick="donationManager.handlePinInput(3, 'number')">3</button>
+                            <button class="pin-btn" onclick="donationManager.handlePinInput(4, 'number')">4</button>
+                            <button class="pin-btn" onclick="donationManager.handlePinInput(5, 'number')">5</button>
+                            <button class="pin-btn" onclick="donationManager.handlePinInput(6, 'number')">6</button>
+                            <button class="pin-btn" onclick="donationManager.handlePinInput(7, 'number')">7</button>
+                            <button class="pin-btn" onclick="donationManager.handlePinInput(8, 'number')">8</button>
+                            <button class="pin-btn" onclick="donationManager.handlePinInput(9, 'number')">9</button>
+                            <button class="pin-btn special" onclick="donationManager.handlePinInput('', 'backspace')">⌫</button>
+                            <button class="pin-btn" onclick="donationManager.handlePinInput(0, 'number')">0</button>
+                            <button class="pin-btn special" onclick="donationManager.handlePinInput('', 'confirm')">✓</button>
+                        </div>
+                    </div>
+                    <button class="btn-secondary" id="use-biometric">
+                        <span class="icon">👆</span>
+                        Use Fingerprint
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 5: Confirmation -->
+    <div id="confirmation-screen" class="screen">
+        <div class="container">
+            <div class="confirmation-content">
+                <div class="success-animation">
+                    <div class="success-icon">❤️</div>
+                </div>
+                <h2>Donation Successful!</h2>
+                
+                <div class="donation-message">
+                    <p class="thank-you">💝 Thank You, <span id="donor-name">Friend</span>!</p>
+                    <p class="subtitle">Your generosity is changing lives.</p>
+                    
+                    <div class="donation-details">
+                        <p class="amount">🎁 RM <span id="confirm-amount">50.00</span> donated to <span id="confirm-ngo">SPCA Malaysia</span></p>
+                        <p class="date">📅 <span id="confirm-date">7/18/2025, 4:20:48 PM</span></p>
+                    </div>
+                    
+                    <p class="receipt-note">✨ Your tax receipt has been saved.</p>
+                </div>
+
+                <div class="confirmation-actions">
+                    <div class="button-container">
+                        <button class="btn-primary" onclick="goToDashboard()">Done</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="data/mock-data.js"></script>
+    <script src="donate/accessibility.js"></script>
+    <script src="donate/donation.js"></script>
+</body>
+</html> 

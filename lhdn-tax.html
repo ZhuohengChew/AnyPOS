@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LHDN Tax Management - MSME Finance Platform</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="tax_sales/main.css">
+    <link rel="stylesheet" href="tax_sales/mobile.css">
+    <link rel="stylesheet" href="tax_sales/tax.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="lhdn-tax-screen" class="screen active">
+        <!-- Header -->
+        <header class="screen-header">
+            <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+            <h1>LHDN Tax Management</h1>
+            <button class="help-btn" onclick="showTaxHelp()">?</button>
+        </header>
+
+        <main class="tax-main">
+            
+
+            <!-- Tax Form Tabs -->
+            <section class="tax-forms">
+                <div class="form-tabs">
+                    <button class="tab-btn active" data-form="personal">Personal Info</button>
+                    <button class="tab-btn" data-form="business">Business Info</button>
+                    <button class="tab-btn" data-form="income-tax">Income Tax</button>
+                    <button class="tab-btn" data-form="business-tax">Business Tax</button>
+                </div>
+
+                <!-- Personal Information Form -->
+                <div class="form-content active" id="personal-form">
+                    <div class="form-section">
+                        <h3>Personal Information</h3>
+                        <div class="form-group">
+                            <label for="ic-number">IC Number</label>
+                            <input type="text" id="ic-number" class="tax-input" placeholder="000000-00-0000">
+                        </div>
+                        <div class="form-group">
+                            <label for="full-name">Full Name</label>
+                            <input type="text" id="full-name" class="tax-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <textarea id="address" class="tax-input" rows="3"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="postcode">Postcode</label>
+                                <input type="text" id="postcode" class="tax-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="state">State</label>
+                                <input type="text" id="state" class="tax-input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone-number">Phone Number</label>
+                            <input type="tel" id="phone-number" class="tax-input">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Bank Information</h3>
+                        <div class="form-group">
+                            <label for="bank-name">Bank Name</label>
+                            <input type="text" id="bank-name" class="tax-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="bank-account">Account Number</label>
+                            <input type="text" id="bank-account" class="tax-input">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Information Form -->
+                <div class="form-content" id="business-form">
+                    <div class="form-section">
+                        <h3>Business Details</h3>
+                        <div class="form-group">
+                            <label for="business-name">Business Name</label>
+                            <input type="text" id="business-name" class="tax-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="registration-number">Registration Number</label>
+                            <input type="text" id="registration-number" class="tax-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="business-address">Business Address</label>
+                            <textarea id="business-address" class="tax-input" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="business-type">Business Type</label>
+                            <input type="text" id="business-type" class="tax-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="sst-number">SST Number</label>
+                            <input type="text" id="sst-number" class="tax-input">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Financial Information</h3>
+                        <div class="form-group">
+                            <label for="total-sales">Total Sales</label>
+                            <input type="number" id="total-sales" class="tax-input" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="business-expenses">Business Expenses</label>
+                            <input type="number" id="business-expenses" class="tax-input" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="employee-wages">Employee Wages</label>
+                            <input type="number" id="employee-wages" class="tax-input" placeholder="0.00">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="rent-expenses">Rent Expenses</label>
+                                <input type="number" id="rent-expenses" class="tax-input" placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="utilities-expenses">Utilities Expenses</label>
+                                <input type="number" id="utilities-expenses" class="tax-input" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="marketing-expenses">Marketing Expenses</label>
+                                <input type="number" id="marketing-expenses" class="tax-input" placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="insurance-expenses">Insurance Expenses</label>
+                                <input type="number" id="insurance-expenses" class="tax-input" placeholder="0.00">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Income Tax Form -->
+                <div class="form-content" id="income-tax-form">
+                    <div class="form-section">
+                        <h3>Income Details</h3>
+                        <div class="form-group">
+                            <label for="employment-income">Employment Income</label>
+                            <input type="number" id="employment-income" class="tax-input" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="business-income">Business Income</label>
+                            <input type="number" id="business-income" class="tax-input" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="rental-income">Rental Income</label>
+                            <input type="number" id="rental-income" class="tax-input" placeholder="0.00">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Deductions</h3>
+                        <div class="form-group">
+                            <label for="personal-relief">Personal Relief</label>
+                            <input type="number" id="personal-relief" class="tax-input" value="9000" readonly>
+                            <small>Fixed at RM 9,000</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="epf-contribution">EPF Contribution</label>
+                            <input type="number" id="epf-contribution" class="tax-input" placeholder="0.00">
+                            <small>Maximum RM 4,000</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="donation-deduction">Donation</label>
+                            <input type="number" id="donation-deduction" class="tax-input" value="3250" readonly>
+                            <small>Maximum RM 4,000 (10% of your aggregate income)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Tax Form -->
+                <div class="form-content" id="business-tax-form">
+                    <div class="form-section">
+                        <h3>Business Revenue</h3>
+                        <div class="form-group">
+                            <label for="gross-sales">Gross Sales</label>
+                            <input type="number" id="gross-sales" class="tax-input" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="other-income">Other Income</label>
+                            <input type="number" id="other-income" class="tax-input" placeholder="0.00">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Business Expenses</h3>
+                        <div class="form-group">
+                            <label for="operating-expenses">Operating Expenses</label>
+                            <input type="number" id="operating-expenses" class="tax-input" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="salary-expenses">Salary & Wages</label>
+                            <input type="number" id="salary-expenses" class="tax-input" placeholder="0.00">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SST Form -->
+                <div class="form-content" id="sst-form">
+                    <div class="form-section">
+                        <h3>Sales & Service Tax</h3>
+                        <div class="form-group">
+                            <label for="taxable-sales">Taxable Sales</label>
+                            <input type="number" id="taxable-sales" class="tax-input" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="exempt-sales">Tax-Exempt Sales</label>
+                            <input type="number" id="exempt-sales" class="tax-input" placeholder="0.00">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tax Summary Cards -->
+            <section class="tax-summary">
+                <div class="tax-cards">
+                    <div class="tax-card">
+                        <h3>Income Tax Estimate</h3>
+                        <div class="tax-amount" id="income-tax-amount">RM 0.00</div>
+                        <div class="tax-period">YA 2024</div>
+                    </div>
+                    
+                    <div class="tax-card">
+                        <h3>Business Tax</h3>
+                        <div class="tax-amount" id="business-tax-amount">RM 0.00</div>
+                        <div class="tax-period">Current Year</div>
+                    </div>
+                    
+                    <div class="tax-card">
+                        <h3>SST Payable</h3>
+                        <div class="tax-amount" id="sst-amount">RM 0.00</div>
+                        <div class="tax-period">This Quarter</div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Action Buttons -->
+            <section class="tax-actions">
+                <button class="btn-primary" onclick="autoFillTaxData()">
+                    Auto-Fill from Business Data
+                </button>
+                <button class="btn-secondary" onclick="calculateTax()">
+                    Calculate Tax
+                </button>
+                <button class="btn-success" onclick="submitToMyInvoice()">
+                    Submit to MyInvoice
+                </button>
+                <button class="btn-tertiary" onclick="checkTaxStatus()">
+                    Check Status
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="tax_sales/mock-data.js"></script>
+    <script src="tax_sales/lhdn-tax.js"></script>
+</body>
+</html> 

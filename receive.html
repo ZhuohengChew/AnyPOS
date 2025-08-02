@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2C POS - MSME Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: white;
+            min-height: 100vh;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background: #2563eb;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .step {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transition: all 0.3s;
+        }
+
+        .step.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        .screen {
+            display: none;
+            padding: 20px;
+            min-height: calc(100vh - 120px);
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .scan-area {
+            border: 3px dashed #e5e7eb;
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            margin: 20px 0;
+            background: #f9fafb;
+            transition: all 0.3s;
+        }
+
+        .scan-area.scanning {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .scan-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 8px 0;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .product-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .product-card:hover, .product-card.selected {
+            background: #eff6ff;
+            border-color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .product-emoji {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .product-price {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .manual-input {
+            margin: 20px 0;
+        }
+
+        .input-group {
+            margin: 12px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .qty-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .qty-display {
+            font-size: 24px;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .order-summary {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .item-qty {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .total-section {
+            border-top: 2px solid #e5e7eb;
+            padding-top: 16px;
+            margin-top: 16px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+        }
+
+        .total-row.grand-total {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .payment-btn {
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .payment-btn:hover, .payment-btn.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .payment-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .payment-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .success-animation {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .transaction-details {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* QR Code Payment Overlay */
+        .qr-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .qr-modal {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        .qr-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .qr-header h2 {
+            margin: 0;
+            color: #1f2937;
+        }
+
+        .close-qr {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .close-qr:hover {
+            background: #f3f4f6;
+        }
+
+        .payment-info {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .amount-display {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 8px;
+        }
+
+        .payment-method {
+            font-size: 16px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .qr-code-container {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .qr-code {
+            display: inline-block;
+            padding: 20px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+
+        .qr-placeholder {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f9fafb;
+        }
+
+        .qr-squares {
+            display: grid;
+            grid-template-columns: repeat(21, 1fr);
+            gap: 1px;
+            width: 168px;
+            height: 168px;
+        }
+
+        .qr-pixel {
+            width: 7px;
+            height: 7px;
+        }
+
+        .qr-pixel.black {
+            background: #000;
+        }
+
+        .qr-pixel.white {
+            background: #fff;
+        }
+
+        .qr-instruction {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .payment-status {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .status-indicator.waiting {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-indicator.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-indicator.timeout {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .pulse-dot {
+            width: 12px;
+            height: 12px;
+            background: #f59e0b;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        .success-checkmark {
+            width: 24px;
+            height: 24px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .timeout-icon {
+            font-size: 20px;
+        }
+
+        .qr-timer {
+            text-align: center;
+        }
+
+        .timer-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border: 3px solid #e5e7eb;
+            border-radius: 50%;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .timer-circle #countdown {
+            font-size: 18px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href = 'index.html'">←</button>
+            <h1>Received Payments</h1>
+            <!-- <button class="refresh-btn" onclick="refreshData()">🔄</button> -->
+        </div>
+
+        <!-- Step 1: Scan or Add Products -->
+        <div class="screen active" id="screen1">
+            <h2>Step 1: Add Products</h2>
+            
+            <!-- Image Recognition Scan Area -->
+            <div class="scan-area" id="scanArea">
+                <div class="scan-icon">📷</div>
+                <h3>Scan Product</h3>
+                <p>Point camera at item to automatically detect</p>
+                <button class="btn btn-primary" onclick="startScan()">Start Camera Scan</button>
+            </div>
+
+            <!-- Manual Product Selection -->
+            <h3>Or Choose from Menu:</h3>
+            <div class="product-grid">
+                <div class="product-card" onclick="selectProduct('nasi-lemak', 'Nasi Lemak', 5.00)">
+                    <div class="product-emoji">🍛</div>
+                    <div class="product-name">Nasi Lemak</div>
+                    <div class="product-price">RM 5.00</div>
+                </div>
+                <div class="product-card" onclick="selectProduct('teh-tarik', 'Teh Tarik', 2.50)">
+                    <div class="product-emoji">☕</div>
+                    <div class="product-name">Teh Tarik</div>
+                    <div class="product-price">RM 2.50</div>
+                </div>
+                <div class="product-card" onclick="selectProduct('mee-goreng', 'Mee Goreng', 6.00)">
+                    <div class="product-emoji">🍜</div>
+                    <div class="product-name">Mee Goreng</div>
+                    <div class="product-price">RM 6.00</div>
+                </div>
+                <div class="product-card" onclick="selectProduct('fried-rice', 'Fried Rice', 7.00)">
+                    <div class="product-emoji">🍚</div>
+                    <div class="product-name">Fried Rice</div>
+                    <div class="product-price">RM 7.00</div>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" onclick="showManualInput()">Add Custom Item</button>
+            
+            <!-- Manual Input Form (Hidden by default) -->
+            <div class="manual-input hidden" id="manualInput">
+                <h3>Add Custom Item</h3>
+                <div class="input-group">
+                    <label>Item Name</label>
+                    <input type="text" id="customName" placeholder="Enter item name">
+                </div>
+                <div class="input-group">
+                    <label>Price (RM)</label>
+                    <input type="number" id="customPrice" placeholder="0.00" step="0.01">
+                </div>
+                <button class="btn btn-primary" onclick="addCustomItem()">Add Item</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Adjust Quantities -->
+        <div class="screen" id="screen2">
+            <h2>Step 2: Adjust Quantities</h2>
+            <div id="selectedProduct">
+                <!-- Selected product will be shown here -->
+            </div>
+            
+            <div class="quantity-control">
+                <button class="qty-btn" onclick="decreaseQty()">−</button>
+                <div class="qty-display" id="quantity">1</div>
+                <button class="qty-btn" onclick="increaseQty()">+</button>
+            </div>
+
+            <button class="btn btn-primary" onclick="addToOrder()">Add to Order</button>
+            <button class="btn btn-secondary" onclick="goToScreen(1)">Add More Items</button>
+        </div>
+
+        <!-- Step 3: Review Order -->
+        <div class="screen" id="screen3">
+            <h2>Step 3: Review Order</h2>
+            
+            <div class="order-summary" id="orderSummary">
+                <!-- Order items will be populated here -->
+            </div>
+
+            <button class="btn btn-primary" onclick="goToScreen(4)">Proceed to Payment</button>
+            <button class="btn btn-secondary" onclick="goToScreen(1)">Add More Items</button>
+        </div>
+
+        <!-- Step 4: Payment Method -->
+        <div class="screen" id="screen4">
+            <h2>Step 4: Customer Payment</h2>
+            
+            <div class="order-summary" id="paymentOrderSummary">
+                <!-- Order summary for payment -->
+            </div>
+
+            <h3>Choose Payment Method:</h3>
+            <div class="payment-methods">
+                <div class="payment-btn" onclick="selectPayment('tng')">
+                    <div class="payment-icon">📱</div>
+                    <div class="payment-name">Touch 'n Go</div>
+                </div>
+                <div class="payment-btn" onclick="selectPayment('grab')">
+                    <div class="payment-icon">🚗</div>
+                    <div class="payment-name">GrabPay</div>
+                </div>
+                <div class="payment-btn" onclick="selectPayment('cash')">
+                    <div class="payment-icon">💰</div>
+                    <div class="payment-name">Cash</div>
+                </div>
+                <div class="payment-btn" onclick="selectPayment('bank')">
+                    <div class="payment-icon">📲</div>
+                    <div class="payment-name">DuitNow QR</div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="processPaymentBtn" onclick="processPayment()" disabled>Process Payment</button>
+        </div>
+
+        <!-- Step 5: Success & Receipt -->
+        <div class="screen" id="screen5">
+            <div class="success-animation">
+                <div class="success-icon">✓</div>
+                <h2>Transaction Successful!</h2>
+                <p>Payment received successfully</p>
+            </div>
+
+            <div class="transaction-details" id="transactionDetails">
+                <!-- Transaction details will be shown here -->
+            </div>
+
+            <button class="btn btn-primary" onclick="generateReceipt()">📄 Generate Receipt</button>
+            <button class="btn btn-secondary" onclick="generateInvoice()">🧾 Generate Invoice</button>
+            <button class="btn btn-secondary" onclick="startNewTransaction()">New Transaction</button>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Global state
+        let currentStep = 1;
+        let selectedProduct = null;
+        let quantity = 1;
+        let orderItems = [];
+        let selectedPaymentMethod = null;
+        let totalAmount = 0;
+
+        // Step navigation
+        function goToScreen(step) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show target screen
+            document.getElementById(`screen${step}`).classList.add('active');
+            
+            // Update step indicator
+            document.querySelectorAll('.step').forEach((stepEl, index) => {
+                stepEl.classList.toggle('active', index < step);
+            });
+            
+            currentStep = step;
+            
+            // Update screen content based on step
+            if (step === 3) updateOrderSummary();
+            if (step === 4) updatePaymentSummary();
+            if (step === 5) updateTransactionDetails();
+        }
+
+        // Image recognition simulation
+        function startScan() {
+            const scanArea = document.getElementById('scanArea');
+            scanArea.classList.add('scanning');
+            
+            showNotification('📷 Scanning... Point camera at item');
+            
+            // Simulate scan after 2 seconds
+            setTimeout(() => {
+                scanArea.classList.remove('scanning');
+                // Simulate detection of Nasi Lemak
+                selectProduct('nasi-lemak', 'Nasi Lemak', 5.00);
+                showNotification('✅ Nasi Lemak detected!');
+            }, 2000);
+        }
+
+        // Product selection
+        function selectProduct(id, name, price) {
+            selectedProduct = { id, name, price };
+            
+            // Show selected product in step 2
+            document.getElementById('selectedProduct').innerHTML = `
+                <div class="product-card selected">
+                    <div class="product-name">${name}</div>
+                    <div class="product-price">RM ${price.toFixed(2)}</div>
+                </div>
+            `;
+            
+            // Reset quantity
+            quantity = 1;
+            document.getElementById('quantity').textContent = quantity;
+            
+            goToScreen(2);
+        }
+
+        // Manual input
+        function showManualInput() {
+            document.getElementById('manualInput').classList.toggle('hidden');
+        }
+
+        function addCustomItem() {
+            const name = document.getElementById('customName').value;
+            const price = parseFloat(document.getElementById('customPrice').value);
+            
+            if (name && price > 0) {
+                selectProduct('custom', name, price);
+                // Clear inputs
+                document.getElementById('customName').value = '';
+                document.getElementById('customPrice').value = '';
+                document.getElementById('manualInput').classList.add('hidden');
+            }
+        }
+
+        // Quantity controls
+        function increaseQty() {
+            quantity++;
+            document.getElementById('quantity').textContent = quantity;
+        }
+
+        function decreaseQty() {
+            if (quantity > 1) {
+                quantity--;
+                document.getElementById('quantity').textContent = quantity;
+            }
+        }
+
+        // Add to order
+        function addToOrder() {
+            if (selectedProduct) {
+                const existingItem = orderItems.find(item => item.id === selectedProduct.id);
+                
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                    existingItem.total = existingItem.quantity * existingItem.price;
+                } else {
+                    orderItems.push({
+                        ...selectedProduct,
+                        quantity: quantity,
+                        total: selectedProduct.price * quantity
+                    });
+                }
+                
+                calculateTotal();
+                showNotification(`✅ Added ${quantity}x ${selectedProduct.name} to order`);
+                goToScreen(3);
+            }
+        }
+
+        // Calculate total
+        function calculateTotal() {
+            const subtotal = orderItems.reduce((sum, item) => sum + item.total, 0);
+            const sst = subtotal * 0.06; // 6% SST
+            totalAmount = subtotal + sst;
+            
+            return { subtotal, sst, total: totalAmount };
+        }
+
+        // Update order summary
+        function updateOrderSummary() {
+            const totals = calculateTotal();
+            const summaryHTML = `
+                ${orderItems.map(item => `
+                    <div class="order-item">
+                        <div class="item-details">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-qty">${item.quantity}x RM ${item.price.toFixed(2)}</div>
+                        </div>
+                        <div class="item-price">RM ${item.total.toFixed(2)}</div>
+                    </div>
+                `).join('')}
+                
+                <div class="total-section">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span>RM ${totals.subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="total-row">
+                        <span>SST (6%):</span>
+                        <span>RM ${totals.sst.toFixed(2)}</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>Total:</span>
+                        <span>RM ${totals.total.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('orderSummary').innerHTML = summaryHTML;
+        }
+
+        // Update payment summary
+        function updatePaymentSummary() {
+            document.getElementById('paymentOrderSummary').innerHTML = 
+                document.getElementById('orderSummary').innerHTML;
+        }
+
+        // Payment method selection
+        function selectPayment(method) {
+            // Remove previous selection
+            document.querySelectorAll('.payment-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Add selection to clicked button
+            event.target.closest('.payment-btn').classList.add('selected');
+            
+            selectedPaymentMethod = method;
+            document.getElementById('processPaymentBtn').disabled = false;
+        }
+
+        // Process payment
+        function processPayment() {
+            if (!selectedPaymentMethod) return;
+            
+            // Generate QR code for customer
+            generatePaymentQR();
+        }
+
+        // Generate QR code for payment
+        function generatePaymentQR() {
+            showNotification('🎯 Generating QR code for customer...');
+            
+            // Show QR code screen
+            showQRCodeScreen();
+            
+            // Simulate QR code generation
+            setTimeout(() => {
+                showNotification('📱 QR Code ready - Show to customer');
+                startPaymentMonitoring();
+            }, 1000);
+        }
+
+        // Show QR code payment screen
+        function showQRCodeScreen() {
+            const qrScreen = createQRScreen();
+            document.querySelector('.container').appendChild(qrScreen);
+        }
+
+        // Create QR code screen
+        function createQRScreen() {
+            const qrScreen = document.createElement('div');
+            qrScreen.id = 'qrScreen';
+            qrScreen.className = 'qr-overlay';
+            qrScreen.innerHTML = `
+                <div class="qr-modal">
+                    <div class="qr-header">
+                        <h2>Customer Payment</h2>
+                        <button class="close-qr" onclick="closeQRScreen()">×</button>
+                    </div>
+                    <div class="qr-content">
+                        <div class="payment-info">
+                            <div class="amount-display">RM ${totalAmount.toFixed(2)}</div>
+                            <div class="payment-method">${getPaymentMethodName(selectedPaymentMethod)}</div>
+                        </div>
+                        <div class="qr-code-container">
+                            <div class="qr-code" id="qrCodeDisplay">
+                                <!-- QR Code will be generated here -->
+                                <div class="qr-placeholder">
+                                    <div class="qr-squares">
+                                        ${generateQRPattern()}
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="qr-instruction">Ask customer to scan this QR code</p>
+                        </div>
+                        <div class="payment-status" id="paymentStatus">
+                            <div class="status-indicator waiting">
+                                <div class="pulse-dot"></div>
+                                <span>Waiting for payment...</span>
+                            </div>
+                        </div>
+                        <div class="qr-timer">
+                            <div class="timer-circle">
+                                <span id="countdown">120</span>s
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return qrScreen;
+        }
+
+        // Generate QR pattern (visual simulation)
+        function generateQRPattern() {
+            let pattern = '';
+            for (let i = 0; i < 21; i++) {
+                for (let j = 0; j < 21; j++) {
+                    const isBlack = Math.random() > 0.5;
+                    pattern += `<div class="qr-pixel ${isBlack ? 'black' : 'white'}"></div>`;
+                }
+            }
+            return pattern;
+        }
+
+        // Start monitoring payment
+        function startPaymentMonitoring() {
+            const countdown = document.getElementById('countdown');
+            let timeLeft = 120; // 2 minutes
+            
+            const timer = setInterval(() => {
+                timeLeft--;
+                if (countdown) countdown.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    showPaymentTimeout();
+                }
+            }, 1000);
+            
+            // Simulate customer payment after random time (1-3 seconds)
+            const paymentDelay = Math.random() * 2000 + 1000;
+            setTimeout(() => {
+                clearInterval(timer);
+                showPaymentSuccess();
+            }, paymentDelay);
+        }
+
+        // Show payment success
+        function showPaymentSuccess() {
+            const statusDiv = document.getElementById('paymentStatus');
+            if (statusDiv) {
+                statusDiv.innerHTML = `
+                    <div class="status-indicator success">
+                        <div class="success-checkmark">✓</div>
+                        <span>Payment successful!</span>
+                    </div>
+                `;
+            }
+            
+            showNotification('✅ Payment received from customer!');
+            
+            // Close QR screen and go to success page after 2 seconds
+            setTimeout(() => {
+                closeQRScreen();
+                goToScreen(5);
+            }, 2000);
+        }
+
+        // Show payment timeout
+        function showPaymentTimeout() {
+            const statusDiv = document.getElementById('paymentStatus');
+            if (statusDiv) {
+                statusDiv.innerHTML = `
+                    <div class="status-indicator timeout">
+                        <div class="timeout-icon">⏰</div>
+                        <span>Payment timeout</span>
+                    </div>
+                `;
+            }
+            
+            showNotification('⏰ Payment timeout - Please try again');
+        }
+
+        // Close QR screen
+        function closeQRScreen() {
+            const qrScreen = document.getElementById('qrScreen');
+            if (qrScreen) {
+                qrScreen.remove();
+            }
+        }
+
+        // Update transaction details
+        function updateTransactionDetails() {
+            const now = new Date();
+            const transactionId = 'TXN' + Date.now();
+            
+            const detailsHTML = `
+                <div class="detail-row">
+                    <span>Transaction ID:</span>
+                    <strong>${transactionId}</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Amount:</span>
+                    <strong>RM ${totalAmount.toFixed(2)}</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Payment Method:</span>
+                    <strong>${getPaymentMethodName(selectedPaymentMethod)}</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Date & Time:</span>
+                    <strong>${now.toLocaleString()}</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Status:</span>
+                    <strong style="color: #10b981;">Completed</strong>
+                </div>
+            `;
+            
+            document.getElementById('transactionDetails').innerHTML = detailsHTML;
+        }
+
+        // Helper functions
+        function getPaymentMethodName(method) {
+            const names = {
+                'tng': 'Touch \'n Go',
+                'grab': 'GrabPay',
+                'cash': 'Cash',
+                'bank': 'DuitNow QR'
+            };
+            return names[method] || method;
+        }
+
+        function getPaymentIcon(method) {
+            const icons = {
+                'tng': '📱',
+                'grab': '🚗',
+                'cash': '💰',
+                'bank': '📲'
+            };
+            return icons[method] || '💳';
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Receipt and invoice generation
+        function generateReceipt() {
+            const receiptData = {
+                transactionId: 'TXN' + Date.now(),
+                date: new Date().toISOString(),
+                items: orderItems,
+                paymentMethod: selectedPaymentMethod,
+                total: totalAmount
+            };
+            
+            showNotification('📄 Receipt generated and saved');
+            console.log('Receipt Data:', receiptData);
+        }
+
+        function generateInvoice() {
+            const invoiceData = {
+                invoiceNumber: 'INV-' + Date.now(),
+                date: new Date().toISOString(),
+                customerName: 'Walk-in Customer',
+                items: orderItems,
+                subtotal: orderItems.reduce((sum, item) => sum + item.total, 0),
+                sst: orderItems.reduce((sum, item) => sum + item.total, 0) * 0.06,
+                total: totalAmount,
+                status: 'paid'
+            };
+            
+            showNotification('🧾 LHDN-compliant invoice generated');
+            console.log('Invoice Data:', invoiceData);
+        }
+
+        function startNewTransaction() {
+            // Reset all state
+            currentStep = 1;
+            selectedProduct = null;
+            quantity = 1;
+            orderItems = [];
+            selectedPaymentMethod = null;
+            totalAmount = 0;
+            
+            // Reset form
+            document.getElementById('customName').value = '';
+            document.getElementById('customPrice').value = '';
+            document.getElementById('manualInput').classList.add('hidden');
+            document.getElementById('processPaymentBtn').disabled = true;
+            
+            // Go to first screen
+            goToScreen(1);
+            
+            showNotification('🆕 Ready for new transaction');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showNotification('🚀 MSME POS Ready');
+        });
+
+        // Back button logic
+        function goBack() {
+            if (currentStep === 1) {
+                window.location.href = 'index.html'; // Go to index.html for step 1
+            } else {
+                goToScreen(currentStep - 1); // Go back to previous step
+            }
+        }
+
+        // Placeholder for refreshData function (if needed)
+        function refreshData() {
+            showNotification('🔄 Refreshing data... (Placeholder)');
+            // In a real app, you would fetch new data from the backend
+        }
+    </script>
+</body>
+</html>

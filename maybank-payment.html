@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Maybank Payment Interface - MSME Digital Financial Platform">
+    <meta name="theme-color" content="#FFC107">
+    <title>Maybank Payment - MSME Digital Finance Platform</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="maybank-payment/maybank.css">
+    <link rel="stylesheet" href="maybank-payment/mobile.css">
+    <link rel="stylesheet" href="maybank-payment/accessibility.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Maybank Header -->
+    <div class="maybank-header">
+        <div class="header-content">
+            <div class="maybank-logo">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAxMjAgNDAiPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNDAiIGZpbGw9IiNGRkMwMDciLz48dGV4dCB4PSI2MCIgeT0iMjUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmYiPk1heWJhbms8L3RleHQ+PC9zdmc+" alt="Maybank Logo">
+            </div>
+            <div class="security-indicator">
+                <span class="lock-icon">🔒</span>
+                <span>Secure Payment</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Details -->
+    <div class="payment-container">
+        <div class="payment-header">
+            <h1>Payment Authorization</h1>
+            <p class="transaction-type">Donation Payment</p>
+        </div>
+
+        <div class="transaction-details">
+            <div class="detail-row">
+                <span class="label">Recipient:</span>
+                <span class="value" id="recipient-name">Loading...</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Amount:</span>
+                <span class="value amount" id="payment-amount">RM 0.00</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Account:</span>
+                <span class="value" id="source-account">Loading...</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Reference:</span>
+                <span class="value" id="transaction-ref">Loading...</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Date:</span>
+                <span class="value" id="transaction-date">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Security Verification -->
+        <div class="security-section">
+            <h3>Security Verification</h3>
+            <div class="verification-methods">
+                <div class="method-card active" id="pin-method">
+                    <div class="method-icon">🔢</div>
+                    <div class="method-info">
+                        <h4>PIN Verification</h4>
+                        <p>Enter your 6-digit PIN</p>
+                    </div>
+                </div>
+                <div class="method-card" id="biometric-method">
+                    <div class="method-icon">👆</div>
+                    <div class="method-info">
+                        <h4>Fingerprint</h4>
+                        <p>Use biometric authentication</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PIN Entry Section -->
+        <div class="pin-section" id="pin-section">
+            <div class="pin-display">
+                <div class="pin-dots">
+                    <span class="pin-dot"></span>
+                    <span class="pin-dot"></span>
+                    <span class="pin-dot"></span>
+                    <span class="pin-dot"></span>
+                    <span class="pin-dot"></span>
+                    <span class="pin-dot"></span>
+                </div>
+                <p class="pin-instruction">Enter your 6-digit PIN</p>
+            </div>
+
+            <div class="pin-pad">
+                <button class="pin-btn" onclick="maybankPayment.handlePinInput(1)">1</button>
+                <button class="pin-btn" onclick="maybankPayment.handlePinInput(2)">2</button>
+                <button class="pin-btn" onclick="maybankPayment.handlePinInput(3)">3</button>
+                <button class="pin-btn" onclick="maybankPayment.handlePinInput(4)">4</button>
+                <button class="pin-btn" onclick="maybankPayment.handlePinInput(5)">5</button>
+                <button class="pin-btn" onclick="maybankPayment.handlePinInput(6)">6</button>
+                <button class="pin-btn" onclick="maybankPayment.handlePinInput(7)">7</button>
+                <button class="pin-btn" onclick="maybankPayment.handlePinInput(8)">8</button>
+                <button class="pin-btn" onclick="maybankPayment.handlePinInput(9)">9</button>
+                <button class="pin-btn special" onclick="maybankPayment.handlePinInput('backspace')">⌫</button>
+                <button class="pin-btn" onclick="maybankPayment.handlePinInput(0)">0</button>
+                <button class="pin-btn special" onclick="maybankPayment.handlePinInput('confirm')">✓</button>
+            </div>
+        </div>
+
+        <!-- Biometric Section -->
+        <div class="biometric-section" id="biometric-section" style="display: none;">
+            <div class="biometric-display">
+                <div class="fingerprint-icon">👆</div>
+                <h3>Place your finger on the sensor</h3>
+                <p>Keep your finger steady until authentication is complete</p>
+            </div>
+            <button class="btn-secondary" onclick="maybankPayment.switchToPin()">
+                Use PIN Instead
+            </button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn-cancel" onclick="maybankPayment.cancelPayment()">
+                Cancel Payment
+            </button>
+            <button class="btn-help" onclick="maybankPayment.showHelp()">
+                Need Help?
+            </button>
+        </div>
+    </div>
+
+    <!-- Processing Overlay -->
+    <div class="processing-overlay" id="processing-overlay" style="display: none;">
+        <div class="processing-content">
+            <div class="spinner"></div>
+            <h3>Processing Payment</h3>
+            <p>Please wait while we process your transaction...</p>
+        </div>
+    </div>
+
+    <!-- Success Overlay -->
+    <div class="success-overlay" id="success-overlay" style="display: none;">
+        <div class="success-content">
+            <div class="success-icon">✅</div>
+            <h3>Payment Successful!</h3>
+            <p>Your donation has been processed successfully.</p>
+            <button class="btn-primary" onclick="maybankPayment.returnToApp()">
+                Return to App
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="maybank-payment/maybank-payment.js"></script>
+</body>
+</html> 

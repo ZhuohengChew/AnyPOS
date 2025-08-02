@@ -1,0 +1,365 @@
+/* Accessibility styles for Maybank Payment Interface */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --maybank-yellow: #FFD700;
+        --maybank-dark: #FF8C00;
+        --text-dark: #000000;
+        --text-light: #333333;
+        --border-color: #000000;
+        --background-light: #FFFFFF;
+    }
+    
+    .pin-dot {
+        border-width: 3px;
+    }
+    
+    .method-card {
+        border-width: 3px;
+    }
+    
+    .btn-cancel, .btn-help, .btn-secondary {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .fingerprint-icon {
+        animation: none;
+    }
+    
+    .spinner {
+        animation: none;
+    }
+    
+    .pin-btn:hover,
+    .method-card:hover,
+    .btn-cancel:hover,
+    .btn-help:hover,
+    .btn-secondary:hover,
+    .btn-primary:hover {
+        transform: none;
+    }
+}
+
+/* Focus indicators */
+.pin-btn:focus,
+.method-card:focus,
+.btn-cancel:focus,
+.btn-help:focus,
+.btn-secondary:focus,
+.btn-primary:focus {
+    outline: 3px solid #2563eb;
+    outline-offset: 2px;
+}
+
+/* Skip to main content */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #2563eb;
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 1001;
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Screen reader only text */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ARIA live regions */
+.aria-live {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* Error states */
+.error {
+    border-color: var(--error-red) !important;
+    background-color: #FEF2F2 !important;
+}
+
+.error-message {
+    color: var(--error-red);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.error-message::before {
+    content: "⚠️";
+    font-size: 1rem;
+}
+
+/* Success states */
+.success {
+    border-color: var(--success-green) !important;
+    background-color: #F0FDF4 !important;
+}
+
+.success-message {
+    color: var(--success-green);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.success-message::before {
+    content: "✅";
+    font-size: 1rem;
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--border-color);
+    border-top: 2px solid var(--maybank-yellow);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Keyboard navigation improvements */
+.pin-pad {
+    outline: none;
+}
+
+.pin-btn:focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 2px;
+    transform: scale(1.05);
+}
+
+.method-card:focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 2px;
+    border-color: #2563eb;
+}
+
+/* Touch target sizes */
+@media (max-width: 768px) {
+    .pin-btn {
+        min-width: 44px;
+        min-height: 44px;
+    }
+    
+    .method-card {
+        min-height: 60px;
+    }
+    
+    .btn-cancel,
+    .btn-help,
+    .btn-secondary,
+    .btn-primary {
+        min-height: 44px;
+    }
+}
+
+/* Color blind friendly improvements */
+.pin-dot.filled {
+    background: var(--maybank-yellow);
+    border-color: var(--maybank-yellow);
+    box-shadow: 0 0 0 2px var(--maybank-dark);
+}
+
+.method-card.active {
+    border-color: var(--maybank-yellow);
+    background: var(--maybank-light);
+    box-shadow: 0 0 0 2px var(--maybank-dark);
+}
+
+/* Print styles */
+@media print {
+    .maybank-header,
+    .action-buttons,
+    .processing-overlay,
+    .success-overlay {
+        display: none !important;
+    }
+    
+    .payment-container {
+        background: white;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    
+    .transaction-details {
+        background: white;
+        border: 1px solid #ccc;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-dark: #F9FAFB;
+        --text-light: #D1D5DB;
+        --border-color: #374151;
+        --background-light: #1F2937;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #FF8F00 0%, #E65100 100%);
+    }
+    
+    .payment-container {
+        background: #111827;
+        color: var(--text-dark);
+    }
+    
+    .transaction-details {
+        background: #1F2937;
+    }
+    
+    .method-card {
+        background: #1F2937;
+        border-color: #374151;
+    }
+    
+    .method-card.active {
+        background: #FFC107;
+        color: #000000;
+    }
+    
+    .pin-btn {
+        background: #1F2937;
+        color: var(--text-dark);
+    }
+    
+    .btn-cancel {
+        background: #1F2937;
+        color: var(--text-dark);
+    }
+    
+    .btn-secondary {
+        background: #1F2937;
+        color: var(--text-dark);
+        border-color: #374151;
+    }
+    
+    .processing-content,
+    .success-content {
+        background: #111827;
+        color: var(--text-dark);
+    }
+}
+
+/* Large text support */
+@media (prefers-reduced-data: reduce) {
+    .maybank-logo img {
+        width: 80px;
+        height: auto;
+    }
+    
+    .fingerprint-icon {
+        font-size: 2rem;
+    }
+    
+    .success-icon {
+        font-size: 2rem;
+    }
+}
+
+/* Focus management */
+.pin-btn:focus,
+.method-card:focus {
+    z-index: 10;
+}
+
+/* Voice control improvements */
+.pin-btn[data-number],
+.method-card[data-method] {
+    cursor: pointer;
+}
+
+/* Cognitive load reduction */
+.transaction-details .detail-row:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .transaction-details .detail-row:nth-child(even) {
+        background-color: transparent;
+    }
+}
+
+/* Error prevention */
+.pin-btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Contextual help */
+.help-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.help-tooltip:hover::after {
+    content: attr(data-help);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1F2937;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-bottom: 0.5rem;
+}
+
+.help-tooltip:hover::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #1F2937;
+    margin-bottom: -5px;
+} 

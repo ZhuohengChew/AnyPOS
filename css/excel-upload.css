@@ -1,0 +1,528 @@
+/* ===== EXCEL UPLOAD MODAL STYLES ===== */
+
+/* Modal Overlay */
+#excel-upload-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: var(--z-modal);
+  backdrop-filter: blur(4px);
+}
+
+#excel-upload-modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Modal Content */
+#excel-upload-modal .modal-content {
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: slideIn 0.3s ease-out;
+}
+
+#excel-upload-modal .modal-content.large {
+  width: 95%;
+  max-width: 1000px;
+  height: 85vh;
+}
+
+/* Modal Header */
+#excel-upload-modal .modal-header {
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+  color: var(--text-inverse);
+  padding: var(--spacing-6);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-light);
+}
+
+#excel-upload-modal .modal-header h2 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+}
+
+#excel-upload-modal .close-btn {
+  background: none;
+  border: none;
+  color: var(--text-inverse);
+  font-size: var(--font-size-2xl);
+  cursor: pointer;
+  padding: var(--spacing-2);
+  border-radius: var(--radius-md);
+  transition: var(--transition-fast);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#excel-upload-modal .close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Modal Body */
+#excel-upload-modal .modal-body {
+  padding: var(--spacing-6);
+  max-height: calc(85vh - 120px);
+  overflow-y: auto;
+}
+
+/* Step Management */
+.upload-step,
+.processing-step,
+.preview-step,
+.success-step,
+.error-step {
+  display: none;
+}
+
+.upload-step.active,
+.processing-step.active,
+.preview-step.active,
+.success-step.active,
+.error-step.active {
+  display: block;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Upload Zone */
+.upload-zone {
+  border: 3px dashed var(--border-medium);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-12);
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition-normal);
+  background: var(--bg-secondary);
+  position: relative;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-zone:hover {
+  border-color: var(--primary-blue);
+  background: var(--bg-tertiary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.upload-zone.dragover {
+  border-color: var(--primary-blue);
+  background: var(--primary-blue);
+  color: var(--text-inverse);
+  transform: scale(1.02);
+}
+
+.upload-zone.dragover .upload-icon,
+.upload-zone.dragover h3,
+.upload-zone.dragover p {
+  color: var(--text-inverse);
+}
+
+.upload-content {
+  max-width: 400px;
+}
+
+.upload-icon {
+  font-size: var(--font-size-4xl);
+  margin-bottom: var(--spacing-4);
+  display: block;
+}
+
+.upload-zone h3 {
+  margin: 0 0 var(--spacing-2) 0;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.upload-zone p {
+  margin: var(--spacing-1) 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+}
+
+.file-types {
+  font-size: var(--font-size-sm) !important;
+  color: var(--text-tertiary) !important;
+  margin-top: var(--spacing-3) !important;
+}
+
+/* File Info */
+.file-info {
+  margin-top: var(--spacing-6);
+  padding: var(--spacing-4);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+}
+
+.file-details {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.file-icon {
+  font-size: var(--font-size-2xl);
+  color: var(--primary-blue);
+}
+
+.file-text h4 {
+  margin: 0 0 var(--spacing-1) 0;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.file-text p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.remove-file-btn {
+  background: var(--error);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: var(--radius-full);
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: var(--font-size-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+  margin-left: auto;
+}
+
+.remove-file-btn:hover {
+  background: #dc2626;
+  transform: scale(1.1);
+}
+
+/* Processing Step */
+.processing-content {
+  text-align: center;
+  padding: var(--spacing-8) 0;
+}
+
+.processing-icon {
+  font-size: var(--font-size-4xl);
+  margin-bottom: var(--spacing-4);
+  animation: pulse 2s infinite;
+}
+
+.processing-content h3 {
+  margin: 0 0 var(--spacing-4) 0;
+  font-size: var(--font-size-xl);
+  color: var(--text-primary);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin: var(--spacing-4) 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-blue), var(--secondary-green));
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+#processing-status {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+/* Preview Step */
+.preview-header {
+  margin-bottom: var(--spacing-6);
+  text-align: center;
+}
+
+.preview-header h3 {
+  margin: 0 0 var(--spacing-2) 0;
+  font-size: var(--font-size-xl);
+  color: var(--text-primary);
+}
+
+#preview-summary {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+}
+
+.preview-table-container {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-6);
+}
+
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-primary);
+}
+
+.preview-table th {
+  background: var(--bg-secondary);
+  padding: var(--spacing-3) var(--spacing-4);
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.preview-table td {
+  padding: var(--spacing-3) var(--spacing-4);
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
+}
+
+.preview-table tbody tr:hover {
+  background: var(--bg-secondary);
+}
+
+.preview-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.preview-actions {
+  display: flex;
+  gap: var(--spacing-4);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Success Step */
+.success-content {
+  text-align: center;
+  padding: var(--spacing-8) 0;
+}
+
+.success-icon {
+  font-size: var(--font-size-4xl);
+  margin-bottom: var(--spacing-4);
+  animation: scaleIn 0.5s ease-out;
+}
+
+.success-content h3 {
+  margin: 0 0 var(--spacing-4) 0;
+  font-size: var(--font-size-xl);
+  color: var(--text-primary);
+}
+
+#success-message {
+  margin: 0 0 var(--spacing-6) 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-lg);
+}
+
+.success-actions {
+  display: flex;
+  gap: var(--spacing-4);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Error Step */
+.error-content {
+  text-align: center;
+  padding: var(--spacing-8) 0;
+}
+
+.error-icon {
+  font-size: var(--font-size-4xl);
+  margin-bottom: var(--spacing-4);
+  color: var(--error);
+}
+
+.error-content h3 {
+  margin: 0 0 var(--spacing-4) 0;
+  font-size: var(--font-size-xl);
+  color: var(--text-primary);
+}
+
+#error-message {
+  margin: 0 0 var(--spacing-6) 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+}
+
+.error-actions {
+  display: flex;
+  gap: var(--spacing-4);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Status Badges */
+.status-badge {
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.valid {
+  background: var(--success);
+  color: var(--text-inverse);
+}
+
+.status-badge.invalid {
+  background: var(--error);
+  color: var(--text-inverse);
+}
+
+.status-badge.warning {
+  background: var(--warning);
+  color: var(--text-inverse);
+}
+
+/* Animations */
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  #excel-upload-modal .modal-content {
+    width: 95%;
+    height: 90vh;
+    margin: 5vh auto;
+  }
+  
+  #excel-upload-modal .modal-body {
+    padding: var(--spacing-4);
+    max-height: calc(90vh - 100px);
+  }
+  
+  .upload-zone {
+    padding: var(--spacing-6);
+    min-height: 150px;
+  }
+  
+  .upload-icon {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .upload-zone h3 {
+    font-size: var(--font-size-lg);
+  }
+  
+  .preview-table-container {
+    max-height: 300px;
+  }
+  
+  .preview-table th,
+  .preview-table td {
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-sm);
+  }
+  
+  .preview-actions,
+  .success-actions,
+  .error-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .preview-actions button,
+  .success-actions button,
+  .error-actions button {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .upload-zone,
+  .upload-zone:hover,
+  .upload-zone.dragover,
+  .progress-fill,
+  .success-icon,
+  .processing-icon {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .upload-zone {
+    border-width: 4px;
+  }
+  
+  .upload-zone:hover {
+    border-width: 5px;
+  }
+  
+  .progress-bar {
+    border: 1px solid var(--text-primary);
+  }
+}
+
+/* Recently Imported Badge */
+.import-badge {
+  background: #10b981;
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  margin-left: 0.5rem;
+  font-weight: 500;
+  animation: pulse 2s infinite;
+} 
